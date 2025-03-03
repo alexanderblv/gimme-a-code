@@ -8,7 +8,8 @@ const finalStarsElement = document.getElementById('finalStars');
 let stars = 0;
 let lives = 3;
 let gameActive = false;
-let crabTimeout;
+let crabTimeout = null;
+let currentCrab = null;
 
 // Создание игрового поля
 function createGrid() {
@@ -22,12 +23,12 @@ function createGrid() {
     }
 }
 
-// Обработчик кликов (десктоп)
+// Обработчик кликов
 function handleClick(e) {
     processClick(e.target);
 }
 
-// Обработчик тапов (мобильные)
+// Обработчик тапов
 function handleTouch(e) {
     e.preventDefault();
     processClick(e.target);
@@ -35,7 +36,7 @@ function handleTouch(e) {
 
 // Общая логика клика
 function processClick(target) {
-    if (!gameActive) return;
+    if (!gameActive || !currentCrab) return;
 
     const cell = target.classList.contains('crab') 
         ? target.parentElement 
@@ -43,49 +44,50 @@ function processClick(target) {
 
     const crab = cell.querySelector('.crab');
     
-    if (crab?.classList.contains('active')) {
-        crab.remove();
+    if (crab === currentCrab && crab.classList.contains('active')) {
+        // Правильный клик
         clearTimeout(crabTimeout);
+        crab.remove();
+        currentCrab = null;
         stars++;
         starsElement.textContent = stars;
         spawnCrab();
+    } else {
+        // Неправильный клик
+        loseLife();
     }
 }
 
 // Логика появления краба
 function spawnCrab() {
-    if (!gameActive) return;
+    if (!gameActive || currentCrab) return;
 
-    // Удаляем предыдущего краба
-    const prevCrab = document.querySelector('.crab.active');
-    if (prevCrab) {
-        prevCrab.remove();
-        loseLife();
-    }
-
-    // Выбираем случайную ячейку
-    const cells = Array.from(grid.children).filter(cell => !cell.querySelector('.crab'));
-    if (cells.length === 0) return;
-    
+    const cells = Array.from(grid.children);
     const randomCell = cells[Math.floor(Math.random() * cells.length)];
     
     // Создаем нового краба
     const crab = document.createElement('div');
     crab.className = 'crab';
     randomCell.appendChild(crab);
+    currentCrab = crab;
     
     // Активируем анимацию
     setTimeout(() => crab.classList.add('active'), 10);
     
     // Таймер на исчезновение
     crabTimeout = setTimeout(() => {
-        crab.remove();
-        loseLife();
+        if (currentCrab) {
+            currentCrab.remove();
+            currentCrab = null;
+            loseLife();
+        }
     }, 1500 + Math.random() * 1000);
 }
 
 // Система жизней
 function loseLife() {
+    if (!gameActive) return;
+    
     lives--;
     livesElement.textContent = lives;
 
@@ -99,9 +101,10 @@ function loseLife() {
 // Завершение игры
 function gameOver() {
     gameActive = false;
+    clearTimeout(crabTimeout);
+    currentCrab = null;
     finalStarsElement.textContent = stars;
     gameOverScreen.classList.remove('hidden');
-    clearTimeout(crabTimeout);
 }
 
 // Инициализация новой игры
@@ -111,13 +114,8 @@ function startGame() {
     starsElement.textContent = stars;
     livesElement.textContent = lives;
     gameOverScreen.classList.add('hidden');
-    
-    // Очищаем поле
-    document.querySelectorAll('.crab').forEach(crab => crab.remove());
-    
-    // Пересоздаем сетку
+    grid.innerHTML = '';
     createGrid();
-    
     gameActive = true;
     spawnCrab();
 }
