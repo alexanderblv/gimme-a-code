@@ -1,76 +1,144 @@
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    background: #2c3e50;
-    font-family: Arial, sans-serif;
-    touch-action: manipulation;
+const grid = document.getElementById('grid');
+const starsElement = document.getElementById('stars');
+const livesElement = document.getElementById('lives');
+const gameOverScreen = document.getElementById('gameOver');
+const restartButton = document.getElementById('restart');
+const finalStarsElement = document.getElementById('finalStars');
+const timerBar = document.getElementById('timerBar');
+
+let stars = 0;
+let lives = 3;
+let gameActive = false;
+let crabTimeout = null;
+let currentCrab = null;
+let timerStartTime = 0;
+let timerDuration = 0;
+let timerRequestId = null;
+
+function createGrid() {
+    grid.innerHTML = '';
+    for (let i = 0; i < 25; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.addEventListener('click', handleClick);
+        cell.addEventListener('touchstart', handleTouch);
+        grid.appendChild(cell);
+    }
 }
 
-.game-container {
-    text-align: center;
-    color: white;
+function handleClick(e) {
+    processClick(e.target);
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(5, 60px);
-    gap: 10px;
-    margin: 20px auto;
+function handleTouch(e) {
+    e.preventDefault();
+    processClick(e.target);
 }
 
-.cell {
-    width: 60px;
-    height: 60px;
-    background: #34495e;
-    border-radius: 10px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
+function processClick(target) {
+    if (!gameActive) return;
+
+    const cell = target.classList.contains('crab') 
+        ? target.parentElement 
+        : target;
+
+    const crab = cell.querySelector('.crab');
+    const isCorrectClick = crab && crab === currentCrab && crab.classList.contains('active');
+
+    if (isCorrectClick) {
+        clearCrab();
+        stars++;
+        starsElement.textContent = stars;
+        spawnCrab();
+    } else if (currentCrab) {
+        clearCrab();
+        loseLife();
+        spawnCrab();
+    }
 }
 
-.crab {
-    width: 50px;
-    height: 50px;
-    position: absolute;
-    bottom: -50px;
-    left: 5px;
-    transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: url('assets/crab.png') no-repeat center/contain;
+function clearCrab() {
+    if (currentCrab) {
+        clearTimeout(crabTimeout);
+        currentCrab.remove();
+        currentCrab = null;
+        cancelAnimationFrame(timerRequestId);
+        timerBar.style.width = '0%';
+    }
 }
 
-.crab.active {
-    bottom: 5px !important;
+function updateTimer() {
+    if (!gameActive) return;
+
+    const elapsed = Date.now() - timerStartTime;
+    const progress = 100 - (elapsed / timerDuration) * 100;
+    
+    if (progress <= 0) {
+        timerBar.style.width = '0%';
+        return;
+    }
+    
+    timerBar.style.width = `${progress}%`;
+    timerRequestId = requestAnimationFrame(updateTimer);
 }
 
-.game-over {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.9);
-    padding: 20px;
-    border-radius: 15px;
-    text-align: center;
+function spawnCrab() {
+    if (!gameActive || currentCrab) return;
+
+    const cells = Array.from(grid.children);
+    const randomCell = cells[Math.floor(Math.random() * cells.length)];
+    
+    currentCrab = document.createElement('div');
+    currentCrab.className = 'crab';
+    randomCell.appendChild(currentCrab);
+
+    setTimeout(() => currentCrab.classList.add('active'), 10);
+
+    timerDuration = 1500 + Math.random() * 1000;
+    timerStartTime = Date.now();
+    
+    crabTimeout = setTimeout(() => {
+        clearCrab();
+        loseLife();
+        spawnCrab();
+    }, timerDuration);
+
+    cancelAnimationFrame(timerRequestId);
+    timerBar.style.width = '100%';
+    timerRequestId = requestAnimationFrame(updateTimer);
 }
 
-.hidden {
-    display: none;
+function loseLife() {
+    if (!gameActive) return;
+    
+    lives--;
+    livesElement.textContent = lives;
+
+    if (lives <= 0) {
+        gameOver();
+    }
 }
 
-button {
-    padding: 12px 25px;
-    font-size: 18px;
-    cursor: pointer;
-    background: #27ae60;
-    border: none;
-    color: white;
-    border-radius: 8px;
-    transition: transform 0.2s;
+function gameOver() {
+    gameActive = false;
+    clearCrab();
+    finalStarsElement.textContent = stars;
+    gameOverScreen.classList.remove('hidden');
+    cancelAnimationFrame(timerRequestId);
+    timerBar.style.width = '0%';
 }
 
-button:active {
-    transform: scale(0.95);
+function startGame() {
+    stars = 0;
+    lives = 3;
+    starsElement.textContent = stars;
+    livesElement.textContent = lives;
+    gameOverScreen.classList.add('hidden');
+    grid.innerHTML = '';
+    createGrid();
+    gameActive = true;
+    spawnCrab();
 }
+
+restartButton.addEventListener('click', startGame);
+document.addEventListener('DOMContentLoaded', startGame);
