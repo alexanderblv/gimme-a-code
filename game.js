@@ -4,12 +4,16 @@ const livesElement = document.getElementById('lives');
 const gameOverScreen = document.getElementById('gameOver');
 const restartButton = document.getElementById('restart');
 const finalStarsElement = document.getElementById('finalStars');
+const idleTimerElement = document.getElementById('idleTimer');
 
 let stars = 0;
 let lives = 3;
 let gameActive = false;
 let crabTimeout = null;
 let currentCrab = null;
+let idleTimer = 0;
+const maxIdleTime = 5000; // 5 секунд на реакцию
+let lastActivityTime = Date.now();
 
 function createGrid() {
     grid.innerHTML = '';
@@ -22,13 +26,35 @@ function createGrid() {
     }
 }
 
+function updateIdleTimer() {
+    if (!gameActive) return;
+    
+    const currentTime = Date.now();
+    const elapsed = currentTime - lastActivityTime;
+    const remaining = maxIdleTime - elapsed;
+    
+    idleTimerElement.style.width = `${Math.max(0, (remaining / maxIdleTime) * 100)}%`;
+    
+    if (remaining <= 0) {
+        loseLife();
+        resetIdleTimer();
+    }
+}
+
+function resetIdleTimer() {
+    lastActivityTime = Date.now();
+    idleTimerElement.style.width = '100%';
+}
+
 function handleClick(e) {
     processClick(e.target);
+    resetIdleTimer();
 }
 
 function handleTouch(e) {
     e.preventDefault();
     processClick(e.target);
+    resetIdleTimer();
 }
 
 function processClick(target) {
@@ -44,7 +70,6 @@ function processClick(target) {
     if (isCorrectClick) {
         crab.classList.add('squash');
         setTimeout(() => crab.classList.remove('squash'), 200);
-        
         createStarEffect(cell);
         clearCrab();
         stars++;
@@ -53,7 +78,6 @@ function processClick(target) {
     } else if (currentCrab) {
         cell.classList.add('wrong');
         setTimeout(() => cell.classList.remove('wrong'), 400);
-        
         clearCrab();
         loseLife();
         spawnCrab();
@@ -84,7 +108,10 @@ function spawnCrab() {
     if (!gameActive || currentCrab) return;
 
     const cells = Array.from(grid.children);
-    const randomCell = cells[Math.floor(Math.random() * cells.length)];
+    const availableCells = cells.filter(cell => !cell.querySelector('.crab'));
+    if (availableCells.length === 0) return;
+
+    const randomCell = availableCells[Math.floor(Math.random() * availableCells.length)];
     
     currentCrab = document.createElement('div');
     currentCrab.className = 'crab';
@@ -111,6 +138,7 @@ function loseLife() {
     
     lives--;
     livesElement.textContent = lives;
+    resetIdleTimer();
 
     if (lives <= 0) {
         gameOver();
@@ -133,7 +161,9 @@ function startGame() {
     grid.innerHTML = '';
     createGrid();
     gameActive = true;
+    resetIdleTimer();
     spawnCrab();
+    setInterval(updateIdleTimer, 100);
 }
 
 restartButton.addEventListener('click', startGame);
