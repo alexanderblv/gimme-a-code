@@ -6,6 +6,7 @@ body {
     margin: 0;
     background: #2c3e50;
     font-family: Arial, sans-serif;
+    touch-action: manipulation;
 }
 
 .game-container {
@@ -36,12 +37,12 @@ body {
     position: absolute;
     bottom: -50px;
     left: 5px;
-    transition: all 0.3s ease;
+    transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background: url('assets/crab.png') no-repeat center/contain;
 }
 
 .crab.active {
-    bottom: 5px;
+    bottom: 5px !important;
 }
 
 .game-over {
@@ -49,9 +50,10 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.9);
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 15px;
+    text-align: center;
 }
 
 .hidden {
@@ -59,7 +61,16 @@ body {
 }
 
 button {
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 12px 25px;
+    font-size: 18px;
     cursor: pointer;
+    background: #27ae60;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    transition: transform 0.2s;
+}
+
+button:active {
+    transform: scale(0.95);
 }
