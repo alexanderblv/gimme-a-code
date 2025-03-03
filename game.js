@@ -9,6 +9,7 @@ let stars = 0;
 let lives = 3;
 let gameActive = false;
 let crabTimeout;
+let currentCrab = null;
 
 // Создание игрового поля
 function createGrid() {
@@ -44,16 +45,16 @@ function processClick(target) {
     const crab = cell.querySelector('.crab');
     
     if (crab?.classList.contains('active')) {
+        // Правильный клик
         crab.remove();
         clearTimeout(crabTimeout);
         stars++;
         starsElement.textContent = stars;
         spawnCrab();
     } else {
-        // Если клик по пустой ячейке
-        if (!crab) {
-            loseLife();
-        }
+        // Неправильный клик
+        if (!currentCrab) return; // Не наказываем до появления первого краба
+        loseLife();
     }
 }
 
@@ -61,23 +62,20 @@ function processClick(target) {
 function spawnCrab() {
     if (!gameActive) return;
 
-    // Удаляем предыдущего краба
-    const prevCrab = document.querySelector('.crab.active');
-    if (prevCrab) {
-        prevCrab.remove();
-        loseLife();
+    // Удаляем предыдущего краба без штрафа
+    if (currentCrab) {
+        currentCrab.remove();
     }
 
     // Выбираем случайную ячейку
-    const cells = Array.from(grid.children).filter(cell => !cell.querySelector('.crab'));
-    if (cells.length === 0) return;
-    
+    const cells = Array.from(grid.children);
     const randomCell = cells[Math.floor(Math.random() * cells.length)];
     
     // Создаем нового краба
     const crab = document.createElement('div');
     crab.className = 'crab';
     randomCell.appendChild(crab);
+    currentCrab = crab;
     
     // Активируем анимацию
     setTimeout(() => crab.classList.add('active'), 10);
@@ -86,6 +84,7 @@ function spawnCrab() {
     crabTimeout = setTimeout(() => {
         crab.remove();
         loseLife();
+        currentCrab = null;
     }, 1500 + Math.random() * 1000);
 }
 
@@ -107,6 +106,7 @@ function gameOver() {
     finalStarsElement.textContent = stars;
     gameOverScreen.classList.remove('hidden');
     clearTimeout(crabTimeout);
+    currentCrab = null;
 }
 
 // Инициализация новой игры
@@ -116,11 +116,10 @@ function startGame() {
     starsElement.textContent = stars;
     livesElement.textContent = lives;
     gameOverScreen.classList.add('hidden');
+    currentCrab = null;
     
     // Очищаем поле
-    document.querySelectorAll('.crab').forEach(crab => crab.remove());
-    
-    // Пересоздаем сетку
+    grid.innerHTML = '';
     createGrid();
     
     gameActive = true;
