@@ -11,8 +11,8 @@ let lives = 3;
 let gameActive = false;
 let crabTimeout = null;
 let currentCrab = null;
-let idleTimer = 0;
-const maxIdleTime = 5000; // 5 секунд на реакцию
+let idleInterval = null;
+const maxIdleTime = 5000;
 let lastActivityTime = Date.now();
 
 function createGrid() {
@@ -80,7 +80,6 @@ function processClick(target) {
         setTimeout(() => cell.classList.remove('wrong'), 400);
         clearCrab();
         loseLife();
-        spawnCrab();
     }
 }
 
@@ -108,28 +107,26 @@ function spawnCrab() {
     if (!gameActive || currentCrab) return;
 
     const cells = Array.from(grid.children);
-    const availableCells = cells.filter(cell => !cell.querySelector('.crab'));
-    if (availableCells.length === 0) return;
-
-    const randomCell = availableCells[Math.floor(Math.random() * availableCells.length)];
+    const randomCell = cells[Math.floor(Math.random() * cells.length)];
     
     currentCrab = document.createElement('div');
     currentCrab.className = 'crab';
     randomCell.appendChild(currentCrab);
 
     setTimeout(() => {
+        if (!gameActive) return;
         currentCrab.classList.add('active');
         randomCell.style.transform = 'scale(1.1)';
         setTimeout(() => randomCell.style.transform = 'scale(1)', 200);
     }, 10);
 
     crabTimeout = setTimeout(() => {
-        if(currentCrab) {
+        if(currentCrab && gameActive) {
             currentCrab.style.transition = 'bottom 0.5s ease-out';
             currentCrab.style.bottom = '-60px';
             setTimeout(() => clearCrab(), 500);
+            loseLife();
         }
-        loseLife();
     }, 1500 + Math.random() * 1000);
 }
 
@@ -142,6 +139,8 @@ function loseLife() {
 
     if (lives <= 0) {
         gameOver();
+    } else {
+        spawnCrab();
     }
 }
 
@@ -150,6 +149,7 @@ function gameOver() {
     clearCrab();
     finalStarsElement.textContent = stars;
     gameOverScreen.classList.remove('hidden');
+    clearInterval(idleInterval);
 }
 
 function startGame() {
@@ -162,8 +162,9 @@ function startGame() {
     createGrid();
     gameActive = true;
     resetIdleTimer();
+    clearInterval(idleInterval);
+    idleInterval = setInterval(updateIdleTimer, 100);
     spawnCrab();
-    setInterval(updateIdleTimer, 100);
 }
 
 restartButton.addEventListener('click', startGame);
