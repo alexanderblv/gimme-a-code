@@ -15,17 +15,46 @@ let timerInterval = null;
 let startTime = null;
 let totalDuration = 0;
 
-function updateTimer() {
-    if (!startTime) return;
-    
-    const elapsed = Date.now() - startTime;
-    const remaining = totalDuration - elapsed;
-    const seconds = Math.max(0, remaining / 1000).toFixed(1);
-    timerElement.textContent = `${seconds}s`;
-    
-    if (remaining <= 0) {
-        clearInterval(timerInterval);
-        timerElement.textContent = '0.0s';
+// Создание игрового поля (исправлено)
+function createGrid() {
+    grid.innerHTML = '';
+    for (let i = 0; i < 25; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.addEventListener('click', handleClick);
+        cell.addEventListener('touchstart', handleTouch);
+        grid.appendChild(cell);
+    }
+}
+
+function handleClick(e) {
+    processClick(e.target);
+}
+
+function handleTouch(e) {
+    e.preventDefault();
+    processClick(e.target);
+}
+
+function processClick(target) {
+    if (!gameActive) return;
+
+    const cell = target.classList.contains('crab') 
+        ? target.parentElement 
+        : target;
+
+    const crab = cell.querySelector('.crab');
+    const isCorrectClick = crab && crab === currentCrab && crab.classList.contains('active');
+
+    if (isCorrectClick) {
+        clearCrab();
+        stars++;
+        starsElement.textContent = stars;
+        spawnCrab();
+    } else if (currentCrab) {
+        clearCrab();
+        loseLife();
+        spawnCrab();
     }
 }
 
@@ -64,6 +93,31 @@ function spawnCrab() {
     timerInterval = setInterval(updateTimer, 100);
 }
 
+function updateTimer() {
+    if (!startTime) return;
+    
+    const elapsed = Date.now() - startTime;
+    const remaining = totalDuration - elapsed;
+    const seconds = Math.max(0, remaining / 1000).toFixed(1);
+    timerElement.textContent = `${seconds}s`;
+    
+    if (remaining <= 0) {
+        clearInterval(timerInterval);
+        timerElement.textContent = '0.0s';
+    }
+}
+
+function loseLife() {
+    if (!gameActive) return;
+    
+    lives--;
+    livesElement.textContent = lives;
+
+    if (lives <= 0) {
+        gameOver();
+    }
+}
+
 function gameOver() {
     gameActive = false;
     clearCrab();
@@ -80,7 +134,7 @@ function startGame() {
     livesElement.textContent = lives;
     gameOverScreen.classList.add('hidden');
     grid.innerHTML = '';
-    createGrid();
+    createGrid(); // Теперь функция определена
     gameActive = true;
     spawnCrab();
 }
