@@ -14,13 +14,6 @@ body {
     color: white;
 }
 
-.timer {
-    font-size: 20px;
-    margin: 10px 0;
-    color: #f1c40f;
-    font-weight: bold;
-}
-
 .grid {
     display: grid;
     grid-template-columns: repeat(5, 60px);
@@ -80,4 +73,11 @@ button {
 
 button:active {
     transform: scale(0.95);
+}
+
+.timer {
+    font-size: 20px;
+    margin: 10px 0;
+    color: #f1c40f;
+    font-weight: bold;
 }
