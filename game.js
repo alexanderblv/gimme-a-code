@@ -4,12 +4,15 @@ const livesElement = document.getElementById('lives');
 const gameOverScreen = document.getElementById('gameOver');
 const restartButton = document.getElementById('restart');
 const finalStarsElement = document.getElementById('finalStars');
+const timeLeftElement = document.getElementById('timeLeft');
 
 let stars = 0;
 let lives = 3;
 let gameActive = false;
 let crabTimeout = null;
 let currentCrab = null;
+let timerInterval = null;
+let crabExpireTime = 0;
 
 // Создание игрового поля
 function createGrid() {
@@ -61,7 +64,14 @@ function clearCrab() {
         clearTimeout(crabTimeout);
         currentCrab.remove();
         currentCrab = null;
+        clearInterval(timerInterval);
+        timeLeftElement.textContent = '0.0';
     }
+}
+
+function updateTimer() {
+    const remaining = Math.max(0, (crabExpireTime - Date.now()) / 1000);
+    timeLeftElement.textContent = remaining.toFixed(1);
 }
 
 function spawnCrab() {
@@ -76,11 +86,17 @@ function spawnCrab() {
 
     setTimeout(() => currentCrab.classList.add('active'), 10);
 
+    const duration = 1500 + Math.random() * 1000;
+    crabExpireTime = Date.now() + duration;
+    
+    // Обновление таймера каждые 50мс для плавности
+    timerInterval = setInterval(updateTimer, 50);
+    
     crabTimeout = setTimeout(() => {
         clearCrab();
         loseLife();
         spawnCrab();
-    }, 1500 + Math.random() * 1000);
+    }, duration);
 }
 
 function loseLife() {
