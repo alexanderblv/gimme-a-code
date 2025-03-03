@@ -49,6 +49,11 @@ function processClick(target) {
         stars++;
         starsElement.textContent = stars;
         spawnCrab();
+    } else {
+        // Если клик по пустой ячейке
+        if (!crab) {
+            loseLife();
+        }
     }
 }
 
