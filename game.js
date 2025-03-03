@@ -1,44 +1,75 @@
-// game.js
-
-// Инициализация элементов
 const grid = document.getElementById('grid');
 const starsElement = document.getElementById('stars');
 const livesElement = document.getElementById('lives');
 const gameOverScreen = document.getElementById('gameOver');
 const restartButton = document.getElementById('restart');
+const finalStarsElement = document.getElementById('finalStars');
 
-// Игровые переменные
 let stars = 0;
 let lives = 3;
 let gameActive = false;
 let crabTimeout;
 
-// Создание сетки 5x5
-for (let i = 0; i < 25; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'cell';
-    cell.dataset.index = i;
-    cell.addEventListener('click', handleClick);
-    cell.addEventListener('touchstart', handleClick); // Для мобильных устройств
-    grid.appendChild(cell);
+// Создание игрового поля
+function createGrid() {
+    grid.innerHTML = '';
+    for (let i = 0; i < 25; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.addEventListener('click', handleClick);
+        cell.addEventListener('touchstart', handleTouch);
+        grid.appendChild(cell);
+    }
 }
 
-// Логика появления крабов
+// Обработчик кликов (десктоп)
+function handleClick(e) {
+    processClick(e.target);
+}
+
+// Обработчик тапов (мобильные)
+function handleTouch(e) {
+    e.preventDefault();
+    processClick(e.target);
+}
+
+// Общая логика клика
+function processClick(target) {
+    if (!gameActive) return;
+
+    const cell = target.classList.contains('crab') 
+        ? target.parentElement 
+        : target;
+
+    const crab = cell.querySelector('.crab');
+    
+    if (crab?.classList.contains('active')) {
+        crab.remove();
+        clearTimeout(crabTimeout);
+        stars++;
+        starsElement.textContent = stars;
+        spawnCrab();
+    }
+}
+
+// Логика появления краба
 function spawnCrab() {
     if (!gameActive) return;
 
-    // Удаляем предыдущего краба (если игрок не успел)
-    const currentActive = document.querySelector('.crab.active');
-    if (currentActive) {
-        currentActive.remove();
+    // Удаляем предыдущего краба
+    const prevCrab = document.querySelector('.crab.active');
+    if (prevCrab) {
+        prevCrab.remove();
         loseLife();
     }
 
     // Выбираем случайную ячейку
-    const cells = document.querySelectorAll('.cell');
+    const cells = Array.from(grid.children).filter(cell => !cell.querySelector('.crab'));
+    if (cells.length === 0) return;
+    
     const randomCell = cells[Math.floor(Math.random() * cells.length)];
     
-    // Создаем краба
+    // Создаем нового краба
     const crab = document.createElement('div');
     crab.className = 'crab';
     randomCell.appendChild(crab);
@@ -51,20 +82,6 @@ function spawnCrab() {
         crab.remove();
         loseLife();
     }, 1500 + Math.random() * 1000);
-}
-
-// Обработка клика по ячейке
-function handleClick(e) {
-    if (!gameActive) return;
-
-    const crab = e.target.querySelector('.crab');
-    if (crab && crab.classList.contains('active')) {
-        crab.remove();
-        clearTimeout(crabTimeout);
-        stars++;
-        starsElement.textContent = stars;
-        spawnCrab();
-    }
 }
 
 // Система жизней
@@ -82,29 +99,29 @@ function loseLife() {
 // Завершение игры
 function gameOver() {
     gameActive = false;
+    finalStarsElement.textContent = stars;
     gameOverScreen.classList.remove('hidden');
     clearTimeout(crabTimeout);
 }
 
-// Запуск/перезапуск игры
+// Инициализация новой игры
 function startGame() {
-    // Сброс значений
     stars = 0;
     lives = 3;
     starsElement.textContent = stars;
     livesElement.textContent = lives;
-    
-    // Очистка интерфейса
     gameOverScreen.classList.add('hidden');
+    
+    // Очищаем поле
     document.querySelectorAll('.crab').forEach(crab => crab.remove());
     
-    // Старт игры
+    // Пересоздаем сетку
+    createGrid();
+    
     gameActive = true;
     spawnCrab();
 }
 
-// Вешаем обработчик на кнопку рестарта
+// Запуск игры
 restartButton.addEventListener('click', startGame);
-
-// Запускаем игру при загрузке страницы
 document.addEventListener('DOMContentLoaded', startGame);
