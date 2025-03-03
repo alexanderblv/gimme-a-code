@@ -43,17 +43,14 @@ body {
     bottom: -50px;
     left: 5px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: url('assets/crab.png') no-repeat center/contain;
+    background: #e74c3c url('assets/crab.png') no-repeat center/contain;
     animation: crabBounce 0.8s infinite;
+    border-radius: 50%;
 }
 
 .crab.active {
     bottom: 5px !important;
     animation: crabBounce 0.8s infinite, cellPulse 1.5s infinite;
-}
-
-.crab.squash {
-    transform: scale(1.1, 0.9);
 }
 
 .game-over {
@@ -85,15 +82,6 @@ button {
     margin-top: 15px;
 }
 
-button:hover {
-    transform: scale(1.05);
-    background: #2ecc71;
-}
-
-button:active {
-    transform: scale(0.95) rotate(5deg);
-}
-
 @keyframes crabBounce {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
@@ -118,24 +106,9 @@ button:active {
     100% { transform: translateX(0); }
 }
 
-@keyframes bubble {
-    0% { transform: translateY(0) scale(0.5); opacity: 0.3; }
-    100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
-}
-
 @keyframes gameOverFadeIn {
     from { opacity: 0; transform: translate(-50%, -60%); }
     to { opacity: 1; transform: translate(-50%, -50%); }
-}
-
-.bubble {
-    position: absolute;
-    width: 15px;
-    height: 15px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 50%;
-    animation: bubble 4s linear infinite;
-    pointer-events: none;
 }
 
 .star-effect {
