@@ -34,6 +34,7 @@ body {
     position: relative;
     overflow: hidden;
     transition: transform 0.2s;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .crab {
@@ -46,6 +47,7 @@ body {
     background: #e74c3c url('assets/crab.png') no-repeat center/contain;
     animation: crabBounce 0.8s infinite;
     border-radius: 50%;
+    will-change: transform, bottom;
 }
 
 .crab.active {
@@ -135,19 +137,4 @@ button {
     width: 100%;
     transition: width 0.1s linear;
     z-index: 2;
-}
-
-.game-container {
-    position: relative;
-    padding-top: 15px;
-}
-
-.crab {
-    /* Добавить свойство will-change для оптимизации анимации */
-    will-change: transform, bottom;
-}
-
-/* Оптимизация для мобильных устройств */
-.cell {
-    -webkit-tap-highlight-color: transparent;
 }
