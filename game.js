@@ -37,13 +37,14 @@ function updateIdleTimer() {
     
     if (remaining <= 0) {
         loseLife();
-        resetIdleTimer();
     }
 }
 
 function resetIdleTimer() {
     lastActivityTime = Date.now();
-    idleTimerElement.style.width = '100%';
+    if (gameActive) {
+        idleTimerElement.style.width = '100%';
+    }
 }
 
 function handleClick(e) {
@@ -100,6 +101,7 @@ function clearCrab() {
         clearTimeout(crabTimeout);
         currentCrab.remove();
         currentCrab = null;
+        crabTimeout = null;
     }
 }
 
@@ -121,11 +123,13 @@ function spawnCrab() {
     }, 10);
 
     crabTimeout = setTimeout(() => {
-        if(currentCrab && gameActive) {
+        if (currentCrab && gameActive) {
             currentCrab.style.transition = 'bottom 0.5s ease-out';
             currentCrab.style.bottom = '-60px';
-            setTimeout(() => clearCrab(), 500);
-            loseLife();
+            setTimeout(() => {
+                clearCrab();
+                loseLife();
+            }, 500);
         }
     }, 1500 + Math.random() * 1000);
 }
@@ -150,6 +154,7 @@ function gameOver() {
     finalStarsElement.textContent = stars;
     gameOverScreen.classList.remove('hidden');
     clearInterval(idleInterval);
+    idleTimerElement.style.width = '0%';
 }
 
 function startGame() {
