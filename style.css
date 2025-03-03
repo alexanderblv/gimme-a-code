@@ -125,3 +125,29 @@ button {
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     margin: 10px;
 }
+
+#idleTimer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 5px;
+    background: #2ecc71;
+    width: 100%;
+    transition: width 0.1s linear;
+    z-index: 2;
+}
+
+.game-container {
+    position: relative;
+    padding-top: 15px;
+}
+
+.crab {
+    /* Добавить свойство will-change для оптимизации анимации */
+    will-change: transform, bottom;
+}
+
+/* Оптимизация для мобильных устройств */
+.cell {
+    -webkit-tap-highlight-color: transparent;
+}
