@@ -36,7 +36,7 @@ function handleTouch(e) {
 
 // Общая логика клика
 function processClick(target) {
-    if (!gameActive || !currentCrab) return;
+    if (!gameActive) return;
 
     const cell = target.classList.contains('crab') 
         ? target.parentElement 
@@ -44,7 +44,7 @@ function processClick(target) {
 
     const crab = cell.querySelector('.crab');
     
-    if (crab === currentCrab && crab.classList.contains('active')) {
+    if (crab && crab === currentCrab && crab.classList.contains('active')) {
         // Правильный клик
         clearTimeout(crabTimeout);
         crab.remove();
@@ -53,8 +53,13 @@ function processClick(target) {
         starsElement.textContent = stars;
         spawnCrab();
     } else {
-        // Неправильный клик
-        loseLife();
+        // Неправильный клик или клик по пустой ячейке
+        if (currentCrab) {
+            clearTimeout(crabTimeout);
+            currentCrab.remove();
+            currentCrab = null;
+            loseLife(true);
+        }
     }
 }
 
@@ -79,13 +84,13 @@ function spawnCrab() {
         if (currentCrab) {
             currentCrab.remove();
             currentCrab = null;
-            loseLife();
+            loseLife(false);
         }
     }, 1500 + Math.random() * 1000);
 }
 
 // Система жизней
-function loseLife() {
+function loseLife(isUserMistake) {
     if (!gameActive) return;
     
     lives--;
@@ -94,7 +99,13 @@ function loseLife() {
     if (lives <= 0) {
         gameOver();
     } else {
-        spawnCrab();
+        if (isUserMistake) {
+            // Немедленный перезапуск таймера для новой попытки
+            spawnCrab();
+        } else {
+            // Обычный переход к следующему крабу
+            spawnCrab();
+        }
     }
 }
 
@@ -102,7 +113,10 @@ function loseLife() {
 function gameOver() {
     gameActive = false;
     clearTimeout(crabTimeout);
-    currentCrab = null;
+    if (currentCrab) {
+        currentCrab.remove();
+        currentCrab = null;
+    }
     finalStarsElement.textContent = stars;
     gameOverScreen.classList.remove('hidden');
 }
