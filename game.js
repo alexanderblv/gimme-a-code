@@ -49,6 +49,11 @@ function processClick(target) {
         stars++;
         starsElement.textContent = stars;
         spawnCrab();
+    } else {
+        // Если краба в ячейке нет, игрок теряет жизнь
+        if (!crab) {
+            loseLife();
+        }
     }
 }
 
