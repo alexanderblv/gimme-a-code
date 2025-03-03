@@ -4,63 +4,39 @@ const livesElement = document.getElementById('lives');
 const gameOverScreen = document.getElementById('gameOver');
 const restartButton = document.getElementById('restart');
 const finalStarsElement = document.getElementById('finalStars');
+const timerElement = document.getElementById('timer');
 
 let stars = 0;
 let lives = 3;
 let gameActive = false;
 let crabTimeout = null;
 let currentCrab = null;
+let timerInterval = null;
+let startTime = null;
+let totalDuration = 0;
 
-// Создание игрового поля
-function createGrid() {
-    grid.innerHTML = '';
-    for (let i = 0; i < 25; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.addEventListener('click', handleClick);
-        cell.addEventListener('touchstart', handleTouch);
-        grid.appendChild(cell);
-    }
-}
-
-function handleClick(e) {
-    processClick(e.target);
-}
-
-function handleTouch(e) {
-    e.preventDefault();
-    processClick(e.target);
-}
-
-function processClick(target) {
-    if (!gameActive) return;
-
-    const cell = target.classList.contains('crab') 
-        ? target.parentElement 
-        : target;
-
-    const crab = cell.querySelector('.crab');
-    const isCorrectClick = crab && crab === currentCrab && crab.classList.contains('active');
-
-    if (isCorrectClick) {
-        // Правильный клик
-        clearCrab();
-        stars++;
-        starsElement.textContent = stars;
-        spawnCrab();
-    } else if (currentCrab) {
-        // Неправильный клик
-        clearCrab();
-        loseLife();
-        spawnCrab();
+function updateTimer() {
+    if (!startTime) return;
+    
+    const elapsed = Date.now() - startTime;
+    const remaining = totalDuration - elapsed;
+    const seconds = Math.max(0, remaining / 1000).toFixed(1);
+    timerElement.textContent = `${seconds}s`;
+    
+    if (remaining <= 0) {
+        clearInterval(timerInterval);
+        timerElement.textContent = '0.0s';
     }
 }
 
 function clearCrab() {
     if (currentCrab) {
         clearTimeout(crabTimeout);
+        clearInterval(timerInterval);
+        timerElement.textContent = '0.0s';
         currentCrab.remove();
         currentCrab = null;
+        startTime = null;
     }
 }
 
@@ -76,27 +52,23 @@ function spawnCrab() {
 
     setTimeout(() => currentCrab.classList.add('active'), 10);
 
+    totalDuration = 1500 + Math.random() * 1000;
+    startTime = Date.now();
+    
     crabTimeout = setTimeout(() => {
         clearCrab();
         loseLife();
         spawnCrab();
-    }, 1500 + Math.random() * 1000);
-}
+    }, totalDuration);
 
-function loseLife() {
-    if (!gameActive) return;
-    
-    lives--;
-    livesElement.textContent = lives;
-
-    if (lives <= 0) {
-        gameOver();
-    }
+    timerInterval = setInterval(updateTimer, 100);
 }
 
 function gameOver() {
     gameActive = false;
     clearCrab();
+    clearInterval(timerInterval);
+    timerElement.textContent = '0.0s';
     finalStarsElement.textContent = stars;
     gameOverScreen.classList.remove('hidden');
 }
