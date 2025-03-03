@@ -12,18 +12,22 @@ body {
 .game-container {
     text-align: center;
     color: white;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
 }
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(5, 60px);
+    grid-template-columns: repeat(5, 1fr);
     gap: 10px;
     margin: 20px auto;
+    width: 100%;
 }
 
 .cell {
-    width: 60px;
-    height: 60px;
+    width: 100%;
+    padding-bottom: 100%; /* Квадратные ячейки */
     background: #34495e;
     border-radius: 10px;
     cursor: pointer;
@@ -32,17 +36,17 @@ body {
 }
 
 .crab {
-    width: 50px;
-    height: 50px;
+    width: 80%;
+    height: 80%;
     position: absolute;
-    bottom: -50px;
-    left: 5px;
+    bottom: -100%;
+    left: 10%;
     transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: url('assets/crab.png') no-repeat center/contain;
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAA8ElEQVR4nO2WQQ6DMAwE+/9P6QkJCQnJgV5qD+1FqNQ0GxwHx1G0Ug4QHjvjTQJ4K0IIX0VEHhGR3cw8ALpDzJwB9MycRcS9FQkzVwB1CGEws9rMaq01M3O1VgB1jLH/CHBm5hZj7JhZrbVmZi6lCAAYY1wB+JxzBwDnnLvW2vK6+7kD5pwbzrnFzKqUcgIArbXzNnDOLeY9KaWcAGCMcXkGpZQTAKy1SwestUsHrLVLB6y1SwestUsHrLVLB6y1SwestUsHrLVLB6y1SwestUsHrLVLB6y1Swe+qf0B53jRZ3Qy/EYAAAAASUVORK5CYII=') no-repeat center/contain;
 }
 
 .crab.active {
-    bottom: 5px !important;
+    bottom: 10% !important;
 }
 
 .game-over {
@@ -54,6 +58,7 @@ body {
     padding: 20px;
     border-radius: 15px;
     text-align: center;
+    z-index: 100;
 }
 
 .hidden {
@@ -69,6 +74,7 @@ button {
     color: white;
     border-radius: 8px;
     transition: transform 0.2s;
+    margin-top: 10px;
 }
 
 button:active {
@@ -76,7 +82,7 @@ button:active {
 }
 
 .timer {
-    font-size: 20px;
+    font-size: 18px;
     margin: 10px 0;
     color: #f1c40f;
     font-weight: bold;
