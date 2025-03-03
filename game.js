@@ -13,16 +13,6 @@ let currentCrab = null;
 
 function createGrid() {
     grid.innerHTML = '';
-    
-    // Создаем фоновые пузырьки
-    for(let i = 0; i < 20; i++) {
-        const bubble = document.createElement('div');
-        bubble.className = 'bubble';
-        bubble.style.left = `${Math.random() * 100}%`;
-        bubble.style.animationDelay = `${Math.random() * 4}s`;
-        document.body.appendChild(bubble);
-    }
-    
     for (let i = 0; i < 25; i++) {
         const cell = document.createElement('div');
         cell.className = 'cell';
@@ -93,7 +83,7 @@ function clearCrab() {
 function spawnCrab() {
     if (!gameActive || currentCrab) return;
 
-    const cells = Array.from(grid.children).filter(c => !c.querySelector('.crab'));
+    const cells = Array.from(grid.children);
     const randomCell = cells[Math.floor(Math.random() * cells.length)];
     
     currentCrab = document.createElement('div');
@@ -121,8 +111,6 @@ function loseLife() {
     
     lives--;
     livesElement.textContent = lives;
-    document.body.style.background = `#2c3e50 url('data:image/svg+xml,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="rgba(255,0,0,0.1)"/></svg>)`;
-    setTimeout(() => document.body.style.background = '#2c3e50', 100);
 
     if (lives <= 0) {
         gameOver();
@@ -132,13 +120,8 @@ function loseLife() {
 function gameOver() {
     gameActive = false;
     clearCrab();
-    finalStarsElement.innerHTML = `${stars} ${'★'.repeat(Math.min(stars, 10))}`;
+    finalStarsElement.textContent = stars;
     gameOverScreen.classList.remove('hidden');
-    
-    gameOverScreen.style.animation = 'none';
-    setTimeout(() => {
-        gameOverScreen.style.animation = 'gameOverFadeIn 0.6s ease-out, crabBounce 0.8s infinite';
-    }, 10);
 }
 
 function startGame() {
@@ -147,7 +130,6 @@ function startGame() {
     starsElement.textContent = stars;
     livesElement.textContent = lives;
     gameOverScreen.classList.add('hidden');
-    document.querySelectorAll('.bubble').forEach(b => b.remove());
     grid.innerHTML = '';
     createGrid();
     gameActive = true;
