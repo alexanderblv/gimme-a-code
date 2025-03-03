@@ -8,7 +8,7 @@ const finalStarsElement = document.getElementById('finalStars');
 let stars = 0;
 let lives = 3;
 let gameActive = false;
-let crabTimeout;
+let crabTimeout = null;
 let currentCrab = null;
 
 // Создание игрового поля
@@ -23,12 +23,12 @@ function createGrid() {
     }
 }
 
-// Обработчик кликов (десктоп)
+// Обработчик кликов
 function handleClick(e) {
     processClick(e.target);
 }
 
-// Обработчик тапов (мобильные)
+// Обработчик тапов
 function handleTouch(e) {
     e.preventDefault();
     processClick(e.target);
@@ -36,7 +36,7 @@ function handleTouch(e) {
 
 // Общая логика клика
 function processClick(target) {
-    if (!gameActive) return;
+    if (!gameActive || !currentCrab) return;
 
     const cell = target.classList.contains('crab') 
         ? target.parentElement 
@@ -44,30 +44,24 @@ function processClick(target) {
 
     const crab = cell.querySelector('.crab');
     
-    if (crab?.classList.contains('active')) {
+    if (crab === currentCrab && crab.classList.contains('active')) {
         // Правильный клик
-        crab.remove();
         clearTimeout(crabTimeout);
+        crab.remove();
+        currentCrab = null;
         stars++;
         starsElement.textContent = stars;
         spawnCrab();
     } else {
         // Неправильный клик
-        if (!currentCrab) return; // Не наказываем до появления первого краба
         loseLife();
     }
 }
 
 // Логика появления краба
 function spawnCrab() {
-    if (!gameActive) return;
+    if (!gameActive || currentCrab) return;
 
-    // Удаляем предыдущего краба без штрафа
-    if (currentCrab) {
-        currentCrab.remove();
-    }
-
-    // Выбираем случайную ячейку
     const cells = Array.from(grid.children);
     const randomCell = cells[Math.floor(Math.random() * cells.length)];
     
@@ -82,14 +76,18 @@ function spawnCrab() {
     
     // Таймер на исчезновение
     crabTimeout = setTimeout(() => {
-        crab.remove();
-        loseLife();
-        currentCrab = null;
+        if (currentCrab) {
+            currentCrab.remove();
+            currentCrab = null;
+            loseLife();
+        }
     }, 1500 + Math.random() * 1000);
 }
 
 // Система жизней
 function loseLife() {
+    if (!gameActive) return;
+    
     lives--;
     livesElement.textContent = lives;
 
@@ -103,10 +101,10 @@ function loseLife() {
 // Завершение игры
 function gameOver() {
     gameActive = false;
-    finalStarsElement.textContent = stars;
-    gameOverScreen.classList.remove('hidden');
     clearTimeout(crabTimeout);
     currentCrab = null;
+    finalStarsElement.textContent = stars;
+    gameOverScreen.classList.remove('hidden');
 }
 
 // Инициализация новой игры
@@ -116,12 +114,8 @@ function startGame() {
     starsElement.textContent = stars;
     livesElement.textContent = lives;
     gameOverScreen.classList.add('hidden');
-    currentCrab = null;
-    
-    // Очищаем поле
     grid.innerHTML = '';
     createGrid();
-    
     gameActive = true;
     spawnCrab();
 }
