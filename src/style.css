@@ -82,22 +82,31 @@ body {
 
 #game-field {
     display: grid;
-    grid-template-areas: "m1 m2 m3" "m4 m5 m6" "m7 m8 m9";
-    grid-template-rows: 33% 33% 33%;
-    grid-template-columns: 33% 33% 33%;
-    height: 70%;
-    width: 50%;
+    grid-template-areas: 
+        "m1 m2 m3"
+        "m4 m5 m6"
+        "m7 m8 m9";
+    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    height: 70vh;
+    width: 50vw;
+    min-height: 500px;
+    min-width: 600px;
     background-color: cornsilk;
     margin: auto;
     border-radius: 64px;
     cursor: url(../img/hammer.png), auto;
+    overflow: hidden;
 }
 
 .member-img {
     display: block;
-    height: auto;
+    height: 100%;
     width: 100%;
+    object-fit: contain;
     margin: auto;
+    padding: 15%;
+    transition: transform 0.2s ease;
 }
 
 #timer {
