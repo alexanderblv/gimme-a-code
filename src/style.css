@@ -17,11 +17,10 @@ html, body {
 }
 
 body {
-    background: url(../img/background.png)
+    background: url(../img/background.jpg) no-repeat;
     background-size: cover;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background-position: center;
+    background-attachment: fixed; /* опционально, чтобы фон не скроллился */
 }
 
 #game-info {
