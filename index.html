@@ -9,45 +9,42 @@
     <title>Succinct Code Challenge</title>
 </head>
 <body>
-    <div class="game-container">
-        <div id="game-info" class="overlay">
-            <div class="overlay-content">
-                <h1>Succinct Code Challenge</h1>
-                <h2>POV Yinger: Докажи свою скорость в мире ZK L2</h2>
-                <h3>Твоя задача - выдать максимум кодов за 20 секунд</h3>
-                <button class="start-button">НАЧАТЬ ИСПЫТАНИЕ</button>
-            </div>
-        </div>
+    <div id="timer">
+        <div id="progress"></div>
+        <span>Осталось времени: 20 секунд</span>
+    </div>
 
-        <div id="game-end" class="overlay">
-            <div class="overlay-content">
-                <h1></h1>
-                <h2></h2>
-                <button class="start-button">ИГРАТЬ СНОВА</button>
-            </div>
-        </div>
+    <div id="score">
+        <span>Codes: 0</span>
+    </div>
 
-        <div class="game-header">
-            <div id="timer">
-                <div id="progress"></div>
-                <span>Осталось времени: 20 секунд</span>
-            </div>
-            <div id="score">
-                <span>Выдано кодов: 0</span>
-            </div>
+    <div id="game-info" class="overlay">
+        <div class="overlay-content">
+            <h1>Succinct Code Challenge</h1>
+            <h2>POV Yinger: Докажи свою скорость в мире ZK L2</h2>
+            <h3>Твоя задача - выдать максимум кодов за 20 секунд</h3>
+            <button class="start-button">НАЧАТЬ ИСПЫТАНИЕ</button>
         </div>
+    </div>
 
-        <div id="game-field">
-            <img src="img/member.png" draggable="false" id="m1" class="member-img" style="grid-area: m1;">
-            <img src="img/member.png" draggable="false" id="m2" class="member-img" style="grid-area: m2;">
-            <img src="img/member.png" draggable="false" id="m3" class="member-img" style="grid-area: m3;">
-            <img src="img/member.png" draggable="false" id="m4" class="member-img" style="grid-area: m4;">
-            <img src="img/member.png" draggable="false" id="m5" class="member-img" style="grid-area: m5;">
-            <img src="img/member.png" draggable="false" id="m6" class="member-img" style="grid-area: m6;">
-            <img src="img/member.png" draggable="false" id="m7" class="member-img" style="grid-area: m7;">
-            <img src="img/member.png" draggable="false" id="m8" class="member-img" style="grid-area: m8;">
-            <img src="img/member.png" draggable="false" id="m9" class="member-img" style="grid-area: m9;">
+    <div id="game-end" class="overlay" style="display: none;">
+        <div class="overlay-content">
+            <h1></h1>
+            <h2></h2>
+            <button class="start-button">ИГРАТЬ СНОВА</button>
         </div>
+    </div>
+
+    <div id="game-field">
+        <img src="img/member.png" draggable="false" id="m1" class="member-img" style="grid-area: m1;">
+        <img src="img/member.png" draggable="false" id="m2" class="member-img" style="grid-area: m2;">
+        <img src="img/member.png" draggable="false" id="m3" class="member-img" style="grid-area: m3;">
+        <img src="img/member.png" draggable="false" id="m4" class="member-img" style="grid-area: m4;">
+        <img src="img/member.png" draggable="false" id="m5" class="member-img" style="grid-area: m5;">
+        <img src="img/member.png" draggable="false" id="m6" class="member-img" style="grid-area: m6;">
+        <img src="img/member.png" draggable="false" id="m7" class="member-img" style="grid-area: m7;">
+        <img src="img/member.png" draggable="false" id="m8" class="member-img" style="grid-area: m8;">
+        <img src="img/member.png" draggable="false" id="m9" class="member-img" style="grid-area: m9;">
     </div>
 
     <script src="src/script.js"></script>
