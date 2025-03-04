@@ -57,7 +57,7 @@ function changeTimer() {
         setTimeout(changeTimer, 50);
         console.log(Math.round(100 - (Date.now() - startTime) * 0.005));
         document.getElementById('progress').style.width = 100 - (Date.now() - startTime) * 0.005 + '%';
-        document.getElementById('timer').getElementsByTagName('span')[0].innerHTML = 'Времени осталось: ' + Math.round(20 - (Date.now() - startTime) / 1000) + ' секунд';
+        document.getElementById('timer').getElementsByTagName('span')[0].innerHTML = 'Time left: ' + Math.round(20 - (Date.now() - startTime) / 1000) + ' seconds';
     }
 }
 
@@ -96,7 +96,7 @@ function endGame() {
         h2.innerHTML = 'You gave out ' + score + ' codes. Try working like a Yinger next time!';
     } else {
         h1.innerHTML = 'ARE YOU GOING TO PROVE SOMETHING???';
-        h2.innerHTML = 'Given only ' + score + ' codes. You either didn\'t';
+        h2.innerHTML = `Given only ${score} codes. You either didn't figure out how to do it, or you fell asleep`;
     }
 
     document.getElementById('game-end').style.display = 'block';    
