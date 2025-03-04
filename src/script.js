@@ -96,7 +96,7 @@ function endGame() {
         h2.innerHTML = 'You gave out ' + score + ' codes. Try working like a Yinger next time!';
     } else {
         h1.innerHTML = 'ARE YOU GOING TO PROVE SOMETHING???';
-        h2.innerHTML = `Given only ${score} codes. You either didn't figure out how to do it, or you fell asleep`;
+        h2.innerHTML = 'Given only ' + score + ' codes. You either didn\'t figure out how to do it, or you fell asleep';
     }
 
     document.getElementById('game-end').style.display = 'block';    
