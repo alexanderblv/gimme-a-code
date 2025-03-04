@@ -40,7 +40,7 @@ function removeMole(id) {
 }
 
 function changeScore() {
-    document.getElementById('score').getElementsByTagName('span')[0].innerHTML =  score + ' codes ';
+    document.getElementById('score').getElementsByTagName('span')[0].innerHTML =  'Codes: ' + score;
 }
 
 function startTimer() {
