@@ -1,4 +1,4 @@
-var moleArray = ['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8', 'm9'];
+var memberArray = ['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8', 'm9'];
 var score = 0;
 var startTime;
 var gameEnd = true;
@@ -7,11 +7,11 @@ window.addEventListener('DOMContentLoaded', initialisation());
 
 function initialisation() {
     document.getElementById('game-field').addEventListener('click', function(data){
-        console.log(getRandomMole());
-        if (moleArray.indexOf(data.target.id) !== -1) {
-            removeMole(data.target.id);
+        console.log(getRandomMember());
+        if (memberArray.indexOf(data.target.id) !== -1) {
+            removeMember(data.target.id);
             changeScore(++score);
-            setTimeout(addMole, 300, getRandomMole());
+            setTimeout(addMember, 300, getRandomMember());
         }
     })
 
@@ -19,23 +19,23 @@ function initialisation() {
     document.getElementsByClassName('start-button')[1].addEventListener('mouseup', startGame);
 }
 
-function getRandomMole() {
-    return moleArray[Math.floor(Math.random() * Math.floor(9))];
+function getRandomMember() {
+    return memberArray[Math.floor(Math.random() * Math.floor(9))];
 }
 
-function addMole(id) {
+function addMember(id) {
     document.getElementById(id).style.display = 'block';
     if (!gameEnd) {
         setTimeout(function(){
             if (document.getElementById(id).style.display != 'none') {
-                removeMole(id);
-                setTimeout(addMole, Math.random() * Math.floor(300) + 100, getRandomMole());
+                removeMember(id);
+                setTimeout(addMember, Math.random() * Math.floor(300) + 100, getRandomMember());
             } 
         }, Math.round(Math.random() * Math.floor(800)) + 300);
     }
 }
 
-function removeMole(id) {
+function removeMember(id) {
     document.getElementById(id).style.display = 'none';
 }
 
@@ -62,10 +62,10 @@ function changeTimer() {
 }
 
 function clearField() {
-    let moles = document.getElementsByClassName('mole-img');
+    let members = document.getElementsByClassName('member-img');
 
-    for (let i = 0; i < moles.length; i++) {
-        moles[i].style.display = 'none';
+    for (let i = 0; i < members.length; i++) {
+        members[i].style.display = 'none';
     }
 }
 
@@ -79,7 +79,7 @@ function startGame() {
 
     gameEnd = false;
     startTimer();
-    setTimeout(addMole, 300, getRandomMole());
+    setTimeout(addMember, 300, getRandomMember());
 }
 
 function endGame() {
