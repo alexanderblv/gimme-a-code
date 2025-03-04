@@ -1,34 +1,38 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="img/icon.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="src/style.css">
-    <title>Gimme a code</title>
+    <title>Succinct Code Challenge</title>
 </head>
 <body>
-    <div id="game-info">
-        <h1>Welcome to the Succint game "Gimme a code"</h2>
-        <h2>POV Yinger: your task is to give out as many codes as possible in 20 seconds.</h2>
-        <h2>If you're ready, press the "Start" button and give out the codes!</h2>
-        <button class="start-button">START</button>
-    </div>
-
-    <div id="game-end">
-        <h1></h1>
-        <h2></h2>
-        <button class="start-button">PLAY AGAIN</button>
-    </div>
-
     <div id="timer">
         <div id="progress"></div>
         <span>Time left: 20 seconds</span>
     </div>
-    
+
     <div id="score">
-        <span>Gave out codes: 0</span>
+        <span>Codes: 0</span>
+    </div>
+
+    <div id="game-info" class="overlay">
+        <div class="overlay-content">
+            <h1>Succinct Code Challenge</h1>
+            <h2>POV Yinger: PROVE UR SPEED</h2>
+            <h3>Your task is give out a maximum of codes in 20 seconds.</h3>
+            <button class="start-button">GO GO GO</button>
+        </div>
+    </div>
+
+    <div id="game-end" class="overlay" style="display: none;">
+        <div class="overlay-content">
+            <h1></h1>
+            <h2></h2>
+            <button class="start-button">PLAY AGAIN</button>
+        </div>
     </div>
 
     <div id="game-field">
@@ -43,8 +47,6 @@
         <img src="img/member.png" draggable="false" id="m9" class="member-img" style="grid-area: m9;">
     </div>
 
-    
-    
     <script src="src/script.js"></script>
 </body>
 </html>
