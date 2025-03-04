@@ -5,39 +5,33 @@
     --text-color: #E6E6FA;
     --accent-color: #8A2BE2;
 }
-
 * {
     font-family: 'Inter', sans-serif;
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
-
 *, *::after, *::before {
     -webkit-user-select: none;
     -webkit-user-drag: none;
     -webkit-app-region: no-drag;
 }
-
 html, body {
     height: 100%;
     width: 100%;
     overflow: hidden;
 }
-
 body {
     background: var(--background-gradient) fixed;
     display: flex;
     flex-direction: column;
 }
-
 #timer {
     position: relative;
     height: 48px;
     width: 100%;
     background-color: rgba(218, 112, 214, 0.2);
 }
-
 #progress {
     position: absolute;
     height: 100%;
@@ -45,7 +39,6 @@ body {
     background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
     transition: 0.1s linear;
 }
-
 #timer span {
     display: block;
     position: relative;
@@ -56,20 +49,17 @@ body {
     z-index: 1;
     padding: 10px;
 }
-
 #score {
     display: flex;
     justify-content: center;
     margin: 32px 0;
 }
-
 #score span {
     color: var(--secondary-color);
     font-size: 64px;
     font-weight: 700;
     text-shadow: 0 0 15px rgba(218, 112, 214, 0.5);
 }
-
 .overlay {
     position: fixed;
     top: 0;
@@ -82,27 +72,49 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s;
 }
-
+.overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
 .overlay-content {
     max-width: 600px;
     padding: 40px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     backdrop-filter: blur(10px);
+    transform: scale(0.7);
+    transition: transform 0.5s ease;
 }
-
+.overlay.show .overlay-content {
+    transform: scale(1);
+}
 .overlay h1 {
     color: var(--secondary-color);
     font-size: 2.5rem;
     margin-bottom: 20px;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
-
+.overlay.show h1 {
+    opacity: 1;
+    transform: translateY(0);
+}
 .overlay h2, .overlay h3 {
     color: var(--text-color);
     margin-bottom: 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
-
+.overlay.show h2, .overlay.show h3 {
+    opacity: 1;
+    transform: translateY(0);
+}
 .start-button {
     margin-top: 20px;
     padding: 12px 32px;
@@ -114,14 +126,19 @@ body {
     border-radius: 32px;
     transition: all 0.3s ease;
     cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
-
+.overlay.show .start-button {
+    opacity: 1;
+    transform: translateY(0);
+}
 .start-button:hover {
     background-color: var(--secondary-color);
     color: var(--primary-color);
     transform: scale(1.05);
 }
-
 #game-field {
     display: grid;
     grid-template-areas:
@@ -142,7 +159,6 @@ body {
     overflow: hidden;
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
 }
-
 .member-img {
     display: block;
     height: 100%;
@@ -153,7 +169,6 @@ body {
     transition: all 0.3s ease;
     filter: hue-rotate(-40deg) brightness(0.9);
 }
-
 .member-img:hover {
     transform: scale(1.1);
     filter: hue-rotate(-40deg) brightness(1.2);
