@@ -1,76 +1,138 @@
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+* {
+    font-family: 'Roboto', sans-serif;
+    box-sizing: border-box;
+}
+
+*, *::after, *::before {
+	-webkit-user-select: none;
+	-webkit-user-drag: none;
+	-webkit-app-region: no-drag;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
     margin: 0;
-    background: #2c3e50;
-    font-family: Arial, sans-serif;
-    touch-action: manipulation;
+    padding: 0;
 }
 
-.game-container {
-    text-align: center;
-    color: white;
+body {
+    background: url(../img/background.jpg) no-repeat;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(5, 60px);
-    gap: 10px;
-    margin: 20px auto;
-}
-
-.cell {
-    width: 60px;
-    height: 60px;
-    background: #34495e;
-    border-radius: 10px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-}
-
-.crab {
-    width: 50px;
-    height: 50px;
+#game-info {
     position: absolute;
-    bottom: -50px;
-    left: 5px;
-    transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: url('assets/crab.png') no-repeat center/contain;
-}
-
-.crab.active {
-    bottom: 5px !important;
-}
-
-.game-over {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.9);
-    padding: 20px;
-    border-radius: 15px;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    padding-top: 128px;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 2;
+    color: #fff;
     text-align: center;
 }
 
-.hidden {
-    display: none;
+.start-button {
+    margin-top: 64px;
+    padding: 8px 24px;
+    background-color: transparent;
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    border: 2px solid #fff;
+    border-radius: 24px;
+    transition: 0.5s;
 }
 
-button {
-    padding: 12px 25px;
-    font-size: 18px;
+.start-button:hover {
     cursor: pointer;
-    background: #27ae60;
-    border: none;
-    color: white;
-    border-radius: 8px;
-    transition: transform 0.2s;
+    background-color: #fff;
+    color: #000;
+    transition: 0.5s;
 }
 
-button:active {
-    transform: scale(0.95);
+#game-end {
+    position: absolute;
+    display: none;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    padding-top: 128px;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 2;
+    color: #fff;
+    text-align: center;
 }
+
+#score {
+    margin-top: 32px;
+}
+
+#score span {
+    color: #000;
+    font-size: 64px;
+    font-weight: 700;
+}
+
+#game-field {
+    display: grid;
+    grid-template-areas: "m1 m2 m3" "m4 m5 m6" "m7 m8 m9";
+    grid-template-rows: 33% 33% 33%;
+    grid-template-columns: 33% 33% 33%;
+    height: 70%;
+    width: 50%;
+    background-color: cornsilk;
+    margin: auto;
+    border-radius: 64px;
+    cursor: url(../img/hammer.png), auto;
+}
+
+.mole-img {
+    display: block;
+    height: auto;
+    width: 100%;
+    margin: auto;
+}
+
+#timer {
+    position: relative;
+    height: 48px;
+    width: 100%;
+    background-color: #fff;
+    color: #000;
+    z-index: 1;
+}
+
+#progress {
+    position: absolute;
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    background-color: cadetblue;
+    transition: 0.1s linear;
+}
+
+#timer span {
+    display: block;
+    position: relative;
+    font-size: 32px;
+    font-weight: 700;
+    margin: auto;
+    text-align: center;
+}
+
+/* .timer::before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 60%;
+    left: 0;
+    background-color: cadetblue;
+    z-index: 1;
+} */
