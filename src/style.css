@@ -17,10 +17,13 @@ html, body {
 }
 
 body {
-    background: url(../img/background.jpg) no-repeat;
+    background: url(../img/background.jpg) no-repeat center center fixed;
     background-size: cover;
-    background-position: center;
-    background-attachment: fixed; /* опционально, чтобы фон не скроллился */
+    /* 
+      center center — центрирует изображение
+      fixed — фиксирует фон относительно окна браузера
+      cover — масштабирует изображение, чтобы оно заполнило весь экран
+    */
 }
 
 #game-info {
