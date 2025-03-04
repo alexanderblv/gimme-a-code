@@ -1,19 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Crab Hunter</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/ico.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="src/style.css">
+    <title>Gimme a code</title>
 </head>
 <body>
-    <div class="game-container">
-        <div class="score">Stars: <span id="stars">0</span></div>
-        <div class="lives">Lives: <span id="lives">3</span></div>
-        <div class="grid" id="grid"></div>
-        <div class="game-over hidden" id="gameOver">
-            <h2>Game Over! Stars: <span id="finalStars">0</span></h2>
-            <button id="restart">Play Again</button>
-        </div>
+    <div id="game-info">
+        <h1>Welcome to the Succint game "Gimme a code"</h2>
+        <h2>POV Yinger: your task is to give out as many codes as possible in 20 seconds.</h2>
+        <h2>If you're ready, press the "Start" button and give out the codes!</h2>
+        <button class="start-button">START</button>
     </div>
-    <script src="game.js"></script>
+
+    <div id="game-end">
+        <h1></h1>
+        <h2></h2>
+        <button class="start-button">PLAY AGAIN</button>
+    </div>
+
+    <div id="score">
+        <span>Gave out codes: 0</span>
+    </div>
+
+    <div id="game-field">
+        <img src="img/mole.png" draggable="false" id="m1" class="mole-img" style="grid-area: m1;">
+        <img src="img/mole.png" draggable="false" id="m2" class="mole-img" style="grid-area: m2;">
+        <img src="img/mole.png" draggable="false" id="m3" class="mole-img" style="grid-area: m3;">
+        <img src="img/mole.png" draggable="false" id="m4" class="mole-img" style="grid-area: m4;">
+        <img src="img/mole.png" draggable="false" id="m5" class="mole-img" style="grid-area: m5;">
+        <img src="img/mole.png" draggable="false" id="m6" class="mole-img" style="grid-area: m6;">
+        <img src="img/mole.png" draggable="false" id="m7" class="mole-img" style="grid-area: m7;">
+        <img src="img/mole.png" draggable="false" id="m8" class="mole-img" style="grid-area: m8;">
+        <img src="img/mole.png" draggable="false" id="m9" class="mole-img" style="grid-area: m9;">
+    </div>
+
+    <div id="timer">
+        <div id="progress"></div>
+        <span>Time left: 20 seconds</span>
+    </div>
+    
+    <script src="src/script.js"></script>
 </body>
 </html>
