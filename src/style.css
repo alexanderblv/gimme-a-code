@@ -4,9 +4,9 @@
 }
 
 *, *::after, *::before {
-	-webkit-user-select: none;
-	-webkit-user-drag: none;
-	-webkit-app-region: no-drag;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-app-region: no-drag;
 }
 
 html, body {
@@ -17,13 +17,7 @@ html, body {
 }
 
 body {
-    background: url(../img/background.jpg) no-repeat center center fixed;
-    background-size: cover;
-    /* 
-      center center — центрирует изображение
-      fixed — фиксирует фон относительно окна браузера
-      cover — масштабирует изображение, чтобы оно заполнило весь экран
-    */
+    background: linear-gradient(135deg, #2E0854, #6A1B9A) fixed;
 }
 
 #game-info {
@@ -33,9 +27,9 @@ body {
     top: 0;
     left: 0;
     padding-top: 128px;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(46, 8, 84, 0.9);
     z-index: 2;
-    color: #fff;
+    color: #E6E6FA;
     text-align: center;
 }
 
@@ -43,18 +37,18 @@ body {
     margin-top: 64px;
     padding: 8px 24px;
     background-color: transparent;
-    color: #fff;
+    color: #DA70D6;
     font-size: 16px;
     outline: none;
-    border: 2px solid #fff;
+    border: 2px solid #DA70D6;
     border-radius: 24px;
     transition: 0.5s;
 }
 
 .start-button:hover {
     cursor: pointer;
-    background-color: #fff;
-    color: #000;
+    background-color: #DA70D6;
+    color: #2E0854;
     transition: 0.5s;
 }
 
@@ -66,9 +60,9 @@ body {
     top: 0;
     left: 0;
     padding-top: 128px;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(46, 8, 84, 0.9);
     z-index: 2;
-    color: #fff;
+    color: #E6E6FA;
     text-align: center;
 }
 
@@ -77,9 +71,10 @@ body {
 }
 
 #score span {
-    color: #fff;
+    color: #DA70D6;
     font-size: 64px;
     font-weight: 700;
+    text-shadow: 0 0 10px rgba(218, 112, 214, 0.5);
 }
 
 #game-field {
@@ -94,9 +89,10 @@ body {
     width: 50vw;
     min-height: 500px;
     min-width: 600px;
-    background-color: cornsilk;
+    background-color: rgba(255, 255, 255, 0.1);
     margin: auto;
     border-radius: 64px;
+    border: 2px solid #DA70D6;
     cursor: url(../img/hammer.png), auto;
     overflow: hidden;
 }
@@ -109,14 +105,14 @@ body {
     margin: auto;
     padding: 15%;
     transition: transform 0.2s ease;
+    filter: hue-rotate(-40deg);
 }
 
 #timer {
     position: relative;
     height: 48px;
     width: 100%;
-    background-color: #fff;
-    color: #000;
+    background-color: rgba(218, 112, 214, 0.2);
     z-index: 1;
 }
 
@@ -125,7 +121,7 @@ body {
     display: inline-block;
     height: 100%;
     width: 100%;
-    background-color: cadetblue;
+    background: linear-gradient(90deg, #8A2BE2, #DA70D6);
     transition: 0.1s linear;
 }
 
@@ -136,14 +132,5 @@ body {
     font-weight: 700;
     margin: auto;
     text-align: center;
+    color: #E6E6FA;
 }
-
-/* .timer::before {
-    content: "";
-    position: absolute;
-    height: 100%;
-    width: 60%;
-    left: 0;
-    background-color: cadetblue;
-    z-index: 1;
-} */
