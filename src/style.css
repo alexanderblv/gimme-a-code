@@ -26,6 +26,9 @@ body {
     display: flex;
     flex-direction: column;
 }
+.hidden {
+    display: none !important;
+}
 #timer {
     position: relative;
     height: 48px;
@@ -69,8 +72,8 @@ body {
     background-color: rgba(46, 8, 84, 0.9);
     z-index: 10;
     display: flex;
-    justify-content: center;  /* Явное центрирование по горизонтали */
-    align-items: center;      /* Явное центрирование по вертикали */
+    justify-content: center;
+    align-items: center;
     text-align: center;
 }
 .overlay-content {
