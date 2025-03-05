@@ -69,16 +69,9 @@ body {
     background-color: rgba(46, 8, 84, 0.9);
     z-index: 10;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: center;  /* Явное центрирование по горизонтали */
+    align-items: center;      /* Явное центрирование по вертикали */
     text-align: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.5s ease, visibility 0.5s;
-}
-.overlay.show {
-    opacity: 1;
-    visibility: visible;
 }
 .overlay-content {
     max-width: 600px;
@@ -86,34 +79,15 @@ body {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     backdrop-filter: blur(10px);
-    transform: scale(0.7);
-    transition: transform 0.5s ease;
-}
-.overlay.show .overlay-content {
-    transform: scale(1);
 }
 .overlay h1 {
     color: var(--secondary-color);
     font-size: 2.5rem;
     margin-bottom: 20px;
-    opacity: 0;
-    transform: translateY(-20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-}
-.overlay.show h1 {
-    opacity: 1;
-    transform: translateY(0);
 }
 .overlay h2, .overlay h3 {
     color: var(--text-color);
     margin-bottom: 20px;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-}
-.overlay.show h2, .overlay.show h3 {
-    opacity: 1;
-    transform: translateY(0);
 }
 .start-button {
     margin-top: 20px;
@@ -126,13 +100,6 @@ body {
     border-radius: 32px;
     transition: all 0.3s ease;
     cursor: pointer;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-}
-.overlay.show .start-button {
-    opacity: 1;
-    transform: translateY(0);
 }
 .start-button:hover {
     background-color: var(--secondary-color);
