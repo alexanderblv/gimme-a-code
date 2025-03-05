@@ -4,6 +4,7 @@
     --background-gradient: linear-gradient(135deg, #2E0854, #6A1B9A);
     --text-color: #E6E6FA;
     --accent-color: #8A2BE2;
+    --neon-glow: #00FFD1;
 }
 * {
     font-family: 'Inter', sans-serif;
@@ -25,15 +26,128 @@ body {
     background: var(--background-gradient) fixed;
     display: flex;
     flex-direction: column;
+    perspective: 1000px;
 }
+
+/* Cosmic Background Animation */
+.cosmic-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+    z-index: -1;
+    overflow: hidden;
+}
+.cosmic-background::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.03) 0px,
+        rgba(255, 255, 255, 0.03) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    animation: starfield 20s linear infinite;
+}
+@keyframes starfield {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 .hidden {
     display: none !important;
 }
+
+/* Glitch Effect */
+.glitch-text {
+    position: relative;
+    color: var(--secondary-color);
+    text-shadow: 0 0 10px var(--neon-glow);
+}
+.glitch-text::before,
+.glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+}
+.glitch-text::before {
+    left: 2px;
+    text-shadow: -2px 0 red;
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch-anim 5s infinite linear alternate-reverse;
+}
+.glitch-text::after {
+    left: -2px;
+    text-shadow: -2px 0 blue;
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch-anim2 5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+    0% { clip: rect(5px, 9999px, 54px, 0); }
+    5% { clip: rect(80px, 9999px, 54px, 0); }
+    10% { clip: rect(40px, 9999px, 54px, 0); }
+    15% { clip: rect(10px, 9999px, 54px, 0); }
+    20% { clip: rect(30px, 9999px, 54px, 0); }
+    25% { clip: rect(20px, 9999px, 54px, 0); }
+    30% { clip: rect(60px, 9999px, 54px, 0); }
+    35% { clip: rect(70px, 9999px, 54px, 0); }
+    40% { clip: rect(15px, 9999px, 54px, 0); }
+    45% { clip: rect(25px, 9999px, 54px, 0); }
+    50% { clip: rect(5px, 9999px, 54px, 0); }
+    55% { clip: rect(35px, 9999px, 54px, 0); }
+    60% { clip: rect(45px, 9999px, 54px, 0); }
+    65% { clip: rect(55px, 9999px, 54px, 0); }
+    70% { clip: rect(65px, 9999px, 54px, 0); }
+    75% { clip: rect(75px, 9999px, 54px, 0); }
+    80% { clip: rect(15px, 9999px, 54px, 0); }
+    85% { clip: rect(25px, 9999px, 54px, 0); }
+    90% { clip: rect(35px, 9999px, 54px, 0); }
+    95% { clip: rect(45px, 9999px, 54px, 0); }
+    100% { clip: rect(55px, 9999px, 54px, 0); }
+}
+
+@keyframes glitch-anim2 {
+    0% { clip: rect(15px, 9999px, 54px, 0); }
+    5% { clip: rect(25px, 9999px, 54px, 0); }
+    10% { clip: rect(35px, 9999px, 54px, 0); }
+    15% { clip: rect(45px, 9999px, 54px, 0); }
+    20% { clip: rect(55px, 9999px, 54px, 0); }
+    25% { clip: rect(65px, 9999px, 54px, 0); }
+    30% { clip: rect(75px, 9999px, 54px, 0); }
+    35% { clip: rect(15px, 9999px, 54px, 0); }
+    40% { clip: rect(25px, 9999px, 54px, 0); }
+    45% { clip: rect(35px, 9999px, 54px, 0); }
+    50% { clip: rect(45px, 9999px, 54px, 0); }
+    55% { clip: rect(5px, 9999px, 54px, 0); }
+    60% { clip: rect(15px, 9999px, 54px, 0); }
+    65% { clip: rect(25px, 9999px, 54px, 0); }
+    70% { clip: rect(35px, 9999px, 54px, 0); }
+    75% { clip: rect(45px, 9999px, 54px, 0); }
+    80% { clip: rect(55px, 9999px, 54px, 0); }
+    85% { clip: rect(65px, 9999px, 54px, 0); }
+    90% { clip: rect(75px, 9999px, 54px, 0); }
+    95% { clip: rect(25px, 9999px, 54px, 0); }
+    100% { clip: rect(15px, 9999px, 54px, 0); }
+}
+
 #timer {
     position: relative;
     height: 48px;
     width: 100%;
     background-color: rgba(218, 112, 214, 0.2);
+    box-shadow: 0 0 15px rgba(218, 112, 214, 0.5);
 }
 #progress {
     position: absolute;
@@ -41,6 +155,7 @@ body {
     width: 100%;
     background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
     transition: 0.1s linear;
+    box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
 }
 #timer span {
     display: block;
@@ -51,18 +166,26 @@ body {
     color: var(--text-color);
     z-index: 1;
     padding: 10px;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 10px var(--neon-glow);
 }
+
 #score {
     display: flex;
     justify-content: center;
     margin: 32px 0;
+    perspective: 500px;
 }
 #score span {
     color: var(--secondary-color);
     font-size: 64px;
     font-weight: 700;
     text-shadow: 0 0 15px rgba(218, 112, 214, 0.5);
+    font-family: 'Orbitron', sans-serif;
+    transform: rotateX(15deg);
+    transition: transform 0.3s ease;
 }
+
 .overlay {
     position: fixed;
     top: 0;
@@ -75,6 +198,7 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
+    perspective: 1000px;
 }
 .overlay-content {
     max-width: 600px;
@@ -82,17 +206,27 @@ body {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     backdrop-filter: blur(10px);
+    border: 2px solid var(--secondary-color);
+    box-shadow: 0 0 30px rgba(218, 112, 214, 0.3);
+    transform: rotateX(15deg);
+    transition: transform 0.3s ease;
+}
+.overlay:hover .overlay-content {
+    transform: rotateX(0);
 }
 .overlay h1 {
     color: var(--secondary-color);
     font-size: 2.5rem;
     margin-bottom: 20px;
+    font-family: 'Orbitron', sans-serif;
 }
 .overlay h2, .overlay h3 {
     color: var(--text-color);
     margin-bottom: 20px;
 }
-.start-button {
+
+.glitch-button {
+    position: relative;
     margin-top: 20px;
     padding: 12px 32px;
     background-color: transparent;
@@ -103,12 +237,30 @@ body {
     border-radius: 32px;
     transition: all 0.3s ease;
     cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    overflow: hidden;
 }
-.start-button:hover {
+.glitch-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(218, 112, 214, 0.3), transparent);
+    transition: all 0.5s;
+}
+.glitch-button:hover::before {
+    left: 100%;
+}
+.glitch-button:hover {
     background-color: var(--secondary-color);
     color: var(--primary-color);
     transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(218, 112, 214, 0.5);
 }
+
 #game-field {
     display: grid;
     grid-template-areas:
@@ -128,7 +280,24 @@ body {
     cursor: url(../img/hammer.png), auto;
     overflow: hidden;
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    perspective: 1000px;
+    transform-style: preserve-3d;
 }
+#game-field::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, 
+        rgba(218, 112, 214, 0.1) 0%, 
+        rgba(218, 112, 214, 0.03) 70%, 
+        transparent 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
 .member-img {
     display: block;
     height: 100%;
@@ -138,8 +307,31 @@ body {
     padding: 15%;
     transition: all 0.3s ease;
     filter: hue-rotate(-40deg) brightness(0.9);
+    transform: scale(0.8) rotateY(45deg);
+    opacity: 0.7;
+    backface-visibility: hidden;
 }
 .member-img:hover {
-    transform: scale(1.1);
+    transform: scale(1.1) rotateY(0);
     filter: hue-rotate(-40deg) brightness(1.2);
+    opacity: 1;
+    z-index: 10;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(0.8); }
+    50% { transform: scale(1); }
+}
+
+.typing-text {
+    position: relative;
+    display: inline-block;
+}
+.typing-text::after {
+    content: '|';
+    animation: blink 0.7s infinite;
+}
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
 }
