@@ -14,6 +14,7 @@ function initialisation() {
             setTimeout(addMember, 300, getRandomMember());
         }
     })
+
     document.getElementsByClassName('start-button')[0].addEventListener('mouseup', startGame);
     document.getElementsByClassName('start-button')[1].addEventListener('mouseup', startGame);
 }
@@ -62,36 +63,23 @@ function changeTimer() {
 
 function clearField() {
     let members = document.getElementsByClassName('member-img');
+
     for (let i = 0; i < members.length; i++) {
         members[i].style.display = 'none';
     }
 }
 
-function showOverlay(overlayId) {
-    const overlay = document.getElementById(overlayId);
-    overlay.classList.add('show');
-}
-
-function hideOverlay(overlayId) {
-    const overlay = document.getElementById(overlayId);
-    overlay.classList.remove('show');
-}
-
 function startGame() {
-    // Hide the current overlay with animation
-    hideOverlay('game-info');
-    hideOverlay('game-end');
+    score = 0;
+    changeScore();
+    
+    clearField();
+    document.getElementById('game-info').style.display = 'none';
+    document.getElementById('game-end').style.display = 'none';
 
-    // Reset game state after a short delay to allow hide animation
-    setTimeout(() => {
-        score = 0;
-        changeScore();
-        
-        clearField();
-        gameEnd = false;
-        startTimer();
-        setTimeout(addMember, 300, getRandomMember());
-    }, 500);
+    gameEnd = false;
+    startTimer();
+    setTimeout(addMember, 300, getRandomMember());
 }
 
 function endGame() {
@@ -99,6 +87,7 @@ function endGame() {
     
     let h1 = document.getElementById('game-end').getElementsByTagName('h1')[0];
     let h2 = document.getElementById('game-end').getElementsByTagName('h2')[0];
+
     if (score >= 20) {
         h1.innerHTML = 'At this rate, Yinger will hire you as an assistant, DM him bro';
         h2.innerHTML = 'Given ' + score + ' codes. Great result Prover, you are just a SP1 dream!';
@@ -109,7 +98,6 @@ function endGame() {
         h1.innerHTML = 'ARE YOU GOING TO PROVE SOMETHING???';
         h2.innerHTML = 'Given only ' + score + ' codes. You either didn\'t figure out how to do it, or you fell asleep...';
     }
-    
-    // Show game end overlay with animation
-    showOverlay('game-end');
+
+    document.getElementById('game-end').style.display = 'block';    
 }
