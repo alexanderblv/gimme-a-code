@@ -33,12 +33,12 @@
         
         /* Улучшенный контейнер содержимого */
         .window-content {
-    display: flex;
-    flex-direction: column;
-    height: calc(100% - 45px);
-    padding: 15px;
-    overflow: hidden;
-}
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 45px);
+            padding: 15px;
+            overflow: hidden;
+        }
         
         /* Новая структура заголовка в одну строку */
         .header-area {
@@ -122,8 +122,8 @@
             display: flex;
             flex: 1;
             gap: 15px;
-            height: calc(100% - 60px); /* Reduced from 105px to use more vertical space */
-            margin-bottom: 10px; /* Small margin before the taskbar */
+            height: calc(100% - 70px); /* Уменьшено для устранения лишнего пространства */
+            margin-bottom: 0; /* Убран отступ перед панелью задач */
         }
         
         /* Стиль для терминала (боковая панель) */
@@ -177,40 +177,40 @@
         
         /* Оптимизированное игровое поле */
         #game-field {
-    flex: 1;
-    display: grid;
-    grid-template-areas:
-        "m1 m2 m3"
-        "m4 m5 m6"
-        "m7 m8 m9";
-    grid-template-rows: repeat(3, 1fr);
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    background-color: rgba(0, 0, 0, 0.7);
-    border-radius: 16px;
-    border: 2px solid #9370DB;
-    box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
-    padding: 15px;
-    position: relative;
-    overflow: hidden; /* Changed from visible to hidden to contain images */
-}
+            flex: 1;
+            display: grid;
+            grid-template-areas:
+                "m1 m2 m3"
+                "m4 m5 m6"
+                "m7 m8 m9";
+            grid-template-rows: repeat(3, 1fr);
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 16px;
+            border: 2px solid #9370DB;
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
+            padding: 15px;
+            position: relative;
+            overflow: hidden; /* Изображения не будут выходить за границы */
+        }
         
         /* Стиль для изображений участников */
         .member-img {
-    width: 100%; /* Changed from 90% to 100% */
-    height: 100%; /* Changed from 90% to 100% */
-    object-fit: contain;
-    justify-self: center;
-    align-self: center;
-    transition: all 0.3s ease;
-    filter: hue-rotate(-40deg) brightness(0.9);
-    opacity: 0.7;
-    cursor: pointer;
-    margin: 0; /* Ensure no margin */
-    max-width: 100%; /* Ensure images don't overflow */
-    max-height: 100%; /* Ensure images don't overflow */
-    display: block; /* Ensure proper block display */
-}
+            width: auto; /* Изменено с 100% на auto */
+            height: auto; /* Изменено с 100% на auto */
+            max-width: 90%; /* Ограничиваем максимальный размер */
+            max-height: 90%; /* Ограничиваем максимальный размер */
+            object-fit: contain;
+            justify-self: center;
+            align-self: center;
+            transition: all 0.3s ease;
+            filter: hue-rotate(-40deg) brightness(0.9);
+            opacity: 0.7;
+            cursor: pointer;
+            margin: 0;
+            display: block;
+        }
         
         .member-img:hover {
             filter: hue-rotate(0) brightness(1.2);
@@ -220,14 +220,14 @@
         
         /* Стиль для панели задач */
         .taskbar {
-    margin-top: auto; /* Push to bottom */
-    padding: 10px;
-    background-color: rgba(30, 30, 40, 0.5);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-}
+            margin-top: 10px; /* Небольшой отступ сверху вместо auto */
+            padding: 10px;
+            background-color: rgba(30, 30, 40, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+        }
         
         .taskbar-icons {
             display: flex;
