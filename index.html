@@ -35,9 +35,10 @@
             height: 60vh;  /* Увеличиваем с 50vh до 60vh */
             max-height: 600px;  /* Увеличиваем с 500px до 600px */
             margin-top: 20px; /* Добавляем отступ сверху для игрового поля */
+            margin-bottom: 20px; /* Добавляем отступ снизу для игрового поля */
         }
         
-        /* Увеличиваем логотип */
+        /* Стили для логотипа и верхней секции */
         .logo-section {
             margin: 25px;
             display: flex;
@@ -52,7 +53,7 @@
             font-size: 34px;  /* Увеличиваем с 28px до 34px */
         }
         
-        /* Стиль для нового контейнера в верхней части */
+        /* Новый контейнер для верхней части */
         .header-container {
             display: flex;
             justify-content: space-between;
@@ -60,62 +61,63 @@
             padding: 0 25px;
         }
         
-        /* Перемещаем таймер и счетчик вправо от логотипа */
+        /* Контейнер для таймера и счетчика */
         .stats-container {
             display: flex;
             align-items: center;
             gap: 20px;
         }
         
-        #timer, #score {
+        /* Стили для таймера и счетчика - сохраняем их оригинальный вид */
+        #timer {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 5px;
+            position: relative;
+            overflow: hidden;
+            width: 200px;
+            height: 30px;
             display: flex;
             align-items: center;
         }
         
-        #timer {
-            position: relative;
-            width: 200px;
-            height: 25px;
-            background-color: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        
         #progress {
             position: absolute;
+            left: 0;
+            top: 0;
             height: 100%;
             background: linear-gradient(90deg, #6e2dd3, #00FFD1);
             border-radius: 12px;
             transition: width 0.3s;
         }
         
-        #timer span, #score span {
-            color: #fff;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
+        #timer span {
+            position: relative;
             z-index: 1;
-            padding: 0 10px;
+            color: white;
+            font-weight: 600;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+        
+        #score {
+            font-size: 18px;
+            font-weight: 600;
         }
         
         #score span {
-            font-size: 18px;
             color: #00FFD1;
             text-shadow: 0 0 10px rgba(0, 255, 209, 0.5);
         }
         
-        /* Скрываем оригинальный game-header, так как мы переместили его элементы */
+        /* Скрываем оригинальный game-header */
         .game-header {
             display: none;
         }
         
-        /* Добавляем отступ между игровым полем и панелью задач */
-        .taskbar {
-            margin-top: 20px;
-        }
-        
-        /* Стиль для терминала, который теперь отображается отдельно */
+        /* Стиль для терминала */
         .terminal-container {
-            margin: 0 25px 20px 25px;
+            margin: 0 25px;
         }
         
         .terminal-console {
@@ -125,6 +127,27 @@
             font-family: 'Courier New', monospace;
             color: #00FFD1;
             font-size: 14px;
+        }
+        
+        /* Убедитесь, что окно сохраняет свой контент */
+        .window-content {
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 45px);
+            overflow: hidden;
+        }
+        
+        /* Стиль для панели задач */
+        .taskbar {
+            margin-top: auto; /* Прижимаем к низу контейнера */
+            padding: 10px 0;
+            background-color: rgba(30, 30, 40, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Убедитесь, что все компоненты остаются внутри окна */
+        .window-container, .window-content {
+            overflow: hidden;
         }
     </style>
 </head>
@@ -172,7 +195,7 @@
                 </div>
             </div>
             
-            <!-- Терминал теперь отображается отдельно -->
+            <!-- Терминал отображается отдельно -->
             <div class="terminal-container">
                 <div class="terminal-console">
                     <div class="terminal-line">$ ./succinct-challenge --initialize</div>
@@ -181,7 +204,7 @@
                 </div>
             </div>
             
-            <!-- Оригинальный game-header теперь скрыт через CSS -->
+            <!-- Оригинальный game-header скрыт -->
             <div class="game-header">
                 <div class="terminal-console">
                     <div class="terminal-line">$ ./succinct-challenge --initialize</div>
