@@ -17,6 +17,105 @@ function initialisation() {
     })
     document.getElementsByClassName('start-button')[0].addEventListener('mouseup', startGame);
     document.getElementsByClassName('start-button')[1].addEventListener('mouseup', startGame);
+    
+    // Create the falling background elements
+    createFallingElements();
+}
+
+function createFallingElements() {
+    const container = document.createElement('div');
+    container.className = 'falling-elements';
+    document.body.appendChild(container);
+    
+    const images = ['meme.png', 'dvd.png', 'hat.png', 'crab.png'];
+    const numberOfElements = 15; // More elements for a richer background
+    
+    for (let i = 0; i < numberOfElements; i++) {
+        const element = document.createElement('img');
+        const randomImage = images[Math.floor(Math.random() * images.length)];
+        element.src = `img/${randomImage}`;
+        element.className = 'falling-item';
+        
+        // Random positioning and properties
+        const startX = Math.random() * 100;
+        const startY = Math.random() * 100;
+        const size = Math.random() * 50 + 30; // Size between 30px and 80px
+        const opacity = Math.random() * 0.3 + 0.2; // Opacity between 0.2 and 0.5
+        const rotationSpeed = Math.random() * 20 + 10; // Rotation speed
+        
+        // Choose a random animation pattern
+        const animationPattern = Math.floor(Math.random() * 4);
+        let animationStyle;
+        
+        switch(animationPattern) {
+            case 0: // Diagonal drift
+                animationStyle = `
+                    diagonal-drift ${Math.random() * 60 + 40}s linear infinite,
+                    gentle-rotate ${rotationSpeed}s ease-in-out infinite
+                `;
+                break;
+            case 1: // Bouncing
+                animationStyle = `
+                    bounce ${Math.random() * 20 + 10}s ease-in-out infinite,
+                    gentle-rotate ${rotationSpeed}s ease-in-out infinite
+                `;
+                break;
+            case 2: // Circular path
+                animationStyle = `
+                    circular-path ${Math.random() * 40 + 30}s linear infinite,
+                    gentle-rotate ${rotationSpeed}s ease-in-out infinite
+                `;
+                break;
+            case 3: // Zigzag
+                animationStyle = `
+                    zigzag ${Math.random() * 30 + 20}s ease-in-out infinite,
+                    gentle-rotate ${rotationSpeed * 0.8}s ease-in-out infinite
+                `;
+                break;
+        }
+        
+        // Set CSS properties
+        element.style.cssText = `
+            top: ${startY}vh;
+            left: ${startX}vw;
+            width: ${size}px;
+            height: auto;
+            opacity: ${opacity};
+            z-index: ${Math.floor(Math.random() * 2) - 2}; /* Some in front, some behind */
+            animation: ${animationStyle};
+            animation-delay: -${Math.random() * 30}s;
+        `;
+        
+        container.appendChild(element);
+    }
+    
+    // Add unique blinking elements
+    const blinkingContainer = document.createElement('div');
+    blinkingContainer.className = 'blinking-elements';
+    document.body.appendChild(blinkingContainer);
+    
+    for (let i = 0; i < 5; i++) {
+        const element = document.createElement('div');
+        element.className = 'succinct-pixel';
+        
+        const size = Math.random() * 6 + 4; // Size between 4px and 10px
+        const startX = Math.random() * 100;
+        const startY = Math.random() * 100;
+        const blinkSpeed = Math.random() * 3 + 1; // Blink speed
+        const hue = Math.random() * 60 + 300; // Purple to pink hue range
+        
+        element.style.cssText = `
+            width: ${size}px;
+            height: ${size}px;
+            top: ${startY}vh;
+            left: ${startX}vw;
+            background-color: hsl(${hue}, 100%, 70%);
+            animation: blink ${blinkSpeed}s ease-in-out infinite;
+            animation-delay: -${Math.random() * 3}s;
+        `;
+        
+        blinkingContainer.appendChild(element);
+    }
 }
 
 function triggerHitAnimation(target) {
