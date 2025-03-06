@@ -37,8 +37,39 @@ function createFallingElements() {
         element.className = 'falling-item';
         
         // Random positioning and properties
-        const startX = Math.random() * 100;
-        const startY = Math.random() * 100;
+        const gameField = document.getElementById('game-field');
+        const gameFieldRect = gameField.getBoundingClientRect();
+        
+        // Get window dimensions
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        
+        // Define game field boundaries
+        const gameFieldLeft = gameFieldRect.left;
+        const gameFieldRight = gameFieldRect.right;
+        const gameFieldTop = gameFieldRect.top;
+        const gameFieldBottom = gameFieldRect.bottom;
+        
+        // Random position (ensuring it's outside the game field)
+        let startX, startY;
+        let isPositionValid = false;
+        
+        // Keep generating random positions until we find one outside the game field
+        while (!isPositionValid) {
+            startX = Math.random() * 100; // Position in vh units
+            startY = Math.random() * 100; // Position in vw units
+            
+            // Convert percentage to actual pixels for comparison
+            const pixelX = (startX / 100) * windowWidth;
+            const pixelY = (startY / 100) * windowHeight;
+            
+            // Check if the position is outside the game field with some margin
+            if (!(pixelX > gameFieldLeft - 50 && pixelX < gameFieldRight + 50 &&
+                  pixelY > gameFieldTop - 50 && pixelY < gameFieldBottom + 50)) {
+                isPositionValid = true;
+            }
+        }
+        
         const size = Math.random() * 50 + 30; // Size between 30px and 80px
         const opacity = Math.random() * 0.3 + 0.2; // Opacity between 0.2 and 0.5
         const rotationSpeed = Math.random() * 20 + 10; // Rotation speed
@@ -81,7 +112,7 @@ function createFallingElements() {
             width: ${size}px;
             height: auto;
             opacity: ${opacity};
-            z-index: ${Math.floor(Math.random() * 2) - 2}; /* Some in front, some behind */
+            z-index: -1; /* Ensure it's behind the game field */
             animation: ${animationStyle};
             animation-delay: -${Math.random() * 30}s;
         `;
