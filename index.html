@@ -8,6 +8,47 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="src/style.css">
     <title>Crisis of Trust</title>
+    <style>
+        /* Добавляем стили для увеличения окна */
+        .window-container {
+            width: 95%;  /* Увеличиваем с 90% до 95% */
+            max-width: 1400px;  /* Увеличиваем с 1200px до 1400px */
+            margin: 10px auto;  /* Уменьшаем отступы сверху и снизу */
+        }
+        
+        .window-titlebar {
+            height: 45px;  /* Увеличиваем высоту заголовка с 36px до 45px */
+        }
+        
+        .window-title {
+            font-size: 22px;  /* Увеличиваем размер шрифта заголовка с 16px до 22px */
+            letter-spacing: 2px;  /* Увеличиваем расстояние между буквами */
+        }
+        
+        .window-button {
+            width: 14px;  /* Увеличиваем размер кнопок окна */
+            height: 14px;
+        }
+        
+        /* Увеличиваем размер игрового поля */
+        #game-field {
+            height: 60vh;  /* Увеличиваем с 50vh до 60vh */
+            max-height: 600px;  /* Увеличиваем с 500px до 600px */
+        }
+        
+        /* Увеличиваем логотип */
+        .logo-section {
+            margin: 25px;
+        }
+        
+        .logo-icon {
+            font-size: 34px;  /* Увеличиваем с 28px до 34px */
+        }
+        
+        .logo-text {
+            font-size: 34px;  /* Увеличиваем с 28px до 34px */
+        }
+    </style>
 </head>
 <body>
     <div class="cosmic-background"></div>
@@ -30,7 +71,7 @@
                 <div class="window-button minimize"></div>
                 <div class="window-button maximize"></div>
             </div>
-            <div class="window-title">Crisis of Trust</div>
+            <div class="window-title">CRISIS OF TRUST</div>
         </div>
         
         <div class="window-content">
@@ -103,7 +144,7 @@
     <!-- Game Start Overlay -->
     <div class="overlay" id="start-overlay">
         <div class="overlay-content">
-            <h1>Crisis of Trust</h1>
+            <h1>CRISIS OF TRUST</h1>
             <h2>Welcome to the Succinct Challenge</h2>
             <p>Click on the members as fast as you can when they appear. Collect as many trust codes as possible within the time limit!</p>
             <button class="glitch-button" id="start-button">Start Game</button>
