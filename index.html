@@ -39,19 +39,22 @@
                 <div class="logo-text">Succinct</div>
             </div>
             
-            <div class="terminal-console">
-                <div class="terminal-line">$ ./succinct-challenge --initialize</div>
-                <div class="terminal-line">$ Loading assets... Complete</div>
-                <div class="terminal-line">$ Ready to prove your speed...</div>
-            </div>
-            
-            <div id="timer">
-                <div id="progress"></div>
-                <span>Time left: 20 seconds</span>
-            </div>
-            
-            <div id="score">
-                <span>Codes: 0</span>
+            <!-- New header section with timer and score -->
+            <div class="game-header">
+                <div class="terminal-console">
+                    <div class="terminal-line">$ ./succinct-challenge --initialize</div>
+                    <div class="terminal-line">$ Loading assets... Complete</div>
+                    <div class="terminal-line">$ Ready to prove your speed...</div>
+                </div>
+                
+                <div id="timer">
+                    <div id="progress"></div>
+                    <span>Time left: 20 seconds</span>
+                </div>
+                
+                <div id="score">
+                    <span>Codes: 0</span>
+                </div>
             </div>
             
             <div id="game-field">
@@ -95,40 +98,241 @@
             <img src="img/audio-icon.svg" class="desktop-icon-img" alt="Audio">
             <div class="desktop-icon-text">Project.mp4</div>
         </div>
-        <div class="desktop-icon">
-            <img src="img/audio-icon.svg" class="desktop-icon-img" alt="Audio">
-            <div class="desktop-icon-text">final3.mp4</div>
-        </div>
-        <div class="desktop-icon">
-            <img src="img/audio-icon.svg" class="desktop-icon-img" alt="Audio">
-            <div class="desktop-icon-text">Gold.mp3</div>
-        </div>
-        <div class="desktop-icon">
-            <img src="img/image-icon.svg" class="desktop-icon-img" alt="Image">
-            <div class="desktop-icon-text">start_here.jpg</div>
+    </div>
+    
+    <!-- Game Start Overlay -->
+    <div class="overlay" id="start-overlay">
+        <div class="overlay-content">
+            <h1>Crisis of Trust</h1>
+            <h2>Welcome to the Succinct Challenge</h2>
+            <p>Click on the members as fast as you can when they appear. Collect as many trust codes as possible within the time limit!</p>
+            <button class="glitch-button" id="start-button">Start Game</button>
         </div>
     </div>
     
-    <!-- Game Overlays -->
-    <div id="game-info" class="overlay">
+    <!-- Game Over Overlay -->
+    <div class="overlay hidden" id="game-over-overlay">
         <div class="overlay-content">
-            <h1>Succinct Code Challenge</h1>
-            <h2>POV Yinger: PROVE UR SPEED</h2>
-            <h3>Click on the codes that appear as quickly as possible!</h3>
-            <button class="glitch-button" id="start-game" data-text="START GAME">START GAME</button>
+            <h1>Game Over</h1>
+            <h2>Your final score: <span id="final-score">0</span> codes</h2>
+            <h3>Can you do better?</h3>
+            <button class="glitch-button" id="restart-button">Play Again</button>
         </div>
     </div>
     
-    <div id="game-over" class="overlay hidden">
-        <div class="overlay-content">
-            <h1 class="glitch-text" data-text="GAME OVER">GAME OVER</h1>
-            <h2>Your final score: <span id="final-score">0</span></h2>
-            <h3>Keep coding at light speed!</h3>
-            <button class="glitch-button" id="restart-game" data-text="PLAY AGAIN">PLAY AGAIN</button>
-        </div>
-    </div>
-
-    <!-- Add JavaScript -->
-    <script src="src/app.js"></script>
+    <script>
+        // Background animations
+        function createBackgroundElements() {
+            const fallingContainer = document.querySelector('.falling-elements');
+            const blinkingContainer = document.querySelector('.blinking-elements');
+            
+            // Create falling elements
+            for (let i = 0; i < 15; i++) {
+                const element = document.createElement('div');
+                element.classList.add('falling-item');
+                element.style.left = `${Math.random() * 100}vw`;
+                element.style.top = `${Math.random() * 100}vh`;
+                element.style.opacity = Math.random() * 0.5 + 0.1;
+                element.style.fontSize = `${Math.random() * 20 + 10}px`;
+                element.innerHTML = ['✨', '🔒', '💻', '⚡', '🔑'][Math.floor(Math.random() * 5)];
+                
+                // Random animation type
+                const animations = ['diagonal-drift', 'bounce', 'circular-path', 'zigzag'];
+                const randomAnim = animations[Math.floor(Math.random() * animations.length)];
+                element.style.animation = `${randomAnim} ${Math.random() * 15 + 10}s infinite alternate`;
+                
+                fallingContainer.appendChild(element);
+            }
+            
+            // Create blinking pixel elements
+            for (let i = 0; i < 30; i++) {
+                const pixel = document.createElement('div');
+                pixel.classList.add('succinct-pixel');
+                pixel.style.left = `${Math.random() * 100}vw`;
+                pixel.style.top = `${Math.random() * 100}vh`;
+                pixel.style.width = `${Math.random() * 4 + 2}px`;
+                pixel.style.height = pixel.style.width;
+                pixel.style.color = `hsl(${Math.random() * 60 + 270}, 100%, 70%)`;
+                pixel.style.animation = `blink ${Math.random() * 3 + 2}s infinite`;
+                
+                blinkingContainer.appendChild(pixel);
+            }
+        }
+        
+        // Game logic
+        let score = 0;
+        let timeLeft = 20;
+        let gameInterval;
+        let activeMembers = [];
+        
+        // Initialize the game
+        function initGame() {
+            // Hide overlays
+            document.getElementById('start-overlay').classList.add('hidden');
+            document.getElementById('game-over-overlay').classList.add('hidden');
+            
+            // Reset game state
+            score = 0;
+            timeLeft = 20;
+            updateScore();
+            updateTimer();
+            
+            // Start the game loop
+            gameInterval = setInterval(gameLoop, 1000);
+            
+            // Show the first member
+            showRandomMember();
+        }
+        
+        // Game loop function
+        function gameLoop() {
+            timeLeft--;
+            updateTimer();
+            
+            // Show a new member randomly
+            if (Math.random() > 0.3) {
+                showRandomMember();
+            }
+            
+            // Game over when time runs out
+            if (timeLeft <= 0) {
+                gameOver();
+            }
+        }
+        
+        // Show a random member
+        function showRandomMember() {
+            const members = document.querySelectorAll('.member-img');
+            const availableMembers = Array.from(members).filter(member => !activeMembers.includes(member.id));
+            
+            if (availableMembers.length > 0) {
+                const randomIndex = Math.floor(Math.random() * availableMembers.length);
+                const member = availableMembers[randomIndex];
+                
+                // Add to active members
+                activeMembers.push(member.id);
+                
+                // Animate member
+                member.style.animation = 'pulse 1.5s infinite';
+                member.style.filter = 'hue-rotate(0deg) brightness(1.2)';
+                member.style.opacity = '1';
+                
+                // Make member clickable
+                member.onclick = function() {
+                    clickMember(member);
+                };
+                
+                // Auto-hide after random time if not clicked
+                setTimeout(() => {
+                    if (activeMembers.includes(member.id)) {
+                        hideMember(member);
+                    }
+                }, Math.random() * 2000 + 1000);
+            }
+        }
+        
+        // Handle member click
+        function clickMember(member) {
+            // Increase score
+            score++;
+            updateScore();
+            
+            // Add time bonus
+            timeLeft += 1;
+            updateTimer();
+            
+            // Hide the member
+            hideMember(member);
+            
+            // Show effect
+            showClickEffect(member);
+        }
+        
+        // Hide a member
+        function hideMember(member) {
+            member.style.animation = '';
+            member.style.filter = 'hue-rotate(-40deg) brightness(0.9)';
+            member.style.opacity = '0.7';
+            member.onclick = null;
+            
+            // Remove from active members
+            const index = activeMembers.indexOf(member.id);
+            if (index > -1) {
+                activeMembers.splice(index, 1);
+            }
+        }
+        
+        // Show click effect
+        function showClickEffect(member) {
+            const effect = document.createElement('div');
+            effect.textContent = '+1';
+            effect.style.position = 'absolute';
+            effect.style.color = '#00FFD1';
+            effect.style.fontSize = '24px';
+            effect.style.fontWeight = 'bold';
+            effect.style.textShadow = '0 0 10px rgba(0, 255, 209, 0.8)';
+            effect.style.zIndex = '100';
+            
+            // Get position
+            const rect = member.getBoundingClientRect();
+            effect.style.left = `${rect.left + rect.width / 2}px`;
+            effect.style.top = `${rect.top + rect.height / 2}px`;
+            
+            // Add animation
+            effect.style.transition = 'all 0.8s ease-out';
+            effect.style.pointerEvents = 'none';
+            
+            document.body.appendChild(effect);
+            
+            // Animate and remove
+            setTimeout(() => {
+                effect.style.transform = 'translateY(-50px)';
+                effect.style.opacity = '0';
+            }, 50);
+            
+            setTimeout(() => {
+                effect.remove();
+            }, 800);
+        }
+        
+        // Update score display
+        function updateScore() {
+            document.querySelector('#score span').textContent = `Codes: ${score}`;
+            document.getElementById('final-score').textContent = score;
+        }
+        
+        // Update timer display
+        function updateTimer() {
+            document.querySelector('#timer span').textContent = `Time left: ${timeLeft} seconds`;
+            
+            // Update progress bar
+            const progressPercent = (timeLeft / 20) * 100;
+            document.getElementById('progress').style.width = `${progressPercent}%`;
+        }
+        
+        // Game over function
+        function gameOver() {
+            clearInterval(gameInterval);
+            
+            // Hide all active members
+            activeMembers.forEach(id => {
+                const member = document.getElementById(id);
+                hideMember(member);
+            });
+            activeMembers = [];
+            
+            // Show game over overlay
+            document.getElementById('game-over-overlay').classList.remove('hidden');
+        }
+        
+        // Event listeners
+        document.getElementById('start-button').addEventListener('click', initGame);
+        document.getElementById('restart-button').addEventListener('click', initGame);
+        
+        // Initialize background on load
+        window.addEventListener('load', function() {
+            createBackgroundElements();
+        });
+    </script>
 </body>
 </html>
