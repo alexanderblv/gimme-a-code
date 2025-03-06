@@ -38,25 +38,19 @@
             margin-bottom: 20px; /* Добавляем отступ снизу для игрового поля */
         }
         
-        /* Новая структура заголовка */
+        /* Новая структура заголовка - одна строка с логотипом, таймером и счетчиком */
         .header-area {
             display: flex;
-            flex-direction: column;
             padding: 0 25px;
-        }
-        
-        /* Верхняя строка с логотипом и счетчиком */
-        .header-top-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
+            margin-top: 15px;
+            margin-bottom: 15px;
         }
         
         /* Стили для логотипа */
         .logo-section {
             display: flex;
             align-items: center;
+            margin-right: 15px;
         }
         
         .logo-icon {
@@ -67,34 +61,18 @@
             font-size: 34px;
         }
         
-        /* Стили для счетчика */
-        #score {
-            font-size: 18px;
-            font-weight: 600;
-        }
-        
-        #score span {
-            color: #00FFD1;
-            text-shadow: 0 0 10px rgba(0, 255, 209, 0.5);
-        }
-        
-        /* Нижняя строка с таймером */
-        .header-bottom-row {
-            width: 100%;
-            padding: 0 5px;
-        }
-        
-        /* Стили для таймера */
+        /* Стили для таймера - теперь растягивается между логотипом и счетчиком */
         #timer {
             background-color: rgba(0, 0, 0, 0.3);
             border-radius: 12px;
             padding: 5px;
             position: relative;
             overflow: hidden;
-            width: 100%;
+            flex-grow: 1; /* Растягиваем таймер на доступное пространство */
             height: 30px;
             display: flex;
             align-items: center;
+            margin: 0 15px; /* Отступы слева и справа */
         }
         
         #progress {
@@ -114,6 +92,19 @@
             font-weight: 600;
             margin-left: 10px;
             font-size: 14px;
+        }
+        
+        /* Стили для счетчика */
+        #score {
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        #score span {
+            color: #00FFD1;
+            text-shadow: 0 0 10px rgba(0, 255, 209, 0.5);
         }
         
         /* Скрываем оригинальный game-header */
@@ -182,26 +173,23 @@
         </div>
         
         <div class="window-content">
-            <!-- Новая структура заголовка в две строки -->
+            <!-- Новая структура заголовка - одна строка с логотипом, таймером и счетчиком -->
             <div class="header-area">
-                <!-- Верхняя строка с логотипом и счетчиком -->
-                <div class="header-top-row">
-                    <div class="logo-section">
-                        <div class="logo-icon">✨</div>
-                        <div class="logo-text">Succinct</div>
-                    </div>
-                    
-                    <div id="score">
-                        <span>Codes: 0</span>
-                    </div>
+                <!-- Логотип слева -->
+                <div class="logo-section">
+                    <div class="logo-icon">✨</div>
+                    <div class="logo-text">Succinct</div>
                 </div>
                 
-                <!-- Нижняя строка с таймером на всю ширину -->
-                <div class="header-bottom-row">
-                    <div id="timer">
-                        <div id="progress"></div>
-                        <span>Time left: 20 seconds</span>
-                    </div>
+                <!-- Таймер посередине (растягивается) -->
+                <div id="timer">
+                    <div id="progress"></div>
+                    <span>Time left: 20 seconds</span>
+                </div>
+                
+                <!-- Счетчик справа -->
+                <div id="score">
+                    <span>Codes: 0</span>
                 </div>
             </div>
             
