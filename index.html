@@ -122,8 +122,9 @@
             display: flex;
             flex: 1;
             gap: 15px;
-            height: calc(100% - 70px); /* Уменьшено для устранения лишнего пространства */
+            height: calc(100% - 60px); /* Уменьшено для устранения лишнего пространства */
             margin-bottom: 0; /* Убран отступ перед панелью задач */
+            overflow: hidden; /* Предотвращаем переполнение */
         }
         
         /* Стиль для терминала (боковая панель) */
@@ -183,8 +184,8 @@
                 "m1 m2 m3"
                 "m4 m5 m6"
                 "m7 m8 m9";
-            grid-template-rows: repeat(3, 1fr);
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
             background-color: rgba(0, 0, 0, 0.7);
             border-radius: 16px;
@@ -193,14 +194,16 @@
             padding: 15px;
             position: relative;
             overflow: hidden; /* Изображения не будут выходить за границы */
+            align-items: center; /* Центрируем элементы по вертикали */
+            justify-items: center; /* Центрируем элементы по горизонтали */
         }
         
         /* Стиль для изображений участников */
         .member-img {
-            width: auto; /* Изменено с 100% на auto */
-            height: auto; /* Изменено с 100% на auto */
-            max-width: 90%; /* Ограничиваем максимальный размер */
-            max-height: 90%; /* Ограничиваем максимальный размер */
+            max-width: 80%; /* Ограничиваем максимальную ширину */
+            max-height: 80%; /* Ограничиваем максимальную высоту */
+            width: auto;
+            height: auto;
             object-fit: contain;
             justify-self: center;
             align-self: center;
