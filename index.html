@@ -7,43 +7,128 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="src/style.css">
-    <title>Succinct Code Challenge</title>
+    <title>Crisis of Trust</title>
 </head>
 <body>
     <div class="cosmic-background"></div>
-    <div id="timer">
-        <div id="progress"></div>
-        <span>Time left: 20 seconds</span>
+    
+    <!-- Falling elements background -->
+    <div class="falling-elements">
+        <!-- Elements will be added dynamically via JavaScript -->
     </div>
-    <div id="score">
-        <span>Codes: 0</span>
+    
+    <!-- Blinking elements background -->
+    <div class="blinking-elements">
+        <!-- Elements will be added dynamically via JavaScript -->
     </div>
+
+    <!-- Main Window Container -->
+    <div class="window-container">
+        <div class="window-titlebar">
+            <div class="window-buttons">
+                <div class="window-button close"></div>
+                <div class="window-button minimize"></div>
+                <div class="window-button maximize"></div>
+            </div>
+            <div class="window-title">Crisis of Trust</div>
+        </div>
+        
+        <div class="window-content">
+            <div class="logo-section">
+                <div class="logo-icon">✨</div>
+                <div class="logo-text">Succinct</div>
+            </div>
+            
+            <div class="terminal-console">
+                <div class="terminal-line">$ ./succinct-challenge --initialize</div>
+                <div class="terminal-line">$ Loading assets... Complete</div>
+                <div class="terminal-line">$ Ready to prove your speed...</div>
+            </div>
+            
+            <div id="timer">
+                <div id="progress"></div>
+                <span>Time left: 20 seconds</span>
+            </div>
+            
+            <div id="score">
+                <span>Codes: 0</span>
+            </div>
+            
+            <div id="game-field">
+                <img src="img/member.png" draggable="false" id="m1" class="member-img" style="grid-area: m1;">
+                <img src="img/member.png" draggable="false" id="m2" class="member-img" style="grid-area: m2;">
+                <img src="img/member.png" draggable="false" id="m3" class="member-img" style="grid-area: m3;">
+                <img src="img/member.png" draggable="false" id="m4" class="member-img" style="grid-area: m4;">
+                <img src="img/member.png" draggable="false" id="m5" class="member-img" style="grid-area: m5;">
+                <img src="img/member.png" draggable="false" id="m6" class="member-img" style="grid-area: m6;">
+                <img src="img/member.png" draggable="false" id="m7" class="member-img" style="grid-area: m7;">
+                <img src="img/member.png" draggable="false" id="m8" class="member-img" style="grid-area: m8;">
+                <img src="img/member.png" draggable="false" id="m9" class="member-img" style="grid-area: m9;">
+            </div>
+            
+            <div class="taskbar">
+                <div class="taskbar-icons">
+                    <div class="taskbar-icon">
+                        <img src="img/computer-icon.svg" alt="Computer">
+                    </div>
+                    <div class="taskbar-icon">
+                        <img src="img/globe-icon.svg" alt="Browser">
+                    </div>
+                    <div class="taskbar-icon">
+                        <img src="img/folder-icon.svg" alt="Files">
+                    </div>
+                    <div class="taskbar-icon">
+                        <img src="img/settings-icon.svg" alt="Settings">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Desktop Icons -->
+    <div class="desktop-icons">
+        <div class="desktop-icon">
+            <img src="img/pdf-icon.svg" class="desktop-icon-img" alt="PDF">
+            <div class="desktop-icon-text">README.pdf</div>
+        </div>
+        <div class="desktop-icon">
+            <img src="img/audio-icon.svg" class="desktop-icon-img" alt="Audio">
+            <div class="desktop-icon-text">Project.mp4</div>
+        </div>
+        <div class="desktop-icon">
+            <img src="img/audio-icon.svg" class="desktop-icon-img" alt="Audio">
+            <div class="desktop-icon-text">final3.mp4</div>
+        </div>
+        <div class="desktop-icon">
+            <img src="img/audio-icon.svg" class="desktop-icon-img" alt="Audio">
+            <div class="desktop-icon-text">Gold.mp3</div>
+        </div>
+        <div class="desktop-icon">
+            <img src="img/image-icon.svg" class="desktop-icon-img" alt="Image">
+            <div class="desktop-icon-text">start_here.jpg</div>
+        </div>
+    </div>
+    
+    <!-- Game Overlays -->
     <div id="game-info" class="overlay">
         <div class="overlay-content">
             <h1>Succinct Code Challenge</h1>
             <h2>POV Yinger: PROVE UR SPEED</h2>
-            <h3>Your task is give out a maximum of codes in 20 seconds.</h3>
-            <button class="start-button glitch-button">GO GO GO</button>
+            <h3>Click on the codes that appear as quickly as possible!</h3>
+            <button class="glitch-button" id="start-game" data-text="START GAME">START GAME</button>
         </div>
     </div>
-    <div id="game-end" class="overlay hidden">
+    
+    <div id="game-over" class="overlay hidden">
         <div class="overlay-content">
-            <h1 class="glitch-text"></h1>
-            <h2 class="typing-text"></h2>
-            <button class="start-button glitch-button">PLAY AGAIN</button>
+            <h1 class="glitch-text" data-text="GAME OVER">GAME OVER</h1>
+            <h2>Your final score: <span id="final-score">0</span></h2>
+            <h3>Keep coding at light speed!</h3>
+            <button class="glitch-button" id="restart-game" data-text="PLAY AGAIN">PLAY AGAIN</button>
         </div>
     </div>
-    <div id="game-field">
-        <img src="img/member.png" draggable="false" id="m1" class="member-img" style="grid-area: m1;">
-        <img src="img/member.png" draggable="false" id="m2" class="member-img" style="grid-area: m2;">
-        <img src="img/member.png" draggable="false" id="m3" class="member-img" style="grid-area: m3;">
-        <img src="img/member.png" draggable="false" id="m4" class="member-img" style="grid-area: m4;">
-        <img src="img/member.png" draggable="false" id="m5" class="member-img" style="grid-area: m5;">
-        <img src="img/member.png" draggable="false" id="m6" class="member-img" style="grid-area: m6;">
-        <img src="img/member.png" draggable="false" id="m7" class="member-img" style="grid-area: m7;">
-        <img src="img/member.png" draggable="false" id="m8" class="member-img" style="grid-area: m8;">
-        <img src="img/member.png" draggable="false" id="m9" class="member-img" style="grid-area: m9;">
-    </div>
-    <script src="src/script.js"></script>
+
+    <!-- Add JavaScript -->
+    <script src="src/app.js"></script>
 </body>
 </html>
