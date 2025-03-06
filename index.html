@@ -34,11 +34,14 @@
         #game-field {
             height: 60vh;  /* Увеличиваем с 50vh до 60vh */
             max-height: 600px;  /* Увеличиваем с 500px до 600px */
+            margin-top: 20px; /* Добавляем отступ сверху для игрового поля */
         }
         
         /* Увеличиваем логотип */
         .logo-section {
             margin: 25px;
+            display: flex;
+            align-items: center;
         }
         
         .logo-icon {
@@ -47,6 +50,81 @@
         
         .logo-text {
             font-size: 34px;  /* Увеличиваем с 28px до 34px */
+        }
+        
+        /* Стиль для нового контейнера в верхней части */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+        }
+        
+        /* Перемещаем таймер и счетчик вправо от логотипа */
+        .stats-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        #timer, #score {
+            display: flex;
+            align-items: center;
+        }
+        
+        #timer {
+            position: relative;
+            width: 200px;
+            height: 25px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        #progress {
+            position: absolute;
+            height: 100%;
+            background: linear-gradient(90deg, #6e2dd3, #00FFD1);
+            border-radius: 12px;
+            transition: width 0.3s;
+        }
+        
+        #timer span, #score span {
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            z-index: 1;
+            padding: 0 10px;
+        }
+        
+        #score span {
+            font-size: 18px;
+            color: #00FFD1;
+            text-shadow: 0 0 10px rgba(0, 255, 209, 0.5);
+        }
+        
+        /* Скрываем оригинальный game-header, так как мы переместили его элементы */
+        .game-header {
+            display: none;
+        }
+        
+        /* Добавляем отступ между игровым полем и панелью задач */
+        .taskbar {
+            margin-top: 20px;
+        }
+        
+        /* Стиль для терминала, который теперь отображается отдельно */
+        .terminal-container {
+            margin: 0 25px 20px 25px;
+        }
+        
+        .terminal-console {
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 8px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            color: #00FFD1;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -75,12 +153,35 @@
         </div>
         
         <div class="window-content">
-            <div class="logo-section">
-                <div class="logo-icon">✨</div>
-                <div class="logo-text">Succinct</div>
+            <!-- Новый контейнер для заголовка и статистики -->
+            <div class="header-container">
+                <div class="logo-section">
+                    <div class="logo-icon">✨</div>
+                    <div class="logo-text">Succinct</div>
+                </div>
+                
+                <div class="stats-container">
+                    <div id="timer">
+                        <div id="progress"></div>
+                        <span>Time left: 20 seconds</span>
+                    </div>
+                    
+                    <div id="score">
+                        <span>Codes: 0</span>
+                    </div>
+                </div>
             </div>
             
-            <!-- New header section with timer and score -->
+            <!-- Терминал теперь отображается отдельно -->
+            <div class="terminal-container">
+                <div class="terminal-console">
+                    <div class="terminal-line">$ ./succinct-challenge --initialize</div>
+                    <div class="terminal-line">$ Loading assets... Complete</div>
+                    <div class="terminal-line">$ Ready to prove your speed...</div>
+                </div>
+            </div>
+            
+            <!-- Оригинальный game-header теперь скрыт через CSS -->
             <div class="game-header">
                 <div class="terminal-console">
                     <div class="terminal-line">$ ./succinct-challenge --initialize</div>
@@ -88,12 +189,12 @@
                     <div class="terminal-line">$ Ready to prove your speed...</div>
                 </div>
                 
-                <div id="timer">
-                    <div id="progress"></div>
+                <div id="timer-original">
+                    <div id="progress-original"></div>
                     <span>Time left: 20 seconds</span>
                 </div>
                 
-                <div id="score">
+                <div id="score-original">
                     <span>Codes: 0</span>
                 </div>
             </div>
