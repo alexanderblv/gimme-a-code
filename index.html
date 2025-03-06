@@ -59,26 +59,30 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 25px;
+            position: relative; /* Добавляем для абсолютного позиционирования таймера */
         }
         
-        /* Контейнер для таймера и счетчика */
+        /* Контейнер для таймера и счетчика - перерабатываем */
         .stats-container {
             display: flex;
             align-items: center;
-            gap: 20px;
         }
         
-        /* Стили для таймера и счетчика - сохраняем их оригинальный вид */
+        /* Стили для таймера - делаем его широким на всю длину от логотипа до счетчика */
         #timer {
             background-color: rgba(0, 0, 0, 0.3);
             border-radius: 12px;
             padding: 5px;
-            position: relative;
+            position: absolute;
             overflow: hidden;
-            width: 200px;
             height: 30px;
             display: flex;
             align-items: center;
+            /* Позиционируем таймер на всю ширину */
+            left: 150px; /* Начинаем от конца логотипа */
+            right: 100px; /* Заканчиваем немного перед счетчиком */
+            top: 50%;
+            transform: translateY(-50%);
         }
         
         #progress {
@@ -103,6 +107,7 @@
         #score {
             font-size: 18px;
             font-weight: 600;
+            z-index: 2; /* Убедимся, что счетчик всегда поверх */
         }
         
         #score span {
@@ -183,15 +188,14 @@
                     <div class="logo-text">Succinct</div>
                 </div>
                 
-                <div class="stats-container">
-                    <div id="timer">
-                        <div id="progress"></div>
-                        <span>Time left: 20 seconds</span>
-                    </div>
-                    
-                    <div id="score">
-                        <span>Codes: 0</span>
-                    </div>
+                <!-- Таймер теперь будет позиционироваться абсолютно -->
+                <div id="timer">
+                    <div id="progress"></div>
+                    <span>Time left: 20 seconds</span>
+                </div>
+                
+                <div id="score">
+                    <span>Codes: 0</span>
                 </div>
             </div>
             
