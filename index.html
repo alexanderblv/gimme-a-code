@@ -9,43 +9,44 @@
     <link rel="stylesheet" type="text/css" href="src/style.css">
     <title>Crisis of Trust</title>
     <style>
-        /* Добавляем стили для увеличения окна */
+        /* Оптимизированные стили для окна */
         .window-container {
-            width: 95%;  /* Увеличиваем с 90% до 95% */
-            max-width: 1400px;  /* Увеличиваем с 1200px до 1400px */
-            margin: 10px auto;  /* Уменьшаем отступы сверху и снизу */
+            width: 95%;
+            max-width: 1400px;
+            margin: 10px auto;
+            height: 95vh; /* Фиксированная высота для всего окна */
         }
         
         .window-titlebar {
-            height: 45px;  /* Увеличиваем высоту заголовка с 36px до 45px */
+            height: 45px;
         }
         
         .window-title {
-            font-size: 22px;  /* Увеличиваем размер шрифта заголовка с 16px до 22px */
-            letter-spacing: 2px;  /* Увеличиваем расстояние между буквами */
+            font-size: 22px;
+            letter-spacing: 2px;
         }
         
         .window-button {
-            width: 14px;  /* Увеличиваем размер кнопок окна */
+            width: 14px;
             height: 14px;
         }
         
-        /* Увеличиваем размер игрового поля */
-        #game-field {
-            height: 60vh;  /* Увеличиваем с 50vh до 60vh */
-            max-height: 600px;  /* Увеличиваем с 500px до 600px */
-            margin-top: 20px; /* Добавляем отступ сверху для игрового поля */
-            margin-bottom: 20px; /* Добавляем отступ снизу для игрового поля */
+        /* Улучшенный контейнер содержимого */
+        .window-content {
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 45px);
+            padding: 15px;
+            overflow: hidden;
         }
         
-        /* Новая структура заголовка - одна строка с логотипом, таймером и счетчиком */
+        /* Новая структура заголовка в одну строку */
         .header-area {
             display: flex;
-            padding: 0 25px;
-            margin-top: 15px;
+            padding: 0 15px;
             margin-bottom: 15px;
-            align-items: center; /* Выравниваем все элементы по вертикали */
-            height: 45px; /* Фиксированная высота для выравнивания с логотипом */
+            align-items: center;
+            height: 45px;
         }
         
         /* Стили для логотипа */
@@ -53,7 +54,7 @@
             display: flex;
             align-items: center;
             margin-right: 15px;
-            height: 100%; /* Занимаем всю высоту контейнера */
+            height: 100%;
         }
         
         .logo-icon {
@@ -64,18 +65,18 @@
             font-size: 34px;
         }
         
-        /* Стили для таймера - выравниваем вертикально */
+        /* Стили для таймера */
         #timer {
             background-color: rgba(0, 0, 0, 0.3);
             border-radius: 12px;
             padding: 5px;
             position: relative;
             overflow: hidden;
-            flex-grow: 1; /* Растягиваем таймер на доступное пространство */
-            height: 34px; /* Увеличиваем высоту чтобы соответствовать тексту Succinct */
+            flex-grow: 1;
+            height: 34px;
             display: flex;
             align-items: center;
-            margin: 0 15px; /* Отступы слева и справа */
+            margin: 0 15px;
         }
         
         #progress {
@@ -97,13 +98,13 @@
             font-size: 14px;
         }
         
-        /* Стили для счетчика - выравниваем вертикально */
+        /* Стили для счетчика */
         #score {
             font-size: 18px;
             font-weight: 600;
             display: flex;
             align-items: center;
-            height: 34px; /* Соответствует высоте таймера */
+            height: 34px;
         }
         
         #score span {
@@ -116,39 +117,143 @@
             display: none;
         }
         
-        /* Стиль для терминала */
+        /* Улучшенный макет страницы для лучшего использования пространства */
+        .game-layout {
+            display: flex;
+            flex: 1;
+            gap: 15px;
+            height: calc(100% - 105px); /* Вычитаем высоту заголовка и отступы */
+        }
+        
+        /* Стиль для терминала (боковая панель) */
+        .terminal-sidebar {
+            width: 25%;
+            min-width: 250px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
         .terminal-container {
-            margin: 0 25px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 8px;
+            padding: 15px;
+            flex: 1;
         }
         
         .terminal-console {
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 8px;
-            padding: 10px;
             font-family: 'Courier New', monospace;
             color: #00FFD1;
             font-size: 14px;
+            height: 100%;
         }
         
-        /* Убедитесь, что окно сохраняет свой контент */
-        .window-content {
+        /* Статистика игры */
+        .game-stats {
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .stats-title {
+            color: #00FFD1;
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .stats-item {
             display: flex;
-            flex-direction: column;
-            height: calc(100% - 45px);
-            overflow: hidden;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .stats-value {
+            color: #00FFD1;
+        }
+        
+        /* Оптимизированное игровое поле */
+        #game-field {
+            flex: 1;
+            display: grid;
+            grid-template-areas:
+                "m1 m2 m3"
+                "m4 m5 m6"
+                "m7 m8 m9";
+            grid-template-rows: repeat(3, 1fr);
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 16px;
+            border: 2px solid #9370DB;
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
+            padding: 15px;
+            overflow: visible; /* Важно: позволяет изображениям выходить за границы */
+            position: relative;
+        }
+        
+        /* Стиль для изображений участников */
+        .member-img {
+            width: 90%;
+            height: 90%;
+            object-fit: contain;
+            justify-self: center;
+            align-self: center;
+            transition: all 0.3s ease;
+            filter: hue-rotate(-40deg) brightness(0.9);
+            opacity: 0.7;
+            cursor: pointer;
+        }
+        
+        .member-img:hover {
+            filter: hue-rotate(0) brightness(1.2);
+            transform: scale(1.1);
+            opacity: 1;
         }
         
         /* Стиль для панели задач */
         .taskbar {
-            margin-top: auto; /* Прижимаем к низу контейнера */
-            padding: 10px 0;
+            margin-top: 10px;
+            padding: 10px;
             background-color: rgba(30, 30, 40, 0.5);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
         }
         
-        /* Убедитесь, что все компоненты остаются внутри окна */
-        .window-container, .window-content {
-            overflow: hidden;
+        .taskbar-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .taskbar-icon {
+            width: 36px;
+            height: 36px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .taskbar-icon:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .taskbar-icon img {
+            width: 20px;
+            height: 20px;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(0.9); }
+            50% { transform: scale(1.1); }
         }
     </style>
 </head>
@@ -197,43 +302,50 @@
                 </div>
             </div>
             
-            <!-- Терминал отображается отдельно -->
-            <div class="terminal-container">
-                <div class="terminal-console">
-                    <div class="terminal-line">$ ./succinct-challenge --initialize</div>
-                    <div class="terminal-line">$ Loading assets... Complete</div>
-                    <div class="terminal-line">$ Ready to prove your speed...</div>
-                </div>
-            </div>
-            
-            <!-- Оригинальный game-header скрыт -->
-            <div class="game-header">
-                <div class="terminal-console">
-                    <div class="terminal-line">$ ./succinct-challenge --initialize</div>
-                    <div class="terminal-line">$ Loading assets... Complete</div>
-                    <div class="terminal-line">$ Ready to prove your speed...</div>
+            <!-- Новый макет с использованием flex для лучшего распределения пространства -->
+            <div class="game-layout">
+                <!-- Левая боковая панель с терминалом и статистикой -->
+                <div class="terminal-sidebar">
+                    <div class="terminal-container">
+                        <div class="terminal-console">
+                            <div class="terminal-line">$ ./succinct-challenge --initialize</div>
+                            <div class="terminal-line">$ Loading assets... Complete</div>
+                            <div class="terminal-line">$ Ready to prove your speed...</div>
+                            <div class="terminal-line">$ Starting new game session</div>
+                            <div class="terminal-line">$ Quantum encryption active</div>
+                            <div class="terminal-line">$ Target: Collect trust codes</div>
+                        </div>
+                    </div>
+                    
+                    <div class="game-stats">
+                        <div class="stats-title">Game Statistics</div>
+                        <div class="stats-item">
+                            <span>Best Score:</span>
+                            <span class="stats-value">0</span>
+                        </div>
+                        <div class="stats-item">
+                            <span>Avg. Response:</span>
+                            <span class="stats-value">1.2s</span>
+                        </div>
+                        <div class="stats-item">
+                            <span>Success Rate:</span>
+                            <span class="stats-value">82%</span>
+                        </div>
+                    </div>
                 </div>
                 
-                <div id="timer-original">
-                    <div id="progress-original"></div>
-                    <span>Time left: 20 seconds</span>
+                <!-- Игровое поле занимает оставшееся пространство -->
+                <div id="game-field">
+                    <img src="img/member.png" draggable="false" id="m1" class="member-img" style="grid-area: m1;">
+                    <img src="img/member.png" draggable="false" id="m2" class="member-img" style="grid-area: m2;">
+                    <img src="img/member.png" draggable="false" id="m3" class="member-img" style="grid-area: m3;">
+                    <img src="img/member.png" draggable="false" id="m4" class="member-img" style="grid-area: m4;">
+                    <img src="img/member.png" draggable="false" id="m5" class="member-img" style="grid-area: m5;">
+                    <img src="img/member.png" draggable="false" id="m6" class="member-img" style="grid-area: m6;">
+                    <img src="img/member.png" draggable="false" id="m7" class="member-img" style="grid-area: m7;">
+                    <img src="img/member.png" draggable="false" id="m8" class="member-img" style="grid-area: m8;">
+                    <img src="img/member.png" draggable="false" id="m9" class="member-img" style="grid-area: m9;">
                 </div>
-                
-                <div id="score-original">
-                    <span>Codes: 0</span>
-                </div>
-            </div>
-            
-            <div id="game-field">
-                <img src="img/member.png" draggable="false" id="m1" class="member-img" style="grid-area: m1;">
-                <img src="img/member.png" draggable="false" id="m2" class="member-img" style="grid-area: m2;">
-                <img src="img/member.png" draggable="false" id="m3" class="member-img" style="grid-area: m3;">
-                <img src="img/member.png" draggable="false" id="m4" class="member-img" style="grid-area: m4;">
-                <img src="img/member.png" draggable="false" id="m5" class="member-img" style="grid-area: m5;">
-                <img src="img/member.png" draggable="false" id="m6" class="member-img" style="grid-area: m6;">
-                <img src="img/member.png" draggable="false" id="m7" class="member-img" style="grid-area: m7;">
-                <img src="img/member.png" draggable="false" id="m8" class="member-img" style="grid-area: m8;">
-                <img src="img/member.png" draggable="false" id="m9" class="member-img" style="grid-area: m9;">
             </div>
             
             <div class="taskbar">
@@ -466,6 +578,7 @@
         function updateScore() {
             document.querySelector('#score span').textContent = `Codes: ${score}`;
             document.getElementById('final-score').textContent = score;
+            document.querySelector('.stats-value').textContent = score > 0 ? score : '0';
         }
         
         // Update timer display
