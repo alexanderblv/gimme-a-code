@@ -389,6 +389,8 @@ body {
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
     perspective: 1000px;
     transform-style: preserve-3d;
+    position: relative;
+    z-index: 2; /* Ensure game field is above the falling items */
 }
 #game-field::before {
     content: "";
