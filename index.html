@@ -44,6 +44,8 @@
             padding: 0 25px;
             margin-top: 15px;
             margin-bottom: 15px;
+            align-items: center; /* Выравниваем все элементы по вертикали */
+            height: 45px; /* Фиксированная высота для выравнивания с логотипом */
         }
         
         /* Стили для логотипа */
@@ -51,6 +53,7 @@
             display: flex;
             align-items: center;
             margin-right: 15px;
+            height: 100%; /* Занимаем всю высоту контейнера */
         }
         
         .logo-icon {
@@ -61,7 +64,7 @@
             font-size: 34px;
         }
         
-        /* Стили для таймера - теперь растягивается между логотипом и счетчиком */
+        /* Стили для таймера - выравниваем вертикально */
         #timer {
             background-color: rgba(0, 0, 0, 0.3);
             border-radius: 12px;
@@ -69,7 +72,7 @@
             position: relative;
             overflow: hidden;
             flex-grow: 1; /* Растягиваем таймер на доступное пространство */
-            height: 30px;
+            height: 34px; /* Увеличиваем высоту чтобы соответствовать тексту Succinct */
             display: flex;
             align-items: center;
             margin: 0 15px; /* Отступы слева и справа */
@@ -94,12 +97,13 @@
             font-size: 14px;
         }
         
-        /* Стили для счетчика */
+        /* Стили для счетчика - выравниваем вертикально */
         #score {
             font-size: 18px;
             font-weight: 600;
             display: flex;
             align-items: center;
+            height: 34px; /* Соответствует высоте таймера */
         }
         
         #score span {
