@@ -380,6 +380,26 @@ body {
     justify-items: center; /* Центрируем элементы по горизонтали */
 }
 
+/* Added grid area assignments for member images */
+#game-field > .member-img:nth-child(1) { grid-area: m1; }
+#game-field > .member-img:nth-child(2) { grid-area: m2; }
+#game-field > .member-img:nth-child(3) { grid-area: m3; }
+#game-field > .member-img:nth-child(4) { grid-area: m4; }
+#game-field > .member-img:nth-child(5) { grid-area: m5; }
+#game-field > .member-img:nth-child(6) { grid-area: m6; }
+#game-field > .member-img:nth-child(7) { grid-area: m7; }
+#game-field > .member-img:nth-child(8) { grid-area: m8; }
+
+/* Alternative if images are in container divs */
+#game-field > div:nth-child(1) { grid-area: m1; }
+#game-field > div:nth-child(2) { grid-area: m2; }
+#game-field > div:nth-child(3) { grid-area: m3; }
+#game-field > div:nth-child(4) { grid-area: m4; }
+#game-field > div:nth-child(5) { grid-area: m5; }
+#game-field > div:nth-child(6) { grid-area: m6; }
+#game-field > div:nth-child(7) { grid-area: m7; }
+#game-field > div:nth-child(8) { grid-area: m8; }
+
 #game-field::before {
     content: "";
     position: absolute;
