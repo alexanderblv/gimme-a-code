@@ -1,85 +1,41 @@
-:root {
-    --primary-color: #6A1B9A;
-    --secondary-color: #DA70D6;
-    --background-gradient: linear-gradient(135deg, #2E0854, #6A1B9A);
-    --text-color: #E6E6FA;
-    --accent-color: #8A2BE2;
-    --neon-glow: #00FFD1;
-    --window-border: #9370DB;
-    --window-title: #E0B0FF;
-}
-
-* {
-    font-family: 'Inter', sans-serif;
-    box-sizing: border-box;
+/* Base styles for the entire application */
+body {
     margin: 0;
     padding: 0;
-}
-
-*, *::after, *::before {
-    -webkit-user-select: none;
-    -webkit-user-drag: none;
-    -webkit-app-region: no-drag;
-}
-
-html, body {
-    height: 100%;
-    width: 100%;
+    font-family: 'Inter', sans-serif;
+    background-color: #d660c0; /* Magenta/pink background color */
+    color: white;
     overflow: hidden;
 }
 
-body {
-    background: var(--background-gradient) fixed;
-    display: flex;
-    flex-direction: column;
-    perspective: 1000px;
-}
-
-/* Window Design */
+/* Window container */
 .window-container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 20px auto;
-    border-radius: 12px;
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
+    width: 95%;
+    max-width: 1400px;
+    margin: 10px auto;
+    height: 95vh;
+    border: 1px solid #999;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    background-color: #f0f0f0;
     overflow: hidden;
-    background-color: #111;
-    border: 2px solid var(--window-border);
     display: flex;
     flex-direction: column;
-    transform-style: preserve-3d;
-    transform: perspective(1000px) rotateX(1deg);
-    transition: transform 0.3s ease;
 }
 
-.window-container:hover {
-    transform: perspective(1000px) rotateX(0deg);
-}
-
+/* Window titlebar */
 .window-titlebar {
-    height: 36px;
-    background: linear-gradient(90deg, #4A148C, #7B1FA2);
+    height: 28px;
+    background: linear-gradient(to bottom, #e0e0e0, #c0c0c0);
+    border-bottom: 1px solid #999;
     display: flex;
     align-items: center;
-    padding: 0 10px;
-    position: relative;
-    z-index: 10;
+    padding: 0 8px;
 }
 
-.window-title {
-    color: var(--window-title);
-    font-weight: 700;
-    font-size: 16px;
-    text-shadow: 0 0 5px rgba(218, 112, 214, 0.6);
-    flex-grow: 1;
-    text-align: center;
-    font-family: 'Orbitron', sans-serif;
-    letter-spacing: 1px;
-}
-
-.window-buttons {
+.window-controls {
     display: flex;
-    gap: 8px;
+    gap: 6px;
 }
 
 .window-button {
@@ -90,682 +46,187 @@ body {
 }
 
 .window-button.close {
-    background-color: #ff5f57;
+    background-color: #ff6052;
 }
 
 .window-button.minimize {
-    background-color: #ffbd2e;
+    background-color: #ffbe06;
 }
 
 .window-button.maximize {
-    background-color: #28ca41;
+    background-color: #16cc37;
 }
 
-.window-content {
-    flex-grow: 1;
-    background-color: #1a1a1a;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-}
-
-/* Cosmic Background Animation */
-.cosmic-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-    z-index: -1;
-    overflow: hidden;
-}
-
-.cosmic-background::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(255, 255, 255, 0.03) 0px,
-        rgba(255, 255, 255, 0.03) 1px,
-        transparent 1px,
-        transparent 2px
-    );
-    animation: starfield 20s linear infinite;
-}
-
-@keyframes starfield {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Succinct Elements Background Animation */
-.falling-elements {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    pointer-events: none;
-    z-index: -1;
-}
-
-.falling-item {
-    position: absolute;
-    z-index: -1;
-    filter: drop-shadow(0 0 8px rgba(138, 43, 226, 0.6));
-    transition: all 0.5s ease;
-}
-
-/* Blinking pixel elements */
-.blinking-elements {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    pointer-events: none;
-    z-index: -1;
-}
-
-.succinct-pixel {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(1px);
-    box-shadow: 0 0 10px currentColor;
-}
-
-/* Logo section */
-.logo-section {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.logo-icon {
-    font-size: 28px;
-    color: var(--secondary-color);
-    text-shadow: 0 0 10px var(--neon-glow);
-}
-
-.logo-text {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--secondary-color);
-    text-shadow: 0 0 10px rgba(218, 112, 214, 0.5);
-    letter-spacing: 2px;
-}
-
-/* New header section with timer and score */
-.game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0 20px 20px;
-    gap: 20px;
-}
-
-.terminal-console {
+.window-title {
     flex: 1;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
 }
 
-.terminal-line {
-    font-family: 'Courier New', monospace;
-    font-size: 12px;
-    color: #33ff33;
-    margin: 5px 0;
-    opacity: 0.7;
-    animation: typewriter 2s steps(40) forwards;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 0;
-}
-
-.terminal-line:nth-child(2) {
-    animation-delay: 0.5s;
-    opacity: 0.6;
-}
-
-.terminal-line:nth-child(3) {
-    animation-delay: 1s;
-    opacity: 0.5;
-}
-
-@keyframes typewriter {
-    to {
-        width: 100%;
-    }
-}
-
-/* Animation keyframes for background elements */
-@keyframes diagonal-drift {
-    0% {
-        transform: translateX(-100px) translateY(-100px) rotate(0deg);
-    }
-    100% {
-        transform: translateX(calc(100vw + 100px)) translateY(calc(100vh + 100px)) rotate(360deg);
-    }
-}
-
-@keyframes bounce {
-    0%, 100% {
-        transform: translateY(0) scale(1);
-    }
-    50% {
-        transform: translateY(100px) scale(0.9);
-    }
-}
-
-@keyframes circular-path {
-    0% {
-        transform: translate(0, 0) rotate(0deg);
-    }
-    25% {
-        transform: translate(200px, 0) rotate(90deg);
-    }
-    50% {
-        transform: translate(200px, 200px) rotate(180deg);
-    }
-    75% {
-        transform: translate(0, 200px) rotate(270deg);
-    }
-    100% {
-        transform: translate(0, 0) rotate(360deg);
-    }
-}
-
-@keyframes zigzag {
-    0%, 100% {
-        transform: translate(0, 0) scale(1);
-    }
-    25% {
-        transform: translate(100px, 50px) scale(1.1);
-    }
-    50% {
-        transform: translate(0, 100px) scale(1);
-    }
-    75% {
-        transform: translate(-100px, 50px) scale(0.9);
-    }
-}
-
-@keyframes gentle-rotate {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes blink {
-    0%, 100% {
-        opacity: 0.2;
-        transform: scale(0.8);
-    }
-    50% {
-        opacity: 1;
-        transform: scale(1.2);
-    }
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* Glitch Effect */
-.glitch-text {
-    position: relative;
-    color: var(--secondary-color);
-    text-shadow: 0 0 10px var(--neon-glow);
-}
-
-.glitch-text::before,
-.glitch-text::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.8;
-}
-
-.glitch-text::before {
-    left: 2px;
-    text-shadow: -2px 0 red;
-    clip: rect(44px, 450px, 56px, 0);
-    animation: glitch-anim 5s infinite linear alternate-reverse;
-}
-
-.glitch-text::after {
-    left: -2px;
-    text-shadow: -2px 0 blue;
-    clip: rect(44px, 450px, 56px, 0);
-    animation: glitch-anim2 5s infinite linear alternate-reverse;
-}
-
-@keyframes glitch-anim {
-    0% { clip: rect(5px, 9999px, 54px, 0); }
-    5% { clip: rect(80px, 9999px, 54px, 0); }
-    10% { clip: rect(40px, 9999px, 54px, 0); }
-    15% { clip: rect(10px, 9999px, 54px, 0); }
-    20% { clip: rect(30px, 9999px, 54px, 0); }
-    25% { clip: rect(20px, 9999px, 54px, 0); }
-    30% { clip: rect(60px, 9999px, 54px, 0); }
-    35% { clip: rect(70px, 9999px, 54px, 0); }
-    40% { clip: rect(15px, 9999px, 54px, 0); }
-    45% { clip: rect(25px, 9999px, 54px, 0); }
-    50% { clip: rect(5px, 9999px, 54px, 0); }
-    55% { clip: rect(35px, 9999px, 54px, 0); }
-    60% { clip: rect(45px, 9999px, 54px, 0); }
-    65% { clip: rect(55px, 9999px, 54px, 0); }
-    70% { clip: rect(65px, 9999px, 54px, 0); }
-    75% { clip: rect(75px, 9999px, 54px, 0); }
-    80% { clip: rect(15px, 9999px, 54px, 0); }
-    85% { clip: rect(25px, 9999px, 54px, 0); }
-    90% { clip: rect(35px, 9999px, 54px, 0); }
-    95% { clip: rect(45px, 9999px, 54px, 0); }
-    100% { clip: rect(55px, 9999px, 54px, 0); }
-}
-
-@keyframes glitch-anim2 {
-    0% { clip: rect(15px, 9999px, 54px, 0); }
-    5% { clip: rect(25px, 9999px, 54px, 0); }
-    10% { clip: rect(35px, 9999px, 54px, 0); }
-    15% { clip: rect(45px, 9999px, 54px, 0); }
-    20% { clip: rect(55px, 9999px, 54px, 0); }
-    25% { clip: rect(65px, 9999px, 54px, 0); }
-    30% { clip: rect(75px, 9999px, 54px, 0); }
-    35% { clip: rect(15px, 9999px, 54px, 0); }
-    40% { clip: rect(25px, 9999px, 54px, 0); }
-    45% { clip: rect(35px, 9999px, 54px, 0); }
-    50% { clip: rect(45px, 9999px, 54px, 0); }
-    55% { clip: rect(5px, 9999px, 54px, 0); }
-    60% { clip: rect(15px, 9999px, 54px, 0); }
-    65% { clip: rect(25px, 9999px, 54px, 0); }
-    70% { clip: rect(35px, 9999px, 54px, 0); }
-    75% { clip: rect(45px, 9999px, 54px, 0); }
-    80% { clip: rect(55px, 9999px, 54px, 0); }
-    85% { clip: rect(65px, 9999px, 54px, 0); }
-    90% { clip: rect(75px, 9999px, 54px, 0); }
-    95% { clip: rect(25px, 9999px, 54px, 0); }
-    100% { clip: rect(15px, 9999px, 54px, 0); }
-}
-
-/* Floating desktop icons */
-.desktop-icons {
-    position: absolute;
-    right: 20px;
-    top: 20px;
+/* Window content */
+.window-content {
+    flex: 1;
+    background-color: #000;
+    color: white;
+    padding: 20px;
+    overflow: auto;
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    z-index: 5;
+}
+
+/* Succinct header */
+.succinct-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+}
+
+.succinct-logo {
+    font-family: 'Arial', sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+    color: #ff00ff;
+    display: flex;
+    align-items: center;
+}
+
+.succinct-logo-icon {
+    margin-right: 10px;
+    color: #ff00ff;
+}
+
+/* Desktop icons on right sidebar */
+.desktop-sidebar {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
 }
 
 .desktop-icon {
-    width: 60px;
-    height: 60px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 5px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-}
-
-.desktop-icon:hover {
-    transform: scale(1.1);
-    background-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 15px rgba(218, 112, 214, 0.3);
+    cursor: pointer;
+    width: 70px;
 }
 
 .desktop-icon-img {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 5px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 5px;
+    padding: 5px;
 }
 
 .desktop-icon-text {
-    font-size: 10px;
-    color: var(--text-color);
+    font-size: 12px;
+    color: white;
     text-align: center;
-    margin-top: 5px;
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-/* Modified timer and score styling */
-#timer {
-    position: relative;
-    height: 48px;
-    background-color: rgba(218, 112, 214, 0.2);
-    box-shadow: 0 0 15px rgba(218, 112, 214, 0.5);
-    border-radius: 8px;
-    overflow: hidden;
+/* Grid structure for content */
+.content-grid {
     flex: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
 }
 
-#progress {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
-    transition: 0.1s linear;
-    box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
-}
-
-#timer span {
-    display: block;
-    position: relative;
-    font-size: 18px;
-    font-weight: 600;
-    text-align: center;
-    color: var(--text-color);
-    z-index: 1;
-    padding: 10px;
-    font-family: 'Orbitron', sans-serif;
-    text-shadow: 0 0 10px var(--neon-glow);
-}
-
-/* Taskbar */
-.taskbar {
-    height: 60px;
-    background: linear-gradient(90deg, #4A148C, #7B1FA2);
-    margin-top: auto;
+.grid-item {
+    border: 1px solid #333;
+    background-color: #111;
+    border-radius: 3px;
     display: flex;
     align-items: center;
-    padding: 0 20px;
-    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
-    position: relative;
-    z-index: 5;
+    justify-content: center;
+}
+
+/* Taskbar at bottom */
+.taskbar {
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-top: 1px solid #666;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
 }
 
 .taskbar-icons {
     display: flex;
-    gap: 15px;
+    gap: 10px;
 }
 
 .taskbar-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    background-color: rgba(0, 0, 0, 0.2);
+    width: 30px;
+    height: 30px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .taskbar-icon:hover {
     background-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-5px);
 }
 
-.taskbar-icon img {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-}
-
-#score {
+/* Top menu bar */
+.top-menubar {
+    height: 20px;
+    background-color: #d660c0;
     display: flex;
-    justify-content: center;
-    perspective: 500px;
-    margin-left: 20px;
-}
-
-#score span {
-    color: var(--secondary-color);
-    font-size: 24px;
-    font-weight: 700;
-    text-shadow: 0 0 15px rgba(218, 112, 214, 0.5);
-    font-family: 'Orbitron', sans-serif;
-    transform: rotateX(15deg);
-    transition: transform 0.3s ease;
-    white-space: nowrap;
-}
-
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(46, 8, 84, 0.9);
-    z-index: 20;
-    display: flex;
-    justify-content: center;
     align-items: center;
-    text-align: center;
-    perspective: 1000px;
+    padding: 0 10px;
+    color: white;
+    font-size: 12px;
 }
 
-.overlay-content {
-    max-width: 600px;
-    padding: 40px;
-    background: rgba(0, 0, 0, 0.7);
-    border-radius: 16px;
-    backdrop-filter: blur(10px);
-    border: 2px solid var(--secondary-color);
-    box-shadow: 0 0 30px rgba(218, 112, 214, 0.3);
-    transform: rotateX(15deg);
-    transition: transform 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.overlay-content::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(
-        45deg,
-        rgba(138, 43, 226, 0.1),
-        rgba(138, 43, 226, 0.1) 10px,
-        rgba(138, 43, 226, 0.2) 10px,
-        rgba(138, 43, 226, 0.2) 20px
-    );
-    z-index: -1;
-}
-
-.overlay:hover .overlay-content {
-    transform: rotateX(0);
-}
-
-.overlay h1 {
-    color: var(--secondary-color);
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    font-family: 'Orbitron', sans-serif;
-}
-
-.overlay h2, .overlay h3 {
-    color: var(--text-color);
-    margin-bottom: 20px;
-}
-
-.glitch-button {
-    position: relative;
-    margin-top: 20px;
-    padding: 12px 32px;
-    background-color: transparent;
-    color: var(--secondary-color);
-    font-size: 18px;
-    font-weight: 600;
-    border: 2px solid var(--secondary-color);
-    border-radius: 32px;
-    transition: all 0.3s ease;
+.menubar-item {
+    margin-right: 15px;
     cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    overflow: hidden;
 }
 
-.glitch-button::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(120deg, transparent, rgba(218, 112, 214, 0.3), transparent);
-    transition: all 0.5s;
+.menubar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.glitch-button:hover::before {
-    left: 100%;
-}
-
-.glitch-button:hover {
-    background-color: var(--secondary-color);
-    color: var(--primary-color);
-    transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(218, 112, 214, 0.5);
-}
-
-/* Modified game field to ensure it's visible */
-#game-field {
-    display: grid;
-    grid-template-areas:
-        "m1 m2 m3"
-        "m4 m5 m6"
-        "m7 m8 m9";
-    grid-template-rows: repeat(3, 1fr);
-    grid-template-columns: repeat(3, 1fr);
-    height: 50vh;
-    max-height: 500px;
-    aspect-ratio: 1.2/1;
-    background-color: rgba(0, 0, 0, 0.7);
-    margin: 0 auto;
-    border-radius: 16px;
-    border: 2px solid var(--secondary-color);
-    cursor: url(../img/hammer.png), auto;
-    overflow: hidden;
-    box-shadow: 0 0 30px rgba(138, 43, 226, 0.3);
-    perspective: 1000px;
-    transform-style: preserve-3d;
-    position: relative;
-    z-index: 2;
-}
-
-#game-field::before {
-    content: "";
+/* Grid lines */
+.grid-lines {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(138, 43, 226, 0.05) 0px,
-        rgba(138, 43, 226, 0.05) 1px,
-        transparent 1px,
-        transparent 2px
-    );
     pointer-events: none;
-    opacity: 0.5;
 }
 
-#game-field::after {
-    content: "";
+.grid-line {
     position: absolute;
-    top: 0;
-    left: 0;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.grid-line-h {
     width: 100%;
+    height: 1px;
+}
+
+.grid-line-v {
     height: 100%;
-    background: radial-gradient(circle at center, 
-        rgba(218, 112, 214, 0.1) 0%, 
-        rgba(0, 0, 0, 0) 70%);
-    z-index: 1;
-    pointer-events: none;
-}
-
-.member-img {
-    display: block;
-    height: 100%;
-    width: 100%;
-    object-fit: contain;
-    margin: auto;
-    padding: 15%;
-    transition: all 0.3s ease;
-    filter: hue-rotate(-40deg) brightness(0.9);
-    transform: scale(0.8);
-    opacity: 0.7;
-    backface-visibility: hidden;
-}
-
-.member-img:hover {
-    transform: scale(1.1);
-    filter: hue-rotate(-40deg) brightness(1.2);
-    opacity: 1;
-    z-index: 10;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(0.8); }
-    50% { transform: scale(1); }
-}
-
-.typing-text {
-    position: relative;
-    display: inline-block;
-}
-
-.typing-text::after {
-    content: '|';
-    animation: blink 0.7s infinite;
-}
-
-/* Small screen adjustments */
-@media (max-width: 768px) {
-    .game-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    #game-field {
-        width: 90%;
-        height: 40vh;
-    }
-    
-    .overlay-content {
-        max-width: 90%;
-        padding: 20px;
-    }
-    
-    .overlay h1 {
-        font-size: 1.8rem;
-    }
-    
-    #score span {
-        font-size: 18px;
-    }
-    
-    .desktop-icons {
-        display: none;
-    }
+    width: 1px;
 }
