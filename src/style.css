@@ -411,23 +411,35 @@ body {
     pointer-events: none;
 }
 
-/* Стиль для изображений участников - ИСПРАВЛЕНО */
+/* Добавляем стили для ячеек игрового поля */
+#game-field > div {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+}
+
+/* Обновленный стиль для изображений участников */
 .member-img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover; /* Изменено с contain на cover */
+    max-width: 100%;   /* Добавлено ограничение максимальной ширины */
+    max-height: 100%;  /* Добавлено ограничение максимальной высоты */
     transition: all 0.3s ease;
     filter: hue-rotate(-40deg) brightness(0.9);
     opacity: 0.7;
     cursor: pointer;
     display: block;
+    box-sizing: border-box; /* Учитываем padding в размерах */
+    padding: 10px;
     position: relative;
-    padding: 10px; /* Добавляем внутренний отступ */
 }
 
 .member-img:hover {
     filter: hue-rotate(0) brightness(1.2);
-    transform: scale(1.05); /* Уменьшен масштаб при наведении */
+    transform: scale(1.03); /* Уменьшен масштаб при наведении с 1.05 до 1.03 */
     opacity: 1;
 }
 
