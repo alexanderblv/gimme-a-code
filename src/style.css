@@ -1,232 +1,463 @@
-/* Base styles for the entire application */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Inter', sans-serif;
-    background-color: #d660c0; /* Magenta/pink background color */
-    color: white;
-    overflow: hidden;
-}
-
-/* Window container */
+/* Оптимизированные стили для окна */
 .window-container {
     width: 95%;
     max-width: 1400px;
     margin: 10px auto;
-    height: 95vh;
-    border: 1px solid #999;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    background-color: #f0f0f0;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    height: 95vh; /* Фиксированная высота для всего окна */
 }
 
-/* Window titlebar */
 .window-titlebar {
-    height: 28px;
-    background: linear-gradient(to bottom, #e0e0e0, #c0c0c0);
-    border-bottom: 1px solid #999;
-    display: flex;
-    align-items: center;
-    padding: 0 8px;
-}
-
-.window-controls {
-    display: flex;
-    gap: 6px;
-}
-
-.window-button {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-}
-
-.window-button.close {
-    background-color: #ff6052;
-}
-
-.window-button.minimize {
-    background-color: #ffbe06;
-}
-
-.window-button.maximize {
-    background-color: #16cc37;
+    height: 45px;
 }
 
 .window-title {
-    flex: 1;
-    text-align: center;
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
+    font-size: 22px;
+    letter-spacing: 2px;
 }
 
-/* Window content */
+.window-button {
+    width: 14px;
+    height: 14px;
+}
+
+/* Улучшенный контейнер содержимого */
 .window-content {
-    flex: 1;
-    background-color: #000;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 45px);
+    padding: 15px;
+    overflow: hidden;
+}
+
+/* Новая структура заголовка в одну строку */
+.header-area {
+    display: flex;
+    padding: 0 15px;
+    margin-bottom: 15px;
+    align-items: center;
+    height: 45px;
+}
+
+/* Стили для логотипа */
+.logo-section {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+    height: 100%;
+}
+
+.logo-icon {
+    font-size: 34px;
+}
+
+.logo-text {
+    font-size: 34px;
+}
+
+/* Стили для таймера */
+#timer {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    padding: 5px;
+    position: relative;
+    overflow: hidden;
+    flex-grow: 1;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    margin: 0 15px;
+}
+
+#progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #6e2dd3, #00FFD1);
+    border-radius: 12px;
+    transition: width 0.3s;
+}
+
+#timer span {
+    position: relative;
+    z-index: 1;
     color: white;
-    padding: 20px;
-    overflow: auto;
+    font-weight: 600;
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+/* Стили для счетчика */
+#score {
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    height: 34px;
+}
+
+#score span {
+    color: #00FFD1;
+    text-shadow: 0 0 10px rgba(0, 255, 209, 0.5);
+}
+
+/* Скрываем оригинальный game-header */
+.game-header {
+    display: none;
+}
+
+/* Улучшенный макет страницы для лучшего использования пространства */
+.game-layout {
+    display: flex;
+    flex: 1;
+    gap: 15px;
+    height: calc(100% - 60px); /* Уменьшено для устранения лишнего пространства */
+    margin-bottom: 0; /* Убран отступ перед панелью задач */
+    overflow: hidden; /* Предотвращаем переполнение */
+}
+
+/* Стиль для терминала (боковая панель) */
+.terminal-sidebar {
+    width: 25%;
+    min-width: 250px;
     display: flex;
     flex-direction: column;
+    gap: 15px;
 }
 
-/* Succinct header */
-.succinct-header {
+.terminal-container {
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    padding: 15px;
+    flex: 1;
+}
+
+.terminal-console {
+    font-family: 'Courier New', monospace;
+    color: #00FFD1;
+    font-size: 14px;
+    height: 100%;
+}
+
+/* Статистика игры */
+.game-stats {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.stats-title {
+    color: #00FFD1;
+    font-size: 16px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.stats-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    color: white;
+    font-size: 14px;
+}
+
+.stats-value {
+    color: #00FFD1;
+}
+
+/* Оптимизированное игровое поле */
+#game-field {
+    flex: 1;
+    display: grid;
+    grid-template-areas:
+        "m1 m2 m3"
+        "m4 m5 m6"
+        "m7 m8 m9";
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 16px;
+    border: 2px solid #9370DB;
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
+    padding: 15px;
+    position: relative;
+    overflow: hidden; /* Изображения не будут выходить за границы */
+    align-items: center; /* Центрируем элементы по вертикали */
+    justify-items: center; /* Центрируем элементы по горизонтали */
+}
+
+/* Стиль для изображений участников */
+.member-img {
+    max-width: 80%; /* Ограничиваем максимальную ширину */
+    max-height: 80%; /* Ограничиваем максимальную высоту */
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    justify-self: center;
+    align-self: center;
+    transition: all 0.3s ease;
+    filter: hue-rotate(-40deg) brightness(0.9);
+    opacity: 0.7;
+    cursor: pointer;
+    margin: 0;
+    display: block;
+}
+
+.member-img:hover {
+    filter: hue-rotate(0) brightness(1.2);
+    transform: scale(1.1);
+    opacity: 1;
+}
+
+/* Стиль для панели задач */
+.taskbar {
+    margin-top: 10px; /* Небольшой отступ сверху вместо auto */
+    padding: 10px;
+    background-color: rgba(30, 30, 40, 0.5);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+}
+
+.taskbar-icons {
+    display: flex;
+    gap: 15px;
+}
+
+.taskbar-icon {
+    width: 36px;
+    height: 36px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #333;
-    padding-bottom: 10px;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.succinct-logo {
-    font-family: 'Arial', sans-serif;
-    font-size: 28px;
-    font-weight: bold;
-    color: #ff00ff;
-    display: flex;
-    align-items: center;
+.taskbar-icon:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
 }
 
-.succinct-logo-icon {
-    margin-right: 10px;
-    color: #ff00ff;
+.taskbar-icon img {
+    width: 20px;
+    height: 20px;
 }
 
-/* Desktop icons on right sidebar */
-.desktop-sidebar {
+/* Анимация пульсации */
+@keyframes pulse {
+    0%, 100% { transform: scale(0.9); }
+    50% { transform: scale(1.1); }
+}
+
+/* Стили для фоновых элементов */
+.cosmic-background {
     position: fixed;
-    top: 50px;
-    right: 20px;
-    width: 80px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0f0f2d 0%, #2d0f2f 100%);
+    z-index: -10;
+}
+
+.falling-elements {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -5;
+}
+
+.blinking-elements {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -5;
+}
+
+.falling-item {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.3);
+    pointer-events: none;
+}
+
+.succinct-pixel {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background-color: #00FFD1;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Анимации для падающих элементов */
+@keyframes diagonal-drift {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(100px, 100px) rotate(180deg); }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-50px); }
+}
+
+@keyframes circular-path {
+    0% { transform: rotate(0deg) translateX(50px) rotate(0deg); }
+    100% { transform: rotate(360deg) translateX(50px) rotate(-360deg); }
+}
+
+@keyframes zigzag {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(30px, 30px); }
+    50% { transform: translate(0, 60px); }
+    75% { transform: translate(-30px, 30px); }
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 0.1; }
+    50% { opacity: 1; }
+}
+
+/* Стили для рабочего стола */
+.desktop-icons {
+    position: fixed;
+    top: 15px;
+    left: 15px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    align-items: center;
+    gap: 15px;
+    z-index: 5;
 }
 
 .desktop-icon {
+    width: 70px;
+    height: 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
     cursor: pointer;
-    width: 70px;
 }
 
 .desktop-icon-img {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     margin-bottom: 5px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 5px;
-    padding: 5px;
 }
 
 .desktop-icon-text {
     font-size: 12px;
     color: white;
     text-align: center;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
 }
 
-/* Grid structure for content */
-.content-grid {
-    flex: 1;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 10px;
-}
-
-.grid-item {
-    border: 1px solid #333;
-    background-color: #111;
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Taskbar at bottom */
-.taskbar {
-    height: 40px;
-    background-color: rgba(0, 0, 0, 0.7);
-    border-top: 1px solid #666;
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-}
-
-.taskbar-icons {
-    display: flex;
-    gap: 10px;
-}
-
-.taskbar-icon {
-    width: 30px;
-    height: 30px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
-.taskbar-icon:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-/* Top menu bar */
-.top-menubar {
-    height: 20px;
-    background-color: #d660c0;
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    color: white;
-    font-size: 12px;
-}
-
-.menubar-item {
-    margin-right: 15px;
-    cursor: pointer;
-}
-
-.menubar-right {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* Grid lines */
-.grid-lines {
-    position: absolute;
+/* Стили для оверлеев */
+.overlay {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
-.grid-line {
+.overlay.hidden {
+    display: none;
+}
+
+.overlay-content {
+    background-color: rgba(30, 30, 50, 0.9);
+    border: 2px solid #6e2dd3;
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    max-width: 600px;
+    box-shadow: 0 0 30px rgba(110, 45, 211, 0.5);
+}
+
+.overlay-content h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 36px;
+    color: #00FFD1;
+    text-shadow: 0 0 10px rgba(0, 255, 209, 0.5);
+    margin-bottom: 20px;
+}
+
+.overlay-content h2 {
+    font-size: 24px;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.overlay-content h3 {
+    font-size: 18px;
+    color: #c9c9c9;
+    margin-bottom: 30px;
+}
+
+.overlay-content p {
+    font-size: 16px;
+    color: #b0b0b0;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+/* Стили для кнопок */
+.glitch-button {
+    background: linear-gradient(90deg, #6e2dd3, #00FFD1);
+    border: none;
+    border-radius: 8px;
+    padding: 12px 30px;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.glitch-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.glitch-button:hover::before {
+    content: '';
     position: absolute;
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-.grid-line-h {
+    top: 0;
+    left: -100%;
     width: 100%;
-    height: 1px;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: glitch-btn 1s infinite;
 }
 
-.grid-line-v {
-    height: 100%;
-    width: 1px;
+@keyframes glitch-btn {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Общие стили body */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    color: white;
+    overflow: hidden;
+    background-color: #0a0a1a;
 }
