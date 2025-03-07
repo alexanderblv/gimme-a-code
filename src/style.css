@@ -1,3 +1,4 @@
+/* ===== Global Variables ===== */
 :root {
     --primary-color: #6A1B9A;
     --secondary-color: #DA70D6;
@@ -7,8 +8,10 @@
     --neon-glow: #00FFD1;
     --window-border: #9370DB;
     --window-title: #E0B0FF;
+    --game-field-size: 50vh;
 }
 
+/* ===== Base Styles ===== */
 * {
     font-family: 'Inter', sans-serif;
     box-sizing: border-box;
@@ -35,46 +38,37 @@ body {
     perspective: 1000px;
 }
 
-/* Window Design */
+/* ===== Window Components ===== */
 .window-container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 20px auto;
+    width: 95%;
+    max-width: 1400px;
+    height: 95vh;
+    margin: 10px auto;
     border-radius: 12px;
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
-    overflow: hidden;
     background-color: #111;
     border: 2px solid var(--window-border);
     display: flex;
     flex-direction: column;
     transform-style: preserve-3d;
-    transform: perspective(1000px) rotateX(1deg);
     transition: transform 0.3s ease;
 }
 
-.window-container:hover {
-    transform: perspective(1000px) rotateX(0deg);
-}
-
 .window-titlebar {
-    height: 36px;
+    height: 45px;
     background: linear-gradient(90deg, #4A148C, #7B1FA2);
     display: flex;
     align-items: center;
-    padding: 0 10px;
-    position: relative;
-    z-index: 10;
+    padding: 0 15px;
 }
 
 .window-title {
     color: var(--window-title);
-    font-weight: 700;
-    font-size: 16px;
+    font: 700 22px/1 'Orbitron', sans-serif;
     text-shadow: 0 0 5px rgba(218, 112, 214, 0.6);
     flex-grow: 1;
     text-align: center;
-    font-family: 'Orbitron', sans-serif;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
 }
 
 .window-buttons {
@@ -83,422 +77,179 @@ body {
 }
 
 .window-button {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-.window-button.close {
-    background-color: #ff5f57;
-}
-
-.window-button.minimize {
-    background-color: #ffbd2e;
-}
-
-.window-button.maximize {
-    background-color: #28ca41;
-}
+.window-button.close { background-color: #ff5f57; }
+.window-button.minimize { background-color: #ffbd2e; }
+.window-button.maximize { background-color: #28ca41; }
 
 .window-content {
     flex-grow: 1;
     background-color: #1a1a1a;
-    position: relative;
     display: flex;
     flex-direction: column;
-    padding: 10px;
-}
-
-/* Cosmic Background Animation */
-.cosmic-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-    z-index: -1;
+    padding: 15px;
+    height: calc(100% - 45px);
     overflow: hidden;
 }
 
-.cosmic-background::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(255, 255, 255, 0.03) 0px,
-        rgba(255, 255, 255, 0.03) 1px,
-        transparent 1px,
-        transparent 2px
-    );
-    animation: starfield 20s linear infinite;
+/* ===== Game Interface ===== */
+.header-area {
+    display: flex;
+    padding: 0 15px;
+    margin-bottom: 15px;
+    align-items: center;
+    height: 45px;
 }
 
-@keyframes starfield {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Succinct Elements Background Animation */
-.falling-elements {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    pointer-events: none;
-    z-index: -1;
-}
-
-.falling-item {
-    position: absolute;
-    z-index: -1;
-    filter: drop-shadow(0 0 8px rgba(138, 43, 226, 0.6));
-    transition: all 0.5s ease;
-}
-
-/* Blinking pixel elements */
-.blinking-elements {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    pointer-events: none;
-    z-index: -1;
-}
-
-.succinct-pixel {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(1px);
-    box-shadow: 0 0 10px currentColor;
-}
-
-/* Logo section */
 .logo-section {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-right: 15px;
+    height: 100%;
 }
 
 .logo-icon {
-    font-size: 28px;
+    font-size: 34px;
     color: var(--secondary-color);
     text-shadow: 0 0 10px var(--neon-glow);
 }
 
 .logo-text {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 28px;
-    font-weight: 700;
+    font: 700 34px/1 'Orbitron', sans-serif;
     color: var(--secondary-color);
     text-shadow: 0 0 10px rgba(218, 112, 214, 0.5);
-    letter-spacing: 2px;
 }
 
-/* New header section with timer and score */
-.game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0 20px 20px;
-    gap: 20px;
-}
-
-.terminal-console {
-    flex: 1;
-}
-
-.terminal-line {
-    font-family: 'Courier New', monospace;
-    font-size: 12px;
-    color: #33ff33;
-    margin: 5px 0;
-    opacity: 0.7;
-    animation: typewriter 2s steps(40) forwards;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 0;
-}
-
-.terminal-line:nth-child(2) {
-    animation-delay: 0.5s;
-    opacity: 0.6;
-}
-
-.terminal-line:nth-child(3) {
-    animation-delay: 1s;
-    opacity: 0.5;
-}
-
-@keyframes typewriter {
-    to {
-        width: 100%;
-    }
-}
-
-/* Animation keyframes for background elements */
-@keyframes diagonal-drift {
-    0% {
-        transform: translateX(-100px) translateY(-100px) rotate(0deg);
-    }
-    100% {
-        transform: translateX(calc(100vw + 100px)) translateY(calc(100vh + 100px)) rotate(360deg);
-    }
-}
-
-@keyframes bounce {
-    0%, 100% {
-        transform: translateY(0) scale(1);
-    }
-    50% {
-        transform: translateY(100px) scale(0.9);
-    }
-}
-
-@keyframes circular-path {
-    0% {
-        transform: translate(0, 0) rotate(0deg);
-    }
-    25% {
-        transform: translate(200px, 0) rotate(90deg);
-    }
-    50% {
-        transform: translate(200px, 200px) rotate(180deg);
-    }
-    75% {
-        transform: translate(0, 200px) rotate(270deg);
-    }
-    100% {
-        transform: translate(0, 0) rotate(360deg);
-    }
-}
-
-@keyframes zigzag {
-    0%, 100% {
-        transform: translate(0, 0) scale(1);
-    }
-    25% {
-        transform: translate(100px, 50px) scale(1.1);
-    }
-    50% {
-        transform: translate(0, 100px) scale(1);
-    }
-    75% {
-        transform: translate(-100px, 50px) scale(0.9);
-    }
-}
-
-@keyframes gentle-rotate {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes blink {
-    0%, 100% {
-        opacity: 0.2;
-        transform: scale(0.8);
-    }
-    50% {
-        opacity: 1;
-        transform: scale(1.2);
-    }
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* Glitch Effect */
-.glitch-text {
-    position: relative;
-    color: var(--secondary-color);
-    text-shadow: 0 0 10px var(--neon-glow);
-}
-
-.glitch-text::before,
-.glitch-text::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.8;
-}
-
-.glitch-text::before {
-    left: 2px;
-    text-shadow: -2px 0 red;
-    clip: rect(44px, 450px, 56px, 0);
-    animation: glitch-anim 5s infinite linear alternate-reverse;
-}
-
-.glitch-text::after {
-    left: -2px;
-    text-shadow: -2px 0 blue;
-    clip: rect(44px, 450px, 56px, 0);
-    animation: glitch-anim2 5s infinite linear alternate-reverse;
-}
-
-@keyframes glitch-anim {
-    0% { clip: rect(5px, 9999px, 54px, 0); }
-    5% { clip: rect(80px, 9999px, 54px, 0); }
-    10% { clip: rect(40px, 9999px, 54px, 0); }
-    15% { clip: rect(10px, 9999px, 54px, 0); }
-    20% { clip: rect(30px, 9999px, 54px, 0); }
-    25% { clip: rect(20px, 9999px, 54px, 0); }
-    30% { clip: rect(60px, 9999px, 54px, 0); }
-    35% { clip: rect(70px, 9999px, 54px, 0); }
-    40% { clip: rect(15px, 9999px, 54px, 0); }
-    45% { clip: rect(25px, 9999px, 54px, 0); }
-    50% { clip: rect(5px, 9999px, 54px, 0); }
-    55% { clip: rect(35px, 9999px, 54px, 0); }
-    60% { clip: rect(45px, 9999px, 54px, 0); }
-    65% { clip: rect(55px, 9999px, 54px, 0); }
-    70% { clip: rect(65px, 9999px, 54px, 0); }
-    75% { clip: rect(75px, 9999px, 54px, 0); }
-    80% { clip: rect(15px, 9999px, 54px, 0); }
-    85% { clip: rect(25px, 9999px, 54px, 0); }
-    90% { clip: rect(35px, 9999px, 54px, 0); }
-    95% { clip: rect(45px, 9999px, 54px, 0); }
-    100% { clip: rect(55px, 9999px, 54px, 0); }
-}
-
-@keyframes glitch-anim2 {
-    0% { clip: rect(15px, 9999px, 54px, 0); }
-    5% { clip: rect(25px, 9999px, 54px, 0); }
-    10% { clip: rect(35px, 9999px, 54px, 0); }
-    15% { clip: rect(45px, 9999px, 54px, 0); }
-    20% { clip: rect(55px, 9999px, 54px, 0); }
-    25% { clip: rect(65px, 9999px, 54px, 0); }
-    30% { clip: rect(75px, 9999px, 54px, 0); }
-    35% { clip: rect(15px, 9999px, 54px, 0); }
-    40% { clip: rect(25px, 9999px, 54px, 0); }
-    45% { clip: rect(35px, 9999px, 54px, 0); }
-    50% { clip: rect(45px, 9999px, 54px, 0); }
-    55% { clip: rect(5px, 9999px, 54px, 0); }
-    60% { clip: rect(15px, 9999px, 54px, 0); }
-    65% { clip: rect(25px, 9999px, 54px, 0); }
-    70% { clip: rect(35px, 9999px, 54px, 0); }
-    75% { clip: rect(45px, 9999px, 54px, 0); }
-    80% { clip: rect(55px, 9999px, 54px, 0); }
-    85% { clip: rect(65px, 9999px, 54px, 0); }
-    90% { clip: rect(75px, 9999px, 54px, 0); }
-    95% { clip: rect(25px, 9999px, 54px, 0); }
-    100% { clip: rect(15px, 9999px, 54px, 0); }
-}
-
-/* Floating desktop icons */
-.desktop-icons {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    z-index: 5;
-}
-
-.desktop-icon {
-    width: 60px;
-    height: 60px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 5px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-}
-
-.desktop-icon:hover {
-    transform: scale(1.1);
-    background-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 15px rgba(218, 112, 214, 0.3);
-}
-
-.desktop-icon-img {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
-}
-
-.desktop-icon-text {
-    font-size: 10px;
-    color: var(--text-color);
-    text-align: center;
-    margin-top: 5px;
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-}
-
-/* Modified timer and score styling */
 #timer {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
     position: relative;
-    height: 48px;
-    background-color: rgba(218, 112, 214, 0.2);
-    box-shadow: 0 0 15px rgba(218, 112, 214, 0.5);
-    border-radius: 8px;
     overflow: hidden;
-    flex: 1;
+    flex-grow: 1;
+    height: 34px;
+    margin: 0 15px;
 }
 
 #progress {
     position: absolute;
     height: 100%;
-    width: 100%;
-    background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
-    transition: 0.1s linear;
-    box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+    background: linear-gradient(90deg, #6e2dd3, #00FFD1);
+    border-radius: 12px;
+    transition: width 0.3s;
 }
 
 #timer span {
-    display: block;
     position: relative;
-    font-size: 18px;
-    font-weight: 600;
-    text-align: center;
-    color: var(--text-color);
     z-index: 1;
-    padding: 10px;
-    font-family: 'Orbitron', sans-serif;
-    text-shadow: 0 0 10px var(--neon-glow);
+    color: var(--text-color);
+    font: 600 14px/1 'Orbitron', sans-serif;
+    padding: 5px 10px;
 }
 
-/* Taskbar */
+#score span {
+    color: var(--neon-glow);
+    font: 600 18px/1 'Orbitron', sans-serif;
+    text-shadow: 0 0 10px rgba(0, 255, 209, 0.5);
+}
+
+/* ===== Game Layout ===== */
+.game-layout {
+    display: flex;
+    flex: 1;
+    gap: 15px;
+    height: calc(100% - 60px);
+}
+
+.terminal-sidebar {
+    width: 25%;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.terminal-container {
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    padding: 15px;
+    flex: 1;
+}
+
+.terminal-console {
+    font: 14px/1.4 'Courier New', monospace;
+    color: var(--neon-glow);
+    height: 100%;
+}
+
+.game-stats {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.stats-title {
+    color: var(--neon-glow);
+    font: 600 16px/1 'Orbitron', sans-serif;
+    margin-bottom: 10px;
+}
+
+.stats-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+.stats-value {
+    color: var(--neon-glow);
+}
+
+#game-field {
+    flex: 1;
+    display: grid;
+    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+    gap: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 16px;
+    border: 2px solid var(--window-border);
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
+    padding: 15px;
+    position: relative;
+    overflow: hidden;
+    cursor: url(../img/hammer.png), auto;
+}
+
+.member-img {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+    transition: all 0.3s ease;
+    filter: hue-rotate(-40deg) brightness(0.9);
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.member-img:hover {
+    filter: hue-rotate(0) brightness(1.2);
+    transform: scale(1.1);
+    opacity: 1;
+}
+
+/* ===== Taskbar ===== */
 .taskbar {
     height: 60px;
     background: linear-gradient(90deg, #4A148C, #7B1FA2);
-    margin-top: auto;
+    margin-top: 10px;
     display: flex;
     align-items: center;
     padding: 0 20px;
-    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
-    position: relative;
-    z-index: 5;
+    border-radius: 8px;
 }
 
 .taskbar-icons {
@@ -507,264 +258,61 @@ body {
 }
 
 .taskbar-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
+    width: 36px;
+    height: 36px;
     background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .taskbar-icon:hover {
     background-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-5px);
+    transform: translateY(-3px);
 }
 
 .taskbar-icon img {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
+    width: 20px;
+    height: 20px;
 }
 
-#score {
-    display: flex;
-    justify-content: center;
-    perspective: 500px;
-    margin-left: 20px;
-}
-
-#score span {
-    color: var(--secondary-color);
-    font-size: 24px;
-    font-weight: 700;
-    text-shadow: 0 0 15px rgba(218, 112, 214, 0.5);
-    font-family: 'Orbitron', sans-serif;
-    transform: rotateX(15deg);
-    transition: transform 0.3s ease;
-    white-space: nowrap;
-}
-
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(46, 8, 84, 0.9);
-    z-index: 20;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    perspective: 1000px;
-}
-
-.overlay-content {
-    max-width: 600px;
-    padding: 40px;
-    background: rgba(0, 0, 0, 0.7);
-    border-radius: 16px;
-    backdrop-filter: blur(10px);
-    border: 2px solid var(--secondary-color);
-    box-shadow: 0 0 30px rgba(218, 112, 214, 0.3);
-    transform: rotateX(15deg);
-    transition: transform 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.overlay-content::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(
-        45deg,
-        rgba(138, 43, 226, 0.1),
-        rgba(138, 43, 226, 0.1) 10px,
-        rgba(138, 43, 226, 0.2) 10px,
-        rgba(138, 43, 226, 0.2) 20px
-    );
-    z-index: -1;
-}
-
-.overlay:hover .overlay-content {
-    transform: rotateX(0);
-}
-
-.overlay h1 {
-    color: var(--secondary-color);
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    font-family: 'Orbitron', sans-serif;
-}
-
-.overlay h2, .overlay h3 {
-    color: var(--text-color);
-    margin-bottom: 20px;
-}
-
-.glitch-button {
-    position: relative;
-    margin-top: 20px;
-    padding: 12px 32px;
-    background-color: transparent;
-    color: var(--secondary-color);
-    font-size: 18px;
-    font-weight: 600;
-    border: 2px solid var(--secondary-color);
-    border-radius: 32px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    overflow: hidden;
-}
-
-.glitch-button::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(120deg, transparent, rgba(218, 112, 214, 0.3), transparent);
-    transition: all 0.5s;
-}
-
-.glitch-button:hover::before {
-    left: 100%;
-}
-
-.glitch-button:hover {
-    background-color: var(--secondary-color);
-    color: var(--primary-color);
-    transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(218, 112, 214, 0.5);
-}
-
-/* Modified game field to ensure it's visible */
-#game-field {
-    display: grid;
-    grid-template-areas:
-        "m1 m2 m3"
-        "m4 m5 m6"
-        "m7 m8 m9";
-    grid-template-rows: repeat(3, 1fr);
-    grid-template-columns: repeat(3, 1fr);
-    height: 50vh;
-    max-height: 500px;
-    aspect-ratio: 1.2/1;
-    background-color: rgba(0, 0, 0, 0.7);
-    margin: 0 auto;
-    border-radius: 16px;
-    border: 2px solid var(--secondary-color);
-    cursor: url(../img/hammer.png), auto;
-    overflow: hidden;
-    box-shadow: 0 0 30px rgba(138, 43, 226, 0.3);
-    perspective: 1000px;
-    transform-style: preserve-3d;
-    position: relative;
-    z-index: 2;
-}
-
-#game-field::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(138, 43, 226, 0.05) 0px,
-        rgba(138, 43, 226, 0.05) 1px,
-        transparent 1px,
-        transparent 2px
-    );
-    pointer-events: none;
-    opacity: 0.5;
-}
-
-#game-field::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at center, 
-        rgba(218, 112, 214, 0.1) 0%, 
-        rgba(0, 0, 0, 0) 70%);
-    z-index: 1;
-    pointer-events: none;
-}
-
-.member-img {
-    display: block;
-    height: 100%;
-    width: 100%;
-    object-fit: contain;
-    margin: auto;
-    padding: 15%;
-    transition: all 0.3s ease;
-    filter: hue-rotate(-40deg) brightness(0.9);
-    transform: scale(0.8);
-    opacity: 0.7;
-    backface-visibility: hidden;
-}
-
-.member-img:hover {
-    transform: scale(1.1);
-    filter: hue-rotate(-40deg) brightness(1.2);
-    opacity: 1;
-    z-index: 10;
-}
-
+/* ===== Animations ===== */
 @keyframes pulse {
-    0%, 100% { transform: scale(0.8); }
-    50% { transform: scale(1); }
+    0%, 100% { transform: scale(0.9); }
+    50% { transform: scale(1.1); }
 }
 
-.typing-text {
-    position: relative;
-    display: inline-block;
+@keyframes blink {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 1; }
 }
 
-.typing-text::after {
-    content: '|';
-    animation: blink 0.7s infinite;
-}
-
-/* Small screen adjustments */
+/* ===== Media Queries ===== */
 @media (max-width: 768px) {
-    .game-header {
-        flex-direction: column;
-        align-items: stretch;
+    .window-container {
+        width: 100%;
+        height: 100vh;
+        margin: 0;
+        border-radius: 0;
     }
-    
+
     #game-field {
         width: 90%;
         height: 40vh;
     }
-    
-    .overlay-content {
-        max-width: 90%;
-        padding: 20px;
+
+    .terminal-sidebar {
+        width: 100%;
+        min-width: auto;
     }
-    
-    .overlay h1 {
-        font-size: 1.8rem;
+
+    .game-layout {
+        flex-direction: column;
+        height: auto;
     }
-    
-    #score span {
-        font-size: 18px;
-    }
-    
+
     .desktop-icons {
         display: none;
     }
