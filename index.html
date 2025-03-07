@@ -6,15 +6,23 @@
     <link rel="icon" type="image/svg+xml" href="img/icon.svg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" type="text/css" href="src/style.css">
     <title>Crisis of Trust</title>
 </head>
 <body>
     <div class="cosmic-background"></div>
-    <div class="falling-elements"></div>
-    <div class="blinking-elements"></div>
+    
+    <!-- Falling elements background -->
+    <div class="falling-elements">
+        <!-- Elements will be added dynamically via JavaScript -->
+    </div>
+    
+    <!-- Blinking elements background -->
+    <div class="blinking-elements">
+        <!-- Elements will be added dynamically via JavaScript -->
+    </div>
 
-    <!-- Main Window -->
+    <!-- Main Window Container -->
     <div class="window-container">
         <div class="window-titlebar">
             <div class="window-buttons">
@@ -26,21 +34,29 @@
         </div>
         
         <div class="window-content">
+            <!-- Новая структура заголовка - одна строка с логотипом, таймером и счетчиком -->
             <div class="header-area">
+                <!-- Логотип слева -->
                 <div class="logo-section">
                     <div class="logo-icon">✨</div>
                     <div class="logo-text">Succinct</div>
                 </div>
+                
+                <!-- Таймер посередине (растягивается) -->
                 <div id="timer">
                     <div id="progress"></div>
                     <span>Time left: 20 seconds</span>
                 </div>
+                
+                <!-- Счетчик справа -->
                 <div id="score">
                     <span>Codes: 0</span>
                 </div>
             </div>
             
+            <!-- Новый макет с использованием flex для лучшего распределения пространства -->
             <div class="game-layout">
+                <!-- Левая боковая панель с терминалом и статистикой -->
                 <div class="terminal-sidebar">
                     <div class="terminal-container">
                         <div class="terminal-console">
@@ -52,6 +68,7 @@
                             <div class="terminal-line">$ Target: Collect trust codes</div>
                         </div>
                     </div>
+                    
                     <div class="game-stats">
                         <div class="stats-title">Game Statistics</div>
                         <div class="stats-item">
@@ -69,16 +86,17 @@
                     </div>
                 </div>
                 
+                <!-- Игровое поле занимает оставшееся пространство -->
                 <div id="game-field">
-                    <img src="img/member.png" draggable="false" id="m1" class="member-img">
-                    <img src="img/member.png" draggable="false" id="m2" class="member-img">
-                    <img src="img/member.png" draggable="false" id="m3" class="member-img">
-                    <img src="img/member.png" draggable="false" id="m4" class="member-img">
-                    <img src="img/member.png" draggable="false" id="m5" class="member-img">
-                    <img src="img/member.png" draggable="false" id="m6" class="member-img">
-                    <img src="img/member.png" draggable="false" id="m7" class="member-img">
-                    <img src="img/member.png" draggable="false" id="m8" class="member-img">
-                    <img src="img/member.png" draggable="false" id="m9" class="member-img">
+                    <img src="img/member.png" draggable="false" id="m1" class="member-img" style="grid-area: m1;">
+                    <img src="img/member.png" draggable="false" id="m2" class="member-img" style="grid-area: m2;">
+                    <img src="img/member.png" draggable="false" id="m3" class="member-img" style="grid-area: m3;">
+                    <img src="img/member.png" draggable="false" id="m4" class="member-img" style="grid-area: m4;">
+                    <img src="img/member.png" draggable="false" id="m5" class="member-img" style="grid-area: m5;">
+                    <img src="img/member.png" draggable="false" id="m6" class="member-img" style="grid-area: m6;">
+                    <img src="img/member.png" draggable="false" id="m7" class="member-img" style="grid-area: m7;">
+                    <img src="img/member.png" draggable="false" id="m8" class="member-img" style="grid-area: m8;">
+                    <img src="img/member.png" draggable="false" id="m9" class="member-img" style="grid-area: m9;">
                 </div>
             </div>
             
@@ -100,8 +118,20 @@
             </div>
         </div>
     </div>
-
-    <!-- Overlays -->
+    
+    <!-- Desktop Icons -->
+    <div class="desktop-icons">
+        <div class="desktop-icon">
+            <img src="img/readme.png" class="desktop-icon-img" alt="PDF">
+            <div class="desktop-icon-text">README.pdf</div>
+        </div>
+        <div class="desktop-icon">
+            <img src="img/audio-icon.svg" class="desktop-icon-img" alt="Audio">
+            <div class="desktop-icon-text">Project.mp4</div>
+        </div>
+    </div>
+    
+    <!-- Game Start Overlay -->
     <div class="overlay" id="start-overlay">
         <div class="overlay-content">
             <h1>CRISIS OF TRUST</h1>
@@ -111,6 +141,7 @@
         </div>
     </div>
     
+    <!-- Game Over Overlay -->
     <div class="overlay hidden" id="game-over-overlay">
         <div class="overlay-content">
             <h1>Game Over</h1>
@@ -119,10 +150,221 @@
             <button class="glitch-button" id="restart-button">Play Again</button>
         </div>
     </div>
-
+    
     <script>
-        // JavaScript остается без изменений из вашего исходного кода
-        // ...
+        // Background animations
+        function createBackgroundElements() {
+            const fallingContainer = document.querySelector('.falling-elements');
+            const blinkingContainer = document.querySelector('.blinking-elements');
+            
+            // Create falling elements
+            for (let i = 0; i < 15; i++) {
+                const element = document.createElement('div');
+                element.classList.add('falling-item');
+                element.style.left = `${Math.random() * 100}vw`;
+                element.style.top = `${Math.random() * 100}vh`;
+                element.style.opacity = Math.random() * 0.5 + 0.1;
+                element.style.fontSize = `${Math.random() * 20 + 10}px`;
+                element.innerHTML = ['✨', '🔒', '💻', '⚡', '🔑'][Math.floor(Math.random() * 5)];
+                
+                // Random animation type
+                const animations = ['diagonal-drift', 'bounce', 'circular-path', 'zigzag'];
+                const randomAnim = animations[Math.floor(Math.random() * animations.length)];
+                element.style.animation = `${randomAnim} ${Math.random() * 15 + 10}s infinite alternate`;
+                
+                fallingContainer.appendChild(element);
+            }
+            
+            // Create blinking pixel elements
+            for (let i = 0; i < 30; i++) {
+                const pixel = document.createElement('div');
+                pixel.classList.add('succinct-pixel');
+                pixel.style.left = `${Math.random() * 100}vw`;
+                pixel.style.top = `${Math.random() * 100}vh`;
+                pixel.style.width = `${Math.random() * 4 + 2}px`;
+                pixel.style.height = pixel.style.width;
+                pixel.style.color = `hsl(${Math.random() * 60 + 270}, 100%, 70%)`;
+                pixel.style.animation = `blink ${Math.random() * 3 + 2}s infinite`;
+                
+                blinkingContainer.appendChild(pixel);
+            }
+        }
+        
+        // Game logic
+        let score = 0;
+        let timeLeft = 20;
+        let gameInterval;
+        let activeMembers = [];
+        
+        // Initialize the game
+        function initGame() {
+            // Hide overlays
+            document.getElementById('start-overlay').classList.add('hidden');
+            document.getElementById('game-over-overlay').classList.add('hidden');
+            
+            // Reset game state
+            score = 0;
+            timeLeft = 20;
+            updateScore();
+            updateTimer();
+            
+            // Start the game loop
+            gameInterval = setInterval(gameLoop, 1000);
+            
+            // Show the first member
+            showRandomMember();
+        }
+        
+        // Game loop function
+        function gameLoop() {
+            timeLeft--;
+            updateTimer();
+            
+            // Show a new member randomly
+            if (Math.random() > 0.3) {
+                showRandomMember();
+            }
+            
+            // Game over when time runs out
+            if (timeLeft <= 0) {
+                gameOver();
+            }
+        }
+        
+        // Show a random member
+        function showRandomMember() {
+            const members = document.querySelectorAll('.member-img');
+            const availableMembers = Array.from(members).filter(member => !activeMembers.includes(member.id));
+            
+            if (availableMembers.length > 0) {
+                const randomIndex = Math.floor(Math.random() * availableMembers.length);
+                const member = availableMembers[randomIndex];
+                
+                // Add to active members
+                activeMembers.push(member.id);
+                
+                // Animate member
+                member.style.animation = 'pulse 1.5s infinite';
+                member.style.filter = 'hue-rotate(0deg) brightness(1.2)';
+                member.style.opacity = '1';
+                
+                // Make member clickable
+                member.onclick = function() {
+                    clickMember(member);
+                };
+                
+                // Auto-hide after random time if not clicked
+                setTimeout(() => {
+                    if (activeMembers.includes(member.id)) {
+                        hideMember(member);
+                    }
+                }, Math.random() * 2000 + 1000);
+            }
+        }
+        
+        // Handle member click
+        function clickMember(member) {
+            // Increase score
+            score++;
+            updateScore();
+            
+            // Add time bonus
+            timeLeft += 1;
+            updateTimer();
+            
+            // Hide the member
+            hideMember(member);
+            
+            // Show effect
+            showClickEffect(member);
+        }
+        
+        // Hide a member
+        function hideMember(member) {
+            member.style.animation = '';
+            member.style.filter = 'hue-rotate(-40deg) brightness(0.9)';
+            member.style.opacity = '0.7';
+            member.onclick = null;
+            
+            // Remove from active members
+            const index = activeMembers.indexOf(member.id);
+            if (index > -1) {
+                activeMembers.splice(index, 1);
+            }
+        }
+        
+        // Show click effect
+        function showClickEffect(member) {
+            const effect = document.createElement('div');
+            effect.textContent = '+1';
+            effect.style.position = 'absolute';
+            effect.style.color = '#00FFD1';
+            effect.style.fontSize = '24px';
+            effect.style.fontWeight = 'bold';
+            effect.style.textShadow = '0 0 10px rgba(0, 255, 209, 0.8)';
+            effect.style.zIndex = '100';
+            
+            // Get position
+            const rect = member.getBoundingClientRect();
+            effect.style.left = `${rect.left + rect.width / 2}px`;
+            effect.style.top = `${rect.top + rect.height / 2}px`;
+            
+            // Add animation
+            effect.style.transition = 'all 0.8s ease-out';
+            effect.style.pointerEvents = 'none';
+            
+            document.body.appendChild(effect);
+            
+            // Animate and remove
+            setTimeout(() => {
+                effect.style.transform = 'translateY(-50px)';
+                effect.style.opacity = '0';
+            }, 50);
+            
+            setTimeout(() => {
+                effect.remove();
+            }, 800);
+        }
+        
+        // Update score display
+        function updateScore() {
+            document.querySelector('#score span').textContent = `Codes: ${score}`;
+            document.getElementById('final-score').textContent = score;
+            document.querySelector('.stats-value').textContent = score > 0 ? score : '0';
+        }
+        
+        // Update timer display
+        function updateTimer() {
+            document.querySelector('#timer span').textContent = `Time left: ${timeLeft} seconds`;
+            
+            // Update progress bar
+            const progressPercent = (timeLeft / 20) * 100;
+            document.getElementById('progress').style.width = `${progressPercent}%`;
+        }
+        
+        // Game over function
+        function gameOver() {
+            clearInterval(gameInterval);
+            
+            // Hide all active members
+            activeMembers.forEach(id => {
+                const member = document.getElementById(id);
+                hideMember(member);
+            });
+            activeMembers = [];
+            
+            // Show game over overlay
+            document.getElementById('game-over-overlay').classList.remove('hidden');
+        }
+        
+        // Event listeners
+        document.getElementById('start-button').addEventListener('click', initGame);
+        document.getElementById('restart-button').addEventListener('click', initGame);
+        
+        // Initialize background on load
+        window.addEventListener('load', function() {
+            createBackgroundElements();
+        });
     </script>
 </body>
 </html>
