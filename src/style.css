@@ -359,16 +359,12 @@ body {
     color: #00FFD1;
 }
 
-/* Оптимизированное игровое поле */
+/* Оптимизированное игровое поле - сетка 2x4 */
 #game-field {
     flex: 1;
     display: grid;
-    grid-template-areas:
-        "m1 m2 m3"
-        "m4 m5 m6"
-        "m7 m8 m9";
-    grid-template-rows: 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     gap: 10px;
     background-color: rgba(0, 0, 0, 0.7);
     border-radius: 16px;
@@ -376,9 +372,9 @@ body {
     box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
     padding: 15px;
     position: relative;
-    overflow: hidden; /* Изображения не будут выходить за границы */
-    align-items: center; /* Центрируем элементы по вертикали */
-    justify-items: center; /* Центрируем элементы по горизонтали */
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
 }
 
 #game-field::before {
@@ -415,18 +411,13 @@ body {
 
 /* Стиль для изображений участников */
 .member-img {
-    max-width: 80%; /* Ограничиваем максимальную ширину */
-    max-height: 80%; /* Ограничиваем максимальную высоту */
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    justify-self: center;
-    align-self: center;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     transition: all 0.3s ease;
     filter: hue-rotate(-40deg) brightness(0.9);
     opacity: 0.7;
     cursor: pointer;
-    margin: 0;
     display: block;
 }
 
@@ -434,6 +425,12 @@ body {
     filter: hue-rotate(0) brightness(1.2);
     transform: scale(1.1);
     opacity: 1;
+}
+
+/* Удаляем все grid-area назначения, чтобы grid-template работал корректно */
+#game-field > .member-img,
+#game-field > div {
+    grid-area: auto !important;
 }
 
 /* Animation keyframes for background elements */
