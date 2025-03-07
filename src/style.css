@@ -359,15 +359,12 @@ body {
     color: #00FFD1;
 }
 
-/* Оптимизированное игровое поле - ОБНОВЛЕНО с 3x3 на 2x4 */
+/* ИСПРАВЛЕННОЕ игровое поле - 2x4 на всю доступную площадь */
 #game-field {
     flex: 1;
     display: grid;
-    grid-template-areas:
-        "m1 m2 m3 m4"
-        "m5 m6 m7 m8";
-    grid-template-rows: 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     gap: 10px;
     background-color: rgba(0, 0, 0, 0.7);
     border-radius: 16px;
@@ -375,30 +372,10 @@ body {
     box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
     padding: 15px;
     position: relative;
-    overflow: hidden; /* Изображения не будут выходить за границы */
-    align-items: center; /* Центрируем элементы по вертикали */
-    justify-items: center; /* Центрируем элементы по горизонтали */
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
 }
-
-/* Added grid area assignments for member images */
-#game-field > .member-img:nth-child(1) { grid-area: m1; }
-#game-field > .member-img:nth-child(2) { grid-area: m2; }
-#game-field > .member-img:nth-child(3) { grid-area: m3; }
-#game-field > .member-img:nth-child(4) { grid-area: m4; }
-#game-field > .member-img:nth-child(5) { grid-area: m5; }
-#game-field > .member-img:nth-child(6) { grid-area: m6; }
-#game-field > .member-img:nth-child(7) { grid-area: m7; }
-#game-field > .member-img:nth-child(8) { grid-area: m8; }
-
-/* Alternative if images are in container divs */
-#game-field > div:nth-child(1) { grid-area: m1; }
-#game-field > div:nth-child(2) { grid-area: m2; }
-#game-field > div:nth-child(3) { grid-area: m3; }
-#game-field > div:nth-child(4) { grid-area: m4; }
-#game-field > div:nth-child(5) { grid-area: m5; }
-#game-field > div:nth-child(6) { grid-area: m6; }
-#game-field > div:nth-child(7) { grid-area: m7; }
-#game-field > div:nth-child(8) { grid-area: m8; }
 
 #game-field::before {
     content: "";
@@ -434,19 +411,18 @@ body {
 
 /* Стиль для изображений участников */
 .member-img {
-    max-width: 80%; /* Ограничиваем максимальную ширину */
-    max-height: 80%; /* Ограничиваем максимальную высоту */
-    width: auto;
-    height: auto;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
-    justify-self: center;
-    align-self: center;
     transition: all 0.3s ease;
     filter: hue-rotate(-40deg) brightness(0.9);
     opacity: 0.7;
     cursor: pointer;
-    margin: 0;
     display: block;
+    justify-self: center;
+    align-self: center;
+    max-width: 90%;
+    max-height: 90%;
 }
 
 .member-img:hover {
