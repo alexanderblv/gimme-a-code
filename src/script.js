@@ -1,15 +1,15 @@
-var memberArray = ['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8', 'm9'];
+var memberArray = ['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8'];
 var score = 0;
 var startTime;
 var gameEnd = true;
 
-// Новые переменные для статистики
+// Переменные для статистики
 let bestScore = 0;
 let clickTimes = [];
 let successfulClicks = 0;
 let missedClicks = 0;
 
-window.addEventListener('DOMContentLoaded', initialisation());
+window.addEventListener('DOMContentLoaded', initialisation);
 
 function initialisation() {
     document.getElementById('game-field').addEventListener('click', function(data){
@@ -31,9 +31,11 @@ function initialisation() {
             triggerHitAnimation(data.target);
             setTimeout(addMember, 300, getRandomMember());
         }
-    })
-    document.getElementsByClassName('start-button')[0].addEventListener('mouseup', startGame);
-    document.getElementsByClassName('start-button')[1].addEventListener('mouseup', startGame);
+    });
+    
+    // Добавляем обработчики событий для кнопок
+    document.getElementById('start-button').addEventListener('click', startGame);
+    document.getElementById('restart-button').addEventListener('click', startGame);
     
     // Create the falling background elements
     createFallingElements();
@@ -73,7 +75,7 @@ function calculateSuccessRate() {
     return Math.round((successfulClicks / totalAttempts) * 100);
 }
 
-// Функция для обновления всей статистики
+// Функция для обновления всей статистики на экране
 function updateStatistics() {
     // Обновляем Best Score
     document.querySelector('.stats-item:nth-child(1) .stats-value').textContent = bestScore;
@@ -85,132 +87,45 @@ function updateStatistics() {
     // Обновляем Success Rate
     const successRate = calculateSuccessRate();
     document.querySelector('.stats-item:nth-child(3) .stats-value').textContent = successRate + '%';
+    
+    // Обновляем финальный счет в оверлее окончания игры
+    document.getElementById('final-score').textContent = score;
 }
 
 function createFallingElements() {
-    const container = document.createElement('div');
-    container.className = 'falling-elements';
-    document.body.appendChild(container);
+    const fallingContainer = document.querySelector('.falling-elements');
+    const blinkingContainer = document.querySelector('.blinking-elements');
     
-    const images = ['meme.png', 'dvd.png', 'hat.png', 'crab.png'];
-    const numberOfElements = 15; // More elements for a richer background
-    
-    for (let i = 0; i < numberOfElements; i++) {
-        const element = document.createElement('img');
-        const randomImage = images[Math.floor(Math.random() * images.length)];
-        element.src = `img/${randomImage}`;
-        element.className = 'falling-item';
+    // Создаем падающие элементы
+    for (let i = 0; i < 15; i++) {
+        const element = document.createElement('div');
+        element.classList.add('falling-item');
+        element.style.left = `${Math.random() * 100}vw`;
+        element.style.top = `${Math.random() * 100}vh`;
+        element.style.opacity = Math.random() * 0.5 + 0.1;
+        element.style.fontSize = `${Math.random() * 20 + 10}px`;
+        element.innerHTML = ['✨', '🔒', '💻', '⚡', '🔑'][Math.floor(Math.random() * 5)];
         
-        // Random positioning and properties
-        const gameField = document.getElementById('game-field');
-        const gameFieldRect = gameField.getBoundingClientRect();
+        // Случайный тип анимации
+        const animations = ['diagonal-drift', 'bounce', 'circular-path', 'zigzag'];
+        const randomAnim = animations[Math.floor(Math.random() * animations.length)];
+        element.style.animation = `${randomAnim} ${Math.random() * 15 + 10}s infinite alternate`;
         
-        // Get window dimensions
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
-        
-        // Define game field boundaries
-        const gameFieldLeft = gameFieldRect.left;
-        const gameFieldRight = gameFieldRect.right;
-        const gameFieldTop = gameFieldRect.top;
-        const gameFieldBottom = gameFieldRect.bottom;
-        
-        // Random position (ensuring it's outside the game field)
-        let startX, startY;
-        let isPositionValid = false;
-        
-        // Keep generating random positions until we find one outside the game field
-        while (!isPositionValid) {
-            startX = Math.random() * 100; // Position in vh units
-            startY = Math.random() * 100; // Position in vw units
-            
-            // Convert percentage to actual pixels for comparison
-            const pixelX = (startX / 100) * windowWidth;
-            const pixelY = (startY / 100) * windowHeight;
-            
-            // Check if the position is outside the game field with some margin
-            if (!(pixelX > gameFieldLeft - 50 && pixelX < gameFieldRight + 50 &&
-                  pixelY > gameFieldTop - 50 && pixelY < gameFieldBottom + 50)) {
-                isPositionValid = true;
-            }
-        }
-        
-        const size = Math.random() * 50 + 30; // Size between 30px and 80px
-        const opacity = Math.random() * 0.3 + 0.2; // Opacity between 0.2 and 0.5
-        const rotationSpeed = Math.random() * 20 + 10; // Rotation speed
-        
-        // Choose a random animation pattern
-        const animationPattern = Math.floor(Math.random() * 4);
-        let animationStyle;
-        
-        switch(animationPattern) {
-            case 0: // Diagonal drift
-                animationStyle = `
-                    diagonal-drift ${Math.random() * 60 + 40}s linear infinite,
-                    gentle-rotate ${rotationSpeed}s ease-in-out infinite
-                `;
-                break;
-            case 1: // Bouncing
-                animationStyle = `
-                    bounce ${Math.random() * 20 + 10}s ease-in-out infinite,
-                    gentle-rotate ${rotationSpeed}s ease-in-out infinite
-                `;
-                break;
-            case 2: // Circular path
-                animationStyle = `
-                    circular-path ${Math.random() * 40 + 30}s linear infinite,
-                    gentle-rotate ${rotationSpeed}s ease-in-out infinite
-                `;
-                break;
-            case 3: // Zigzag
-                animationStyle = `
-                    zigzag ${Math.random() * 30 + 20}s ease-in-out infinite,
-                    gentle-rotate ${rotationSpeed * 0.8}s ease-in-out infinite
-                `;
-                break;
-        }
-        
-        // Set CSS properties
-        element.style.cssText = `
-            top: ${startY}vh;
-            left: ${startX}vw;
-            width: ${size}px;
-            height: auto;
-            opacity: ${opacity};
-            z-index: -1; /* Ensure it's behind the game field */
-            animation: ${animationStyle};
-            animation-delay: -${Math.random() * 30}s;
-        `;
-        
-        container.appendChild(element);
+        fallingContainer.appendChild(element);
     }
     
-    // Add unique blinking elements
-    const blinkingContainer = document.createElement('div');
-    blinkingContainer.className = 'blinking-elements';
-    document.body.appendChild(blinkingContainer);
-    
-    for (let i = 0; i < 5; i++) {
-        const element = document.createElement('div');
-        element.className = 'succinct-pixel';
+    // Создаем мерцающие пиксели
+    for (let i = 0; i < 30; i++) {
+        const pixel = document.createElement('div');
+        pixel.classList.add('succinct-pixel');
+        pixel.style.left = `${Math.random() * 100}vw`;
+        pixel.style.top = `${Math.random() * 100}vh`;
+        pixel.style.width = `${Math.random() * 4 + 2}px`;
+        pixel.style.height = pixel.style.width;
+        pixel.style.backgroundColor = `hsl(${Math.random() * 60 + 270}, 100%, 70%)`;
+        pixel.style.animation = `blink ${Math.random() * 3 + 2}s infinite`;
         
-        const size = Math.random() * 6 + 4; // Size between 4px and 10px
-        const startX = Math.random() * 100;
-        const startY = Math.random() * 100;
-        const blinkSpeed = Math.random() * 3 + 1; // Blink speed
-        const hue = Math.random() * 60 + 300; // Purple to pink hue range
-        
-        element.style.cssText = `
-            width: ${size}px;
-            height: ${size}px;
-            top: ${startY}vh;
-            left: ${startX}vw;
-            background-color: hsl(${hue}, 100%, 70%);
-            animation: blink ${blinkSpeed}s ease-in-out infinite;
-            animation-delay: -${Math.random() * 3}s;
-        `;
-        
-        blinkingContainer.appendChild(element);
+        blinkingContainer.appendChild(pixel);
     }
 }
 
@@ -229,11 +144,11 @@ function playHitSound() {
     ];
     const randomSound = hitSounds[Math.floor(Math.random() * hitSounds.length)];
     randomSound.volume = 0.5;
-    randomSound.play();
+    randomSound.play().catch(e => console.log("Sound play failed:", e));
 }
 
 function getRandomMember() {
-    return memberArray[Math.floor(Math.random() * Math.floor(9))];
+    return memberArray[Math.floor(Math.random() * memberArray.length)];
 }
 
 function addMember(id) {
@@ -294,9 +209,11 @@ function changeTimer() {
         document.getElementById('progress').style.width = progressPercentage + '%';
         document.getElementById('timer').getElementsByTagName('span')[0].innerHTML = 'Time left: ' + remainingTime + ' seconds';
         
-        // Add visual intensity as time runs low
+        // Добавляем визуальную интенсивность, когда время на исходе
         if (remainingTime <= 5) {
             document.getElementById('timer').style.animation = 'shake 0.5s infinite';
+        } else {
+            document.getElementById('timer').style.animation = '';
         }
     }
 }
@@ -309,6 +226,11 @@ function clearField() {
 }
 
 function startGame() {
+    // Скрываем оверлеи
+    document.getElementById('start-overlay').classList.add('hidden');
+    document.getElementById('game-over-overlay').classList.add('hidden');
+    
+    // Сбрасываем игровые переменные
     score = 0;
     changeScore();
     
@@ -319,7 +241,6 @@ function startGame() {
     
     clearField();
     document.getElementById('game-info').style.display = 'none';
-    document.getElementById('game-end').classList.add('hidden');
     gameEnd = false;
     startTimer();
     setTimeout(addMember, 300, getRandomMember());
@@ -347,27 +268,24 @@ function endGame() {
     // Обновляем все статистики в последний раз
     updateStatistics();
     
-    const h1 = document.getElementById('game-end').getElementsByTagName('h1')[0];
-    const h2 = document.getElementById('game-end').getElementsByTagName('h2')[0];
+    // Показываем оверлей окончания игры
+    document.getElementById('game-over-overlay').classList.remove('hidden');
     
-    h1.classList.add('glitch-text');
-    h2.classList.add('typing-text');
-    
-    let resultText, subText;
+    // Устанавливаем текст в зависимости от результата
+    let resultText, resultClass;
     if (score >= 20) {
-        resultText = 'At this rate, Yinger will hire you as an assistant, DM him bro';
-        subText = `Given ${score} codes. Great result Prover, you are just a SP1 dream!`;
+        resultText = 'IMPRESSIVE SPEED!';
+        resultClass = 'high-score';
     } else if (score < 20 && score > 8) {
-        resultText = 'Cool, but ETH requires more!';
-        subText = `You gave out ${score} codes. Try working like a Yinger next time!`;
+        resultText = 'GOOD EFFORT!';
+        resultClass = 'medium-score';
     } else {
-        resultText = 'ARE YOU GOING TO PROVE SOMETHING???';
-        subText = `Given only ${score} codes. You either didn't figure out how to do it, or you fell asleep...`;
+        resultText = 'TRY AGAIN...';
+        resultClass = 'low-score';
     }
     
-    h1.setAttribute('data-text', resultText);
-    h1.innerHTML = resultText;
-    typeWriter(h2, subText);
-    
-    document.getElementById('game-end').classList.remove('hidden');
+    // Обновляем текст заголовка
+    const gameOverTitle = document.querySelector('#game-over-overlay h1');
+    gameOverTitle.textContent = resultText;
+    gameOverTitle.className = resultClass;
 }
