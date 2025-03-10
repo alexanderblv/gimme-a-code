@@ -12,6 +12,12 @@ var successfulClicks = 0;
 window.addEventListener('DOMContentLoaded', initialisation);
 
 function initialisation() {
+    // Add debugging to check what elements exist
+    console.log("Game field:", document.getElementById('game-field'));
+    console.log("Start buttons by class:", document.getElementsByClassName('start-button'));
+    console.log("Start button by ID:", document.getElementById('start-button'));
+    console.log("Restart button by ID:", document.getElementById('restart-button'));
+    
     document.getElementById('game-field').addEventListener('click', function(data){
         totalClicks++; // Track all clicks
         
@@ -38,9 +44,38 @@ function initialisation() {
         }
     });
     
-    // Using the class selectors from the original working code
-    document.getElementsByClassName('start-button')[0].addEventListener('mouseup', startGame);
-    document.getElementsByClassName('start-button')[1].addEventListener('mouseup', startGame);
+    // Try to find start buttons in multiple ways and add event listeners
+    // Option 1: By class name from original code
+    const startButtonsByClass = document.getElementsByClassName('start-button');
+    if (startButtonsByClass.length > 0) {
+        console.log("Found start buttons by class:", startButtonsByClass.length);
+        for (let i = 0; i < startButtonsByClass.length; i++) {
+            startButtonsByClass[i].addEventListener('mouseup', startGame);
+        }
+    }
+    
+    // Option 2: By specific IDs from new code
+    const startButton = document.getElementById('start-button');
+    if (startButton) {
+        console.log("Found start button by ID");
+        startButton.addEventListener('mouseup', startGame);
+    }
+    
+    const restartButton = document.getElementById('restart-button');
+    if (restartButton) {
+        console.log("Found restart button by ID");
+        restartButton.addEventListener('mouseup', startGame);
+    }
+    
+    // Option 3: Look for any buttons with text containing "start" or "restart"
+    const allButtons = document.getElementsByTagName('button');
+    for (let i = 0; i < allButtons.length; i++) {
+        const buttonText = allButtons[i].textContent.toLowerCase();
+        if (buttonText.includes('start') || buttonText.includes('restart')) {
+            console.log("Found button with start/restart text:", allButtons[i]);
+            allButtons[i].addEventListener('mouseup', startGame);
+        }
+    }
     
     // Load best score from localStorage if available
     if (localStorage.getItem('bestScore')) {
@@ -297,6 +332,8 @@ function clearField() {
 }
 
 function startGame() {
+    console.log("Starting game...");
+    
     // Reset game values
     score = 0;
     changeScore();
@@ -304,9 +341,22 @@ function startGame() {
     totalClicks = 0;
     successfulClicks = 0;
     
-    // Using the same overlay IDs as in the original working code
-    document.getElementById('game-info').style.display = 'none';
-    document.getElementById('game-end').classList.add('hidden');
+    // Try both overlay structures to handle either version
+    // Original structure
+    if (document.getElementById('game-info')) {
+        document.getElementById('game-info').style.display = 'none';
+    }
+    if (document.getElementById('game-end')) {
+        document.getElementById('game-end').classList.add('hidden');
+    }
+    
+    // New structure
+    if (document.getElementById('start-overlay')) {
+        document.getElementById('start-overlay').classList.add('hidden');
+    }
+    if (document.getElementById('game-over-overlay')) {
+        document.getElementById('game-over-overlay').classList.add('hidden');
+    }
     
     clearField();
     gameEnd = false;
@@ -331,6 +381,7 @@ function typeWriter(element, text, speed = 50) {
 }
 
 function endGame() {
+    console.log("Ending game...");
     gameEnd = true;
     
     // Clear timer animation
@@ -339,12 +390,7 @@ function endGame() {
     // Update statistics one final time
     updateStatistics();
     
-    const h1 = document.getElementById('game-end').getElementsByTagName('h1')[0];
-    const h2 = document.getElementById('game-end').getElementsByTagName('h2')[0];
-    
-    h1.classList.add('glitch-text');
-    h2.classList.add('typing-text');
-    
+    // Determine text based on score
     let resultText, subText;
     if (score >= 20) {
         resultText = 'At this rate, Yinger will hire you as an assistant, DM him bro';
@@ -357,9 +403,45 @@ function endGame() {
         subText = `Given only ${score} codes. You either didn't figure out how to do it, or you fell asleep...`;
     }
     
-    h1.setAttribute('data-text', resultText);
-    h1.innerHTML = resultText;
-    typeWriter(h2, subText);
+    // Try both overlay structures to handle either version
+    // Original structure
+    if (document.getElementById('game-end')) {
+        const h1 = document.getElementById('game-end').getElementsByTagName('h1')[0];
+        const h2 = document.getElementById('game-end').getElementsByTagName('h2')[0];
+        
+        if (h1 && h2) {
+            h1.classList.add('glitch-text');
+            h2.classList.add('typing-text');
+            
+            h1.setAttribute('data-text', resultText);
+            h1.innerHTML = resultText;
+            typeWriter(h2, subText);
+        }
+        
+        document.getElementById('game-end').classList.remove('hidden');
+    }
     
-    document.getElementById('game-end').classList.remove('hidden');
+    // New structure
+    if (document.getElementById('game-over-overlay')) {
+        document.getElementById('game-over-overlay').classList.remove('hidden');
+        
+        const h1 = document.querySelector('#game-over-overlay h1');
+        const h2 = document.querySelector('#game-over-overlay h2');
+        
+        if (h1) {
+            h1.innerHTML = resultText;
+            if (!h1.classList.contains('glitch-text')) {
+                h1.classList.add('glitch-text');
+            }
+            h1.setAttribute('data-text', resultText);
+        }
+        
+        // Update the sub-text with typing effect
+        if (h2 && h2.nextElementSibling && h2.nextElementSibling.tagName === 'H3') {
+            const h3 = h2.nextElementSibling;
+            typeWriter(h3, subText);
+        } else if (h2) {
+            typeWriter(h2, subText);
+        }
+    }
 }
