@@ -30,10 +30,9 @@
         }
         
         .result-gif {
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
+            width: 100%; /* Set a fixed width percentage */
+            height: auto; /* Maintain aspect ratio */
+            max-height: 100%; /* Don't exceed container height */
             object-fit: contain;
             filter: contrast(1.1) brightness(0.9) opacity(0.5); /* 50% opacity */
             transition: all 0.5s ease;
@@ -739,6 +738,16 @@
             const resultGif = document.getElementById('result-gif');
             resultGif.style.opacity = 0;
             resultGif.src = gifSrc;
+            
+            // Ensure the GIF is displayed at the right size by setting specific dimensions for high.gif
+            if (score >= 20) {
+                resultGif.style.width = '100%'; // Full width
+                resultGif.style.height = 'auto'; // Maintain aspect ratio
+                // Force the container to be same size for all gifs
+                resultGif.parentElement.style.display = 'flex';
+                resultGif.parentElement.style.justifyContent = 'center';
+                resultGif.parentElement.style.alignItems = 'center';
+            }
             
             // Добавляем класс анимации glitch для GIF
             resultGif.classList.add('gif-glitch');
