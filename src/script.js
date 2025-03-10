@@ -3,11 +3,28 @@ var score = 0;
 var startTime;
 var gameEnd = true;
 
+// Новые переменные для статистики
+let bestScore = 0;
+let clickTimes = [];
+let successfulClicks = 0;
+let missedClicks = 0;
+
 window.addEventListener('DOMContentLoaded', initialisation());
 
 function initialisation() {
     document.getElementById('game-field').addEventListener('click', function(data){
         if (memberArray.indexOf(data.target.id) !== -1) {
+            // Сохраняем время реакции
+            const memberElement = document.getElementById(data.target.id);
+            if (memberElement.dataset.appearTime) {
+                const appearTime = parseInt(memberElement.dataset.appearTime);
+                const clickTime = Date.now();
+                const reactionTime = (clickTime - appearTime) / 1000; // в секундах
+                clickTimes.push(reactionTime);
+                successfulClicks++;
+                updateStatistics();
+            }
+            
             removeMember(data.target.id);
             changeScore(++score);
             playHitSound();
@@ -20,6 +37,54 @@ function initialisation() {
     
     // Create the falling background elements
     createFallingElements();
+    
+    // Загружаем лучший результат
+    loadBestScore();
+}
+
+// Функция для сохранения лучшего результата в localStorage
+function saveBestScore() {
+    if (score > bestScore) {
+        bestScore = score;
+        localStorage.setItem('crisisOfTrustBestScore', bestScore);
+    }
+}
+
+// Функция для загрузки лучшего результата при запуске игры
+function loadBestScore() {
+    const savedBestScore = localStorage.getItem('crisisOfTrustBestScore');
+    if (savedBestScore !== null) {
+        bestScore = parseInt(savedBestScore);
+    }
+    updateStatistics();
+}
+
+// Функция для расчета среднего времени реакции
+function calculateAvgResponseTime() {
+    if (clickTimes.length === 0) return 0;
+    const sum = clickTimes.reduce((a, b) => a + b, 0);
+    return (sum / clickTimes.length).toFixed(1);
+}
+
+// Функция для расчета успешности (процент успешных кликов)
+function calculateSuccessRate() {
+    const totalAttempts = successfulClicks + missedClicks;
+    if (totalAttempts === 0) return 0;
+    return Math.round((successfulClicks / totalAttempts) * 100);
+}
+
+// Функция для обновления всей статистики
+function updateStatistics() {
+    // Обновляем Best Score
+    document.querySelector('.stats-item:nth-child(1) .stats-value').textContent = bestScore;
+    
+    // Обновляем Avg. Response
+    const avgResponse = calculateAvgResponseTime();
+    document.querySelector('.stats-item:nth-child(2) .stats-value').textContent = avgResponse + 's';
+    
+    // Обновляем Success Rate
+    const successRate = calculateSuccessRate();
+    document.querySelector('.stats-item:nth-child(3) .stats-value').textContent = successRate + '%';
 }
 
 function createFallingElements() {
@@ -176,9 +241,16 @@ function addMember(id) {
     memberElement.style.display = 'block';
     memberElement.style.animation = 'pulse 0.5s ease-in-out';
     
+    // Добавляем время появления элемента
+    memberElement.dataset.appearTime = Date.now();
+    
     if (!gameEnd) {
         setTimeout(function(){
             if (memberElement.style.display != 'none') {
+                // Отмечаем как пропущенный клик
+                missedClicks++;
+                updateStatistics();
+                
                 removeMember(id);
                 setTimeout(addMember, Math.random() * Math.floor(300) + 100, getRandomMember());
             } 
@@ -197,6 +269,13 @@ function changeScore() {
     setTimeout(() => {
         scoreElement.style.transform = 'scale(1) rotateX(0deg)';
     }, 200);
+    
+    // Обновляем лучший результат если нужно
+    if (score > bestScore) {
+        bestScore = score;
+        localStorage.setItem('crisisOfTrustBestScore', bestScore);
+        updateStatistics();
+    }
 }
 
 function startTimer() {
@@ -233,6 +312,11 @@ function startGame() {
     score = 0;
     changeScore();
     
+    // Сбрасываем статистику для новой игры
+    clickTimes = [];
+    successfulClicks = 0;
+    missedClicks = 0;
+    
     clearField();
     document.getElementById('game-info').style.display = 'none';
     document.getElementById('game-end').classList.add('hidden');
@@ -256,6 +340,12 @@ function typeWriter(element, text, speed = 50) {
 
 function endGame() {
     gameEnd = true;
+    
+    // Сохраняем лучший результат
+    saveBestScore();
+    
+    // Обновляем все статистики в последний раз
+    updateStatistics();
     
     const h1 = document.getElementById('game-end').getElementsByTagName('h1')[0];
     const h2 = document.getElementById('game-end').getElementsByTagName('h2')[0];
