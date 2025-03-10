@@ -85,6 +85,82 @@
             margin-bottom: 15px;
             text-align: center;
         }
+        
+        /* Styles for falling images in terminal background */
+        .falling-image {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall 15s infinite linear;
+        }
+        
+        @keyframes fall {
+            0% {
+                transform: translateY(-100%) rotate(0deg);
+                opacity: 0.2;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(1000%) rotate(360deg);
+                opacity: 0.2;
+            }
+        }
+        
+        /* Modified taskbar style with purple color */
+        .taskbar {
+            background: linear-gradient(to right, #330066, #6600cc);
+            border-top: 1px solid #9900ff;
+            box-shadow: 0 0 15px rgba(153, 0, 255, 0.5);
+        }
+        
+        /* Game stats for final screen */
+        .final-game-stats {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #00FFD1;
+            border-radius: 5px;
+            padding: 15px;
+            width: 80%;
+            max-width: 400px;
+        }
+        
+        .final-stats-title {
+            color: #00FFD1;
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .final-stats-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        
+        .final-stats-item span {
+            color: #fff;
+        }
+        
+        .final-stats-value {
+            color: #00FFD1;
+            font-weight: bold;
+        }
+        
+        /* Make terminal container relative for falling images */
+        .terminal-container {
+            position: relative;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
@@ -145,6 +221,8 @@
                             <div class="terminal-line">$ Quantum encryption active</div>
                             <div class="terminal-line">$ Target: Collect trust codes</div>
                         </div>
+                        <!-- Falling images container will be populated by JS -->
+                        <div class="terminal-falling-images"></div>
                     </div>
                     
                     <div class="game-stats">
@@ -198,11 +276,11 @@
     
     <!-- Desktop Icons -->
     <div class="desktop-icons">
-        <div class="desktop-icon">
+        <div class="desktop-icon" id="readme-icon">
             <img src="img/readme.png" class="desktop-icon-img" alt="PDF">
             <div class="desktop-icon-text">README.pdf</div>
         </div>
-        <div class="desktop-icon">
+        <div class="desktop-icon" id="project-icon">
             <img src="img/audio-icon.svg" class="desktop-icon-img" alt="Audio">
             <div class="desktop-icon-text">Project.mp4</div>
         </div>
@@ -231,6 +309,24 @@
             </div>
             
             <h3 id="result-subtext">Can you do better?</h3>
+            
+            <!-- Added game stats to final screen -->
+            <div class="final-game-stats">
+                <div class="final-stats-title">Game Statistics</div>
+                <div class="final-stats-item">
+                    <span>Best Score:</span>
+                    <span class="final-stats-value" id="final-best-score-value">0</span>
+                </div>
+                <div class="final-stats-item">
+                    <span>Avg. Response:</span>
+                    <span class="final-stats-value" id="final-avg-response-value">0.0s</span>
+                </div>
+                <div class="final-stats-item">
+                    <span>Success Rate:</span>
+                    <span class="final-stats-value" id="final-success-rate-value">0%</span>
+                </div>
+            </div>
+            
             <button class="glitch-button" id="restart-button">Play Again</button>
         </div>
     </div>
@@ -271,6 +367,28 @@
                 pixel.style.animation = `blink ${Math.random() * 3 + 2}s infinite`;
                 
                 blinkingContainer.appendChild(pixel);
+            }
+            
+            // Create falling images in terminal
+            createFallingTerminalImages();
+        }
+        
+        // Function to create falling images in terminal
+        function createFallingTerminalImages() {
+            const terminalContainer = document.querySelector('.terminal-container');
+            const imageNames = ['crab.png', 'dvd.png', 'hat.png', 'meme.png'];
+            
+            // Create falling images
+            for (let i = 0; i < 8; i++) {
+                const img = document.createElement('img');
+                const randomImg = imageNames[Math.floor(Math.random() * imageNames.length)];
+                img.src = `img/${randomImg}`;
+                img.classList.add('falling-image');
+                img.style.left = `${Math.random() * 100}%`;
+                img.style.top = `-${Math.random() * 50}px`;
+                img.style.animationDuration = `${Math.random() * 10 + 8}s`;
+                img.style.animationDelay = `${Math.random() * 5}s`;
+                terminalContainer.appendChild(img);
             }
         }
         
@@ -468,6 +586,11 @@
             // Update success rate
             const successRate = totalClicks > 0 ? Math.round((successfulClicks / totalClicks) * 100) : 0;
             document.getElementById('success-rate-value').textContent = `${successRate}%`;
+            
+            // Update the final screen stats as well
+            document.getElementById('final-best-score-value').textContent = bestScore;
+            document.getElementById('final-avg-response-value').textContent = `${avgResponse}s`;
+            document.getElementById('final-success-rate-value').textContent = `${successRate}%`;
         }
         
         // Функция для анимации текста по буквам
@@ -515,7 +638,6 @@
             // Обновляем текст результатов - удалена графическая обработка
             const resultTextElement = document.getElementById('result-text');
             resultTextElement.textContent = resultText;
-            // Удален код: resultTextElement.setAttribute('data-text', resultText);
             
             // Устанавливаем соответствующий GIF
             const resultGif = document.getElementById('result-gif');
@@ -535,9 +657,21 @@
             const subtextElement = document.getElementById('result-subtext');
             typeWriter(subtextElement, subText);
             
+            // Update final stats
+            updateStats();
+            
             // Show game over overlay
             document.getElementById('game-over-overlay').classList.remove('hidden');
         }
+        
+        // Make desktop icons clickable with links
+        document.getElementById('readme-icon').addEventListener('click', function() {
+            window.open('https://github.com/alexanderblv/gimme-a-code', '_blank');
+        });
+        
+        document.getElementById('project-icon').addEventListener('click', function() {
+            window.open('https://x.com/alexander_blv', '_blank');
+        });
         
         // Event listeners
         document.getElementById('start-button').addEventListener('click', initGame);
