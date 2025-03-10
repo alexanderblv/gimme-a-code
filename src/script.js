@@ -2,6 +2,8 @@ var memberArray = ['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8'];
 var score = 0;
 var startTime;
 var gameEnd = true;
+var gameInterval;
+var activeMembers = [];
 
 // Переменные для статистики
 let bestScore = 0;
@@ -14,22 +16,42 @@ window.addEventListener('DOMContentLoaded', initialisation);
 function initialisation() {
     document.getElementById('game-field').addEventListener('click', function(data){
         if (memberArray.indexOf(data.target.id) !== -1) {
-            // Сохраняем время реакции
-            const memberElement = document.getElementById(data.target.id);
-            if (memberElement.dataset.appearTime) {
-                const appearTime = parseInt(memberElement.dataset.appearTime);
-                const clickTime = Date.now();
-                const reactionTime = (clickTime - appearTime) / 1000; // в секундах
-                clickTimes.push(reactionTime);
-                successfulClicks++;
-                updateStatistics();
+            // Проверяем, что элемент активный
+            if (activeMembers.includes(data.target.id)) {
+                // Сохраняем время реакции
+                const memberElement = document.getElementById(data.target.id);
+                if (memberElement.dataset.appearTime) {
+                    const appearTime = parseInt(memberElement.dataset.appearTime);
+                    const clickTime = Date.now();
+                    const reactionTime = (clickTime - appearTime) / 1000; // в секундах
+                    clickTimes.push(reactionTime);
+                    successfulClicks++;
+                    updateStatistics();
+                }
+                
+                // Увеличиваем счет
+                score++;
+                changeScore();
+                
+                // Добавляем время к таймеру (бонус)
+                if (!gameEnd) {
+                    startTime += 1000; // добавляем 1 секунду
+                    changeTimer();
+                }
+                
+                // Анимация и звук клика
+                playHitSound();
+                triggerHitAnimation(data.target);
+                
+                // Скрываем элемент
+                hideMember(data.target);
+                
+                // Показываем эффект клика
+                showClickEffect(data.target);
+                
+                // Запускаем новый элемент через небольшую задержку
+                setTimeout(showRandomMember, 300);
             }
-            
-            removeMember(data.target.id);
-            changeScore(++score);
-            playHitSound();
-            triggerHitAnimation(data.target);
-            setTimeout(addMember, 300, getRandomMember());
         }
     });
     
@@ -42,6 +64,39 @@ function initialisation() {
     
     // Загружаем лучший результат
     loadBestScore();
+}
+
+// Показать эффект клика
+function showClickEffect(member) {
+    const effect = document.createElement('div');
+    effect.textContent = '+1';
+    effect.style.position = 'absolute';
+    effect.style.color = '#00FFD1';
+    effect.style.fontSize = '24px';
+    effect.style.fontWeight = 'bold';
+    effect.style.textShadow = '0 0 10px rgba(0, 255, 209, 0.8)';
+    effect.style.zIndex = '100';
+    
+    // Get position
+    const rect = member.getBoundingClientRect();
+    effect.style.left = `${rect.left + rect.width / 2}px`;
+    effect.style.top = `${rect.top + rect.height / 2}px`;
+    
+    // Add animation
+    effect.style.transition = 'all 0.8s ease-out';
+    effect.style.pointerEvents = 'none';
+    
+    document.body.appendChild(effect);
+    
+    // Animate and remove
+    setTimeout(() => {
+        effect.style.transform = 'translateY(-50px)';
+        effect.style.opacity = '0';
+    }, 50);
+    
+    setTimeout(() => {
+        effect.remove();
+    }, 800);
 }
 
 // Функция для сохранения лучшего результата в localStorage
@@ -147,34 +202,53 @@ function playHitSound() {
     randomSound.play().catch(e => console.log("Sound play failed:", e));
 }
 
-function getRandomMember() {
-    return memberArray[Math.floor(Math.random() * memberArray.length)];
-}
-
-function addMember(id) {
-    const memberElement = document.getElementById(id);
-    memberElement.style.display = 'block';
-    memberElement.style.animation = 'pulse 0.5s ease-in-out';
+// Показать случайного участника
+function showRandomMember() {
+    // Получаем все доступные элементы
+    const availableMembers = memberArray.filter(id => !activeMembers.includes(id));
     
-    // Добавляем время появления элемента
-    memberElement.dataset.appearTime = Date.now();
-    
-    if (!gameEnd) {
-        setTimeout(function(){
-            if (memberElement.style.display != 'none') {
-                // Отмечаем как пропущенный клик
+    if (availableMembers.length > 0 && !gameEnd) {
+        const randomIndex = Math.floor(Math.random() * availableMembers.length);
+        const memberId = availableMembers[randomIndex];
+        const member = document.getElementById(memberId);
+        
+        // Добавляем в активные элементы
+        activeMembers.push(memberId);
+        
+        // Показываем элемент
+        member.style.display = 'block';
+        member.style.animation = 'pulse 1.5s infinite';
+        member.style.filter = 'hue-rotate(0deg) brightness(1.2)';
+        member.style.opacity = '1';
+        
+        // Добавляем время появления
+        member.dataset.appearTime = Date.now();
+        
+        // Скрываем элемент автоматически если не был кликнут
+        setTimeout(() => {
+            if (activeMembers.includes(memberId) && !gameEnd) {
+                hideMember(member);
+                // Увеличиваем счетчик пропущенных кликов
                 missedClicks++;
                 updateStatistics();
-                
-                removeMember(id);
-                setTimeout(addMember, Math.random() * Math.floor(300) + 100, getRandomMember());
-            } 
-        }, Math.round(Math.random() * Math.floor(800)) + 300);
+                // Показываем новый элемент
+                setTimeout(showRandomMember, Math.random() * 200 + 100);
+            }
+        }, Math.random() * 2000 + 1000);
     }
 }
 
-function removeMember(id) {
-    document.getElementById(id).style.display = 'none';
+// Скрыть элемент
+function hideMember(member) {
+    member.style.animation = '';
+    member.style.filter = 'hue-rotate(-40deg) brightness(0.9)';
+    member.style.opacity = '0.7';
+    
+    // Удаляем из активных элементов
+    const index = activeMembers.indexOf(member.id);
+    if (index > -1) {
+        activeMembers.splice(index, 1);
+    }
 }
 
 function changeScore() {
@@ -223,6 +297,7 @@ function clearField() {
     for (let i = 0; i < members.length; i++) {
         members[i].style.display = 'none';
     }
+    activeMembers = [];
 }
 
 function startGame() {
@@ -238,29 +313,34 @@ function startGame() {
     clickTimes = [];
     successfulClicks = 0;
     missedClicks = 0;
+    updateStatistics();
     
     clearField();
-    document.getElementById('game-info').style.display = 'none';
     gameEnd = false;
     startTimer();
-    setTimeout(addMember, 300, getRandomMember());
-}
-
-function typeWriter(element, text, speed = 50) {
-    element.innerHTML = '';
-    let i = 0;
-    function type() {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(type, speed);
+    
+    // Запускаем игру, показывая первого участника
+    setTimeout(showRandomMember, 300);
+    
+    // Запускаем интервал для периодического добавления новых участников
+    gameInterval = setInterval(() => {
+        if (Math.random() > 0.5 && !gameEnd) {
+            showRandomMember();
         }
-    }
-    type();
+    }, 1000);
 }
 
 function endGame() {
+    // Останавливаем игру
     gameEnd = true;
+    clearInterval(gameInterval);
+    
+    // Скрываем всех активных участников
+    activeMembers.forEach(id => {
+        const member = document.getElementById(id);
+        hideMember(member);
+    });
+    activeMembers = [];
     
     // Сохраняем лучший результат
     saveBestScore();
