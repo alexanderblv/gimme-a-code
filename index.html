@@ -34,7 +34,7 @@
         </div>
         
         <div class="window-content">
-            <!-- Структура заголовка - одна строка с логотипом, таймером и счетчиком -->
+            <!-- Новая структура заголовка - одна строка с логотипом, таймером и счетчиком -->
             <div class="header-area">
                 <!-- Логотип слева -->
                 <div class="logo-section">
@@ -54,7 +54,7 @@
                 </div>
             </div>
             
-            <!-- Макет с использованием flex для лучшего распределения пространства -->
+            <!-- Новый макет с использованием flex для лучшего распределения пространства -->
             <div class="game-layout">
                 <!-- Левая боковая панель с терминалом и статистикой -->
                 <div class="terminal-sidebar">
@@ -73,20 +73,20 @@
                         <div class="stats-title">Game Statistics</div>
                         <div class="stats-item">
                             <span>Best Score:</span>
-                            <span class="stats-value">0</span>
+                            <span id="best-score" class="stats-value">0</span>
                         </div>
                         <div class="stats-item">
                             <span>Avg. Response:</span>
-                            <span class="stats-value">1.2s</span>
+                            <span id="avg-response" class="stats-value">1.2s</span>
                         </div>
                         <div class="stats-item">
                             <span>Success Rate:</span>
-                            <span class="stats-value">82%</span>
+                            <span id="success-rate" class="stats-value">82%</span>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Игровое поле занимает оставшееся пространство - сетка (8 элементов) -->
+                <!-- Игровое поле занимает оставшееся пространство - исправлено на 2x4 сетку (8 элементов) -->
                 <div id="game-field">
                     <img src="img/member.png" draggable="false" id="m1" class="member-img" style="grid-area: m1;">
                     <img src="img/member.png" draggable="false" id="m2" class="member-img" style="grid-area: m2;">
@@ -150,7 +150,6 @@
         </div>
     </div>
     
-    <!-- Подключение скрипта -->
-    <script type="text/javascript" src="src/script.js"></script>
+    <script src="src/script.js"></script>
 </body>
 </html>
