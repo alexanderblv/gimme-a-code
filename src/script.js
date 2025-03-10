@@ -3,22 +3,73 @@ var score = 0;
 var startTime;
 var gameEnd = true;
 
-window.addEventListener('DOMContentLoaded', initialisation());
+// Переменные для статистики
+var bestScore = 0;
+var responseTimes = [];
+var totalClicks = 0;
+var successfulClicks = 0;
+
+window.addEventListener('DOMContentLoaded', initialisation);
 
 function initialisation() {
     document.getElementById('game-field').addEventListener('click', function(data){
+        totalClicks++; // Отслеживаем все клики
+        
         if (memberArray.indexOf(data.target.id) !== -1) {
+            // Записываем время отклика, если элемент имеет метку времени появления
+            if (data.target.hasAttribute('data-appeared')) {
+                const clickTime = Date.now();
+                const responseTime = (clickTime - data.target.getAttribute('data-appeared')) / 1000;
+                responseTimes.push(responseTime);
+            }
+            
+            // Обновляем успешные клики
+            successfulClicks++;
+            
             removeMember(data.target.id);
             changeScore(++score);
             playHitSound();
             triggerHitAnimation(data.target);
             setTimeout(addMember, 300, getRandomMember());
+            
+            // Обновляем статистику в реальном времени
+            updateStatistics();
+        } else {
+            // Просто обновляем статистику для промахов
+            updateStatistics();
         }
-    })
-    document.getElementsByClassName('start-button')[0].addEventListener('mouseup', startGame);
-    document.getElementsByClassName('start-button')[1].addEventListener('mouseup', startGame);
+    });
     
-    // Create the falling background elements
+    // Поиск кнопок запуска разными способами
+    const startButtonsByClass = document.getElementsByClassName('start-button');
+    if (startButtonsByClass.length > 0) {
+        for (let i = 0; i < startButtonsByClass.length; i++) {
+            startButtonsByClass[i].addEventListener('mouseup', startGame);
+        }
+    }
+    
+    // Поиск по ID из нового кода
+    const startButton = document.getElementById('start-button');
+    if (startButton) {
+        startButton.addEventListener('mouseup', startGame);
+    }
+    
+    const restartButton = document.getElementById('restart-button');
+    if (restartButton) {
+        restartButton.addEventListener('mouseup', startGame);
+    }
+    
+    // Загружаем лучший счет из localStorage, если доступен
+    if (localStorage.getItem('bestScore')) {
+        bestScore = parseInt(localStorage.getItem('bestScore'));
+        if (document.getElementById('best-score')) {
+            document.getElementById('best-score').textContent = bestScore;
+        } else if (document.querySelector('.stats-value')) {
+            document.querySelector('.stats-value').textContent = bestScore;
+        }
+    }
+    
+    // Создаем элементы фона
     createFallingElements();
 }
 
@@ -28,7 +79,7 @@ function createFallingElements() {
     document.body.appendChild(container);
     
     const images = ['meme.png', 'dvd.png', 'hat.png', 'crab.png'];
-    const numberOfElements = 15; // More elements for a richer background
+    const numberOfElements = 15; // Больше элементов для более насыщенного фона
     
     for (let i = 0; i < numberOfElements; i++) {
         const element = document.createElement('img');
@@ -36,68 +87,68 @@ function createFallingElements() {
         element.src = `img/${randomImage}`;
         element.className = 'falling-item';
         
-        // Random positioning and properties
+        // Случайное позиционирование и свойства
         const gameField = document.getElementById('game-field');
         const gameFieldRect = gameField.getBoundingClientRect();
         
-        // Get window dimensions
+        // Получаем размеры окна
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
         
-        // Define game field boundaries
+        // Определяем границы игрового поля
         const gameFieldLeft = gameFieldRect.left;
         const gameFieldRight = gameFieldRect.right;
         const gameFieldTop = gameFieldRect.top;
         const gameFieldBottom = gameFieldRect.bottom;
         
-        // Random position (ensuring it's outside the game field)
+        // Случайная позиция (гарантируем, что она вне игрового поля)
         let startX, startY;
         let isPositionValid = false;
         
-        // Keep generating random positions until we find one outside the game field
+        // Генерируем случайные позиции, пока не найдем ту, что вне игрового поля
         while (!isPositionValid) {
-            startX = Math.random() * 100; // Position in vh units
-            startY = Math.random() * 100; // Position in vw units
+            startX = Math.random() * 100; // Позиция в единицах vh
+            startY = Math.random() * 100; // Позиция в единицах vw
             
-            // Convert percentage to actual pixels for comparison
+            // Конвертируем проценты в пиксели для сравнения
             const pixelX = (startX / 100) * windowWidth;
             const pixelY = (startY / 100) * windowHeight;
             
-            // Check if the position is outside the game field with some margin
+            // Проверяем, что позиция вне игрового поля с некоторым запасом
             if (!(pixelX > gameFieldLeft - 50 && pixelX < gameFieldRight + 50 &&
                   pixelY > gameFieldTop - 50 && pixelY < gameFieldBottom + 50)) {
                 isPositionValid = true;
             }
         }
         
-        const size = Math.random() * 50 + 30; // Size between 30px and 80px
-        const opacity = Math.random() * 0.3 + 0.2; // Opacity between 0.2 and 0.5
-        const rotationSpeed = Math.random() * 20 + 10; // Rotation speed
+        const size = Math.random() * 50 + 30; // Размер между 30px и 80px
+        const opacity = Math.random() * 0.3 + 0.2; // Прозрачность между 0.2 и 0.5
+        const rotationSpeed = Math.random() * 20 + 10; // Скорость вращения
         
-        // Choose a random animation pattern
+        // Выбираем случайный шаблон анимации
         const animationPattern = Math.floor(Math.random() * 4);
         let animationStyle;
         
         switch(animationPattern) {
-            case 0: // Diagonal drift
+            case 0: // Диагональный дрейф
                 animationStyle = `
                     diagonal-drift ${Math.random() * 60 + 40}s linear infinite,
                     gentle-rotate ${rotationSpeed}s ease-in-out infinite
                 `;
                 break;
-            case 1: // Bouncing
+            case 1: // Отскакивание
                 animationStyle = `
                     bounce ${Math.random() * 20 + 10}s ease-in-out infinite,
                     gentle-rotate ${rotationSpeed}s ease-in-out infinite
                 `;
                 break;
-            case 2: // Circular path
+            case 2: // Круговая траектория
                 animationStyle = `
                     circular-path ${Math.random() * 40 + 30}s linear infinite,
                     gentle-rotate ${rotationSpeed}s ease-in-out infinite
                 `;
                 break;
-            case 3: // Zigzag
+            case 3: // Зигзаг
                 animationStyle = `
                     zigzag ${Math.random() * 30 + 20}s ease-in-out infinite,
                     gentle-rotate ${rotationSpeed * 0.8}s ease-in-out infinite
@@ -105,14 +156,14 @@ function createFallingElements() {
                 break;
         }
         
-        // Set CSS properties
+        // Устанавливаем CSS свойства
         element.style.cssText = `
             top: ${startY}vh;
             left: ${startX}vw;
             width: ${size}px;
             height: auto;
             opacity: ${opacity};
-            z-index: -1; /* Ensure it's behind the game field */
+            z-index: -1; /* Убедимся, что это за игровым полем */
             animation: ${animationStyle};
             animation-delay: -${Math.random() * 30}s;
         `;
@@ -120,7 +171,7 @@ function createFallingElements() {
         container.appendChild(element);
     }
     
-    // Add unique blinking elements
+    // Добавляем уникальные мигающие элементы
     const blinkingContainer = document.createElement('div');
     blinkingContainer.className = 'blinking-elements';
     document.body.appendChild(blinkingContainer);
@@ -129,11 +180,11 @@ function createFallingElements() {
         const element = document.createElement('div');
         element.className = 'succinct-pixel';
         
-        const size = Math.random() * 6 + 4; // Size between 4px and 10px
+        const size = Math.random() * 6 + 4; // Размер между 4px и 10px
         const startX = Math.random() * 100;
         const startY = Math.random() * 100;
-        const blinkSpeed = Math.random() * 3 + 1; // Blink speed
-        const hue = Math.random() * 60 + 300; // Purple to pink hue range
+        const blinkSpeed = Math.random() * 3 + 1; // Скорость мигания
+        const hue = Math.random() * 60 + 300; // Диапазон оттенков от фиолетового до розового
         
         element.style.cssText = `
             width: ${size}px;
@@ -146,6 +197,52 @@ function createFallingElements() {
         `;
         
         blinkingContainer.appendChild(element);
+    }
+}
+
+function updateStatistics() {
+    // Обновляем лучший счет
+    if (score > bestScore) {
+        bestScore = score;
+        // Проверяем оба возможных элемента для отображения лучшего счета
+        if (document.getElementById('best-score')) {
+            document.getElementById('best-score').textContent = bestScore;
+        }
+        if (document.querySelector('.stats-value')) {
+            document.querySelector('.stats-value').textContent = bestScore;
+        }
+        localStorage.setItem('bestScore', bestScore);
+    }
+    
+    // Вычисляем и обновляем среднее время отклика
+    if (responseTimes.length > 0) {
+        const avgResponseTime = responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length;
+        if (document.getElementById('avg-response')) {
+            document.getElementById('avg-response').textContent = avgResponseTime.toFixed(1) + 's';
+        }
+        // Проверка элемента в новой разметке
+        const statsValues = document.querySelectorAll('.stats-value');
+        if (statsValues && statsValues.length > 1) {
+            statsValues[1].textContent = avgResponseTime.toFixed(1) + 's';
+        }
+    }
+    
+    // Вычисляем и обновляем процент успеха
+    if (totalClicks > 0) {
+        const successRate = (successfulClicks / totalClicks) * 100;
+        if (document.getElementById('success-rate')) {
+            document.getElementById('success-rate').textContent = Math.round(successRate) + '%';
+        }
+        // Проверка элемента в новой разметке
+        const statsValues = document.querySelectorAll('.stats-value');
+        if (statsValues && statsValues.length > 2) {
+            statsValues[2].textContent = Math.round(successRate) + '%';
+        }
+    }
+    
+    // Обновляем финальный счет, если элемент существует
+    if (document.getElementById('final-score')) {
+        document.getElementById('final-score').textContent = score;
     }
 }
 
@@ -168,13 +265,16 @@ function playHitSound() {
 }
 
 function getRandomMember() {
-    return memberArray[Math.floor(Math.random() * Math.floor(9))];
+    return memberArray[Math.floor(Math.random() * memberArray.length)];
 }
 
 function addMember(id) {
     const memberElement = document.getElementById(id);
     memberElement.style.display = 'block';
     memberElement.style.animation = 'pulse 0.5s ease-in-out';
+    
+    // Сохраняем временную метку появления элемента для статистики
+    memberElement.setAttribute('data-appeared', Date.now());
     
     if (!gameEnd) {
         setTimeout(function(){
@@ -193,6 +293,8 @@ function removeMember(id) {
 function changeScore() {
     const scoreElement = document.getElementById('score').getElementsByTagName('span')[0];
     scoreElement.innerHTML = 'Codes: ' + score;
+    
+    // Анимация
     scoreElement.style.transform = 'scale(1.1) rotateX(20deg)';
     setTimeout(() => {
         scoreElement.style.transform = 'scale(1) rotateX(0deg)';
@@ -215,9 +317,11 @@ function changeTimer() {
         document.getElementById('progress').style.width = progressPercentage + '%';
         document.getElementById('timer').getElementsByTagName('span')[0].innerHTML = 'Time left: ' + remainingTime + ' seconds';
         
-        // Add visual intensity as time runs low
+        // Добавляем визуальную интенсивность, когда время на исходе
         if (remainingTime <= 5) {
             document.getElementById('timer').style.animation = 'shake 0.5s infinite';
+        } else {
+            document.getElementById('timer').style.animation = '';
         }
     }
 }
@@ -230,15 +334,37 @@ function clearField() {
 }
 
 function startGame() {
+    // Сбрасываем значения игры
     score = 0;
     changeScore();
+    responseTimes = [];
+    totalClicks = 0;
+    successfulClicks = 0;
+    
+    // Проверяем обе структуры оверлея для обработки любой версии
+    // Оригинальная структура
+    if (document.getElementById('game-info')) {
+        document.getElementById('game-info').style.display = 'none';
+    }
+    if (document.getElementById('game-end')) {
+        document.getElementById('game-end').classList.add('hidden');
+    }
+    
+    // Новая структура
+    if (document.getElementById('start-overlay')) {
+        document.getElementById('start-overlay').classList.add('hidden');
+    }
+    if (document.getElementById('game-over-overlay')) {
+        document.getElementById('game-over-overlay').classList.add('hidden');
+    }
     
     clearField();
-    document.getElementById('game-info').style.display = 'none';
-    document.getElementById('game-end').classList.add('hidden');
     gameEnd = false;
     startTimer();
     setTimeout(addMember, 300, getRandomMember());
+    
+    // Обновляем статистику
+    updateStatistics();
 }
 
 function typeWriter(element, text, speed = 50) {
@@ -257,12 +383,15 @@ function typeWriter(element, text, speed = 50) {
 function endGame() {
     gameEnd = true;
     
-    const h1 = document.getElementById('game-end').getElementsByTagName('h1')[0];
-    const h2 = document.getElementById('game-end').getElementsByTagName('h2')[0];
+    // Убираем анимацию таймера
+    if (document.getElementById('timer')) {
+        document.getElementById('timer').style.animation = '';
+    }
     
-    h1.classList.add('glitch-text');
-    h2.classList.add('typing-text');
+    // Обновляем статистику в последний раз
+    updateStatistics();
     
+    // Определяем текст в зависимости от счета
     let resultText, subText;
     if (score >= 20) {
         resultText = 'At this rate, Yinger will hire you as an assistant, DM him bro';
@@ -275,9 +404,45 @@ function endGame() {
         subText = `Given only ${score} codes. You either didn't figure out how to do it, or you fell asleep...`;
     }
     
-    h1.setAttribute('data-text', resultText);
-    h1.innerHTML = resultText;
-    typeWriter(h2, subText);
+    // Проверяем обе структуры оверлея для обработки любой версии
+    // Оригинальная структура
+    if (document.getElementById('game-end')) {
+        const h1 = document.getElementById('game-end').getElementsByTagName('h1')[0];
+        const h2 = document.getElementById('game-end').getElementsByTagName('h2')[0];
+        
+        if (h1 && h2) {
+            h1.classList.add('glitch-text');
+            h2.classList.add('typing-text');
+            
+            h1.setAttribute('data-text', resultText);
+            h1.innerHTML = resultText;
+            typeWriter(h2, subText);
+        }
+        
+        document.getElementById('game-end').classList.remove('hidden');
+    }
     
-    document.getElementById('game-end').classList.remove('hidden');
+    // Новая структура
+    if (document.getElementById('game-over-overlay')) {
+        document.getElementById('game-over-overlay').classList.remove('hidden');
+        
+        const h1 = document.querySelector('#game-over-overlay h1');
+        const h2 = document.querySelector('#game-over-overlay h2');
+        
+        if (h1) {
+            h1.innerHTML = resultText;
+            if (!h1.classList.contains('glitch-text')) {
+                h1.classList.add('glitch-text');
+            }
+            h1.setAttribute('data-text', resultText);
+        }
+        
+        // Обновляем подтекст с эффектом печати
+        if (h2 && h2.nextElementSibling && h2.nextElementSibling.tagName === 'H3') {
+            const h3 = h2.nextElementSibling;
+            typeWriter(h3, subText);
+        } else if (h2) {
+            typeWriter(h2, subText);
+        }
+    }
 }

@@ -73,15 +73,15 @@
                         <div class="stats-title">Game Statistics</div>
                         <div class="stats-item">
                             <span>Best Score:</span>
-                            <span class="stats-value">0</span>
+                            <span class="stats-value" id="best-score-value">0</span>
                         </div>
                         <div class="stats-item">
                             <span>Avg. Response:</span>
-                            <span class="stats-value">1.2s</span>
+                            <span class="stats-value" id="avg-response-value">0.0s</span>
                         </div>
                         <div class="stats-item">
                             <span>Success Rate:</span>
-                            <span class="stats-value">82%</span>
+                            <span class="stats-value" id="success-rate-value">0%</span>
                         </div>
                     </div>
                 </div>
@@ -194,6 +194,10 @@
         let timeLeft = 20;
         let gameInterval;
         let activeMembers = [];
+        let bestScore = 0; // Track best score
+        let totalClicks = 0; // Track total clicks
+        let successfulClicks = 0; // Track successful clicks
+        let totalResponseTime = 0; // Track total response time
         
         // Initialize the game
         function initGame() {
@@ -204,8 +208,13 @@
             // Reset game state
             score = 0;
             timeLeft = 20;
+            totalClicks = 0;
+            successfulClicks = 0;
+            totalResponseTime = 0;
+            
             updateScore();
             updateTimer();
+            updateStats();
             
             // Start the game loop
             gameInterval = setInterval(gameLoop, 1000);
@@ -247,6 +256,9 @@
                 member.style.filter = 'hue-rotate(0deg) brightness(1.2)';
                 member.style.opacity = '1';
                 
+                // Record appearance time for response time calculation
+                member.dataset.appearTime = Date.now();
+                
                 // Make member clickable
                 member.onclick = function() {
                     clickMember(member);
@@ -256,6 +268,9 @@
                 setTimeout(() => {
                     if (activeMembers.includes(member.id)) {
                         hideMember(member);
+                        // Count as missed click for success rate
+                        totalClicks++;
+                        updateStats();
                     }
                 }, Math.random() * 2000 + 1000);
             }
@@ -263,6 +278,14 @@
         
         // Handle member click
         function clickMember(member) {
+            // Calculate response time
+            const responseTime = (Date.now() - member.dataset.appearTime) / 1000;
+            totalResponseTime += responseTime;
+            
+            // Count successful click
+            successfulClicks++;
+            totalClicks++;
+            
             // Increase score
             score++;
             updateScore();
@@ -276,6 +299,9 @@
             
             // Show effect
             showClickEffect(member);
+            
+            // Update stats
+            updateStats();
         }
         
         // Hide a member
@@ -329,7 +355,11 @@
         function updateScore() {
             document.querySelector('#score span').textContent = `Codes: ${score}`;
             document.getElementById('final-score').textContent = score;
-            document.querySelector('.stats-value').textContent = score > 0 ? score : '0';
+            
+            // Update best score if current score is higher
+            if (score > bestScore) {
+                bestScore = score;
+            }
         }
         
         // Update timer display
@@ -339,6 +369,20 @@
             // Update progress bar
             const progressPercent = (timeLeft / 20) * 100;
             document.getElementById('progress').style.width = `${progressPercent}%`;
+        }
+        
+        // Update game stats
+        function updateStats() {
+            // Update best score
+            document.getElementById('best-score-value').textContent = bestScore;
+            
+            // Update average response time
+            const avgResponse = successfulClicks > 0 ? (totalResponseTime / successfulClicks).toFixed(1) : '0.0';
+            document.getElementById('avg-response-value').textContent = `${avgResponse}s`;
+            
+            // Update success rate
+            const successRate = totalClicks > 0 ? Math.round((successfulClicks / totalClicks) * 100) : 0;
+            document.getElementById('success-rate-value').textContent = `${successRate}%`;
         }
         
         // Game over function
