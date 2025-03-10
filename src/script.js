@@ -8,37 +8,70 @@ var bestScore = 0;
 var responseTimes = [];
 var totalClicks = 0;
 var successfulClicks = 0;
+var misses = 0;
 
 window.addEventListener('DOMContentLoaded', initialisation);
 
 function initialisation() {
-    document.getElementById('game-field').addEventListener('click', function(data){
-        totalClicks++; // Отслеживаем все клики
-        
-        if (memberArray.indexOf(data.target.id) !== -1) {
-            // Записываем время отклика, если элемент имеет метку времени появления
-            if (data.target.hasAttribute('data-appeared')) {
-                const clickTime = Date.now();
-                const responseTime = (clickTime - data.target.getAttribute('data-appeared')) / 1000;
-                responseTimes.push(responseTime);
+    const gameField = document.getElementById('game-field');
+    if (gameField) {
+        gameField.addEventListener('click', function(data) {
+            totalClicks++; // Отслеживаем все клики
+            
+            // Проверяем, был ли клик по элементу member
+            if (memberArray.indexOf(data.target.id) !== -1) {
+                // Записываем время отклика, если элемент имеет метку времени появления
+                if (data.target.hasAttribute('data-appeared')) {
+                    const clickTime = Date.now();
+                    const responseTime = (clickTime - data.target.getAttribute('data-appeared')) / 1000;
+                    responseTimes.push(responseTime);
+                }
+                
+                // Обновляем успешные клики
+                successfulClicks++;
+                
+                removeMember(data.target.id);
+                changeScore(++score);
+                playHitSound();
+                triggerHitAnimation(data.target);
+                setTimeout(addMember, 300, getRandomMember());
+                
+                // Обновляем статистику в реальном времени
+                updateStatistics();
+            } else {
+                // Это промах - вычитаем секунду из таймера
+                misses++;
+                
+                // Вычитаем время только если клик был по игровому полю (не по другим элементам интерфейса)
+                if (data.target === gameField) {
+                    // Получаем текущее оставшееся время
+                    const currentTime = Date.now();
+                    const elapsedTime = currentTime - startTime;
+                    const remainingTime = Math.max(0, 20000 - elapsedTime - 1000); // Вычитаем 1000 мс (1 сек)
+                    
+                    // Устанавливаем новое время
+                    startTime = currentTime - (20000 - remainingTime);
+                    
+                    // Визуализируем промах
+                    createMissEffect(data.clientX, data.clientY);
+                    
+                    // Воспроизводим звук промаха
+                    playMissSound();
+                    
+                    // Принудительно обновляем таймер
+                    changeTimer();
+                    
+                    // Если время закончилось, завершаем игру
+                    if (remainingTime <= 0) {
+                        endGame();
+                    }
+                }
+                
+                // Обновляем статистику для промахов
+                updateStatistics();
             }
-            
-            // Обновляем успешные клики
-            successfulClicks++;
-            
-            removeMember(data.target.id);
-            changeScore(++score);
-            playHitSound();
-            triggerHitAnimation(data.target);
-            setTimeout(addMember, 300, getRandomMember());
-            
-            // Обновляем статистику в реальном времени
-            updateStatistics();
-        } else {
-            // Просто обновляем статистику для промахов
-            updateStatistics();
-        }
-    });
+        });
+    }
     
     // Поиск кнопок запуска разными способами
     const startButtonsByClass = document.getElementsByClassName('start-button');
@@ -71,6 +104,50 @@ function initialisation() {
     
     // Создаем элементы фона
     createFallingElements();
+}
+
+// Функция для создания визуального эффекта промаха
+function createMissEffect(x, y) {
+    const effect = document.createElement('div');
+    effect.className = 'miss-effect';
+    effect.style.position = 'absolute';
+    effect.style.left = `${x}px`;
+    effect.style.top = `${y}px`;
+    effect.style.width = '40px';
+    effect.style.height = '40px';
+    effect.style.borderRadius = '50%';
+    effect.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
+    effect.style.transform = 'translate(-50%, -50%) scale(0)';
+    effect.style.zIndex = '100';
+    effect.style.animation = 'missEffect 0.5s forwards';
+    
+    document.body.appendChild(effect);
+    
+    // Добавляем CSS для анимации, если его еще нет
+    if (!document.querySelector('style#miss-effect-style')) {
+        const style = document.createElement('style');
+        style.id = 'miss-effect-style';
+        style.textContent = `
+            @keyframes missEffect {
+                0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+                100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    setTimeout(() => {
+        document.body.removeChild(effect);
+    }, 500);
+}
+
+// Функция воспроизведения звука промаха
+function playMissSound() {
+    const missSound = new Audio('sound/miss.mp3');
+    if (missSound) {
+        missSound.volume = 0.3;
+        missSound.play().catch(e => console.log('Error playing miss sound:', e));
+    }
 }
 
 function createFallingElements() {
@@ -340,6 +417,7 @@ function startGame() {
     responseTimes = [];
     totalClicks = 0;
     successfulClicks = 0;
+    misses = 0;
     
     // Проверяем обе структуры оверлея для обработки любой версии
     // Оригинальная структура
@@ -403,6 +481,9 @@ function endGame() {
         resultText = 'ARE YOU GOING TO PROVE SOMETHING???';
         subText = `Given only ${score} codes. You either didn't figure out how to do it, or you fell asleep...`;
     }
+    
+    // Дополняем текст информацией о промахах
+    subText += ` You missed ${misses} times, losing ${misses} seconds.`;
     
     // Проверяем обе структуры оверлея для обработки любой версии
     // Оригинальная структура
