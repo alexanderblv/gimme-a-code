@@ -1,11 +1,12 @@
-var memberArray = ['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8'];
-var score = 0;
-var startTime;
-var gameEnd = true;
-var gameInterval;
-var activeMembers = [];
+// Global game variables
+let score = 0;
+let startTime;
+let gameEnd = true;
+let gameInterval;
+let activeMembers = [];
+let memberArray = ['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8'];
 
-// Переменные для статистики
+// Статистика
 let bestScore = 0;
 let clickTimes = [];
 let successfulClicks = 0;
@@ -14,6 +15,7 @@ let missedClicks = 0;
 window.addEventListener('DOMContentLoaded', initialisation);
 
 function initialisation() {
+    // Add click event listeners to all member images
     document.getElementById('game-field').addEventListener('click', function(data){
         if (memberArray.indexOf(data.target.id) !== -1) {
             // Проверяем, что элемент активный
@@ -40,7 +42,6 @@ function initialisation() {
                 }
                 
                 // Анимация и звук клика
-                playHitSound();
                 triggerHitAnimation(data.target);
                 
                 // Скрываем элемент
@@ -189,21 +190,6 @@ function triggerHitAnimation(target) {
     setTimeout(() => {
         target.style.transform = 'scale(1) rotate(0deg)';
     }, 200);
-}
-
-function playHitSound() {
-    try {
-        const hitSounds = [
-            new Audio('sound/hit1.mp3'),
-            new Audio('sound/hit2.mp3'),
-            new Audio('sound/hit3.mp3')
-        ];
-        const randomSound = hitSounds[Math.floor(Math.random() * hitSounds.length)];
-        randomSound.volume = 0.5;
-        randomSound.play().catch(e => console.log("Sound play failed:", e));
-    } catch (e) {
-        console.log("Sound play error:", e);
-    }
 }
 
 // Показать случайного участника
@@ -375,3 +361,61 @@ function endGame() {
     gameOverTitle.textContent = resultText;
     gameOverTitle.className = resultClass;
 }
+
+// Добавление стилей для анимаций нажатия
+document.head.insertAdjacentHTML('beforeend', `
+<style>
+@keyframes clickEffect {
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(0); }
+    75% { transform: translateX(5px); }
+    100% { transform: translateX(0); }
+}
+
+@keyframes blink {
+    0% { opacity: 0.2; }
+    50% { opacity: 1; }
+    100% { opacity: 0.2; }
+}
+
+@keyframes diagonal-drift {
+    0% { transform: translate(0, 0); }
+    50% { transform: translate(20px, 20px); }
+    100% { transform: translate(0, 0); }
+}
+
+@keyframes bounce {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(20px); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes circular-path {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(20px, 0); }
+    50% { transform: translate(20px, 20px); }
+    75% { transform: translate(0, 20px); }
+    100% { transform: translate(0, 0); }
+}
+
+@keyframes zigzag {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(20px, 20px); }
+    50% { transform: translate(0, 40px); }
+    75% { transform: translate(-20px, 20px); }
+    100% { transform: translate(0, 0); }
+}
+</style>
+`);
