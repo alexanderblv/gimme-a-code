@@ -76,6 +76,15 @@
             align-items: center;
             max-width: 600px;
         }
+        
+        /* Removed glitch effect from result text */
+        #result-text {
+            color: #00FFD1;
+            text-shadow: 0 0 10px rgba(0, 255, 209, 0.5);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 15px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -212,7 +221,7 @@
     <!-- Game Over Overlay -->
     <div class="overlay hidden" id="game-over-overlay">
         <div class="overlay-content">
-            <h1 class="glitch-text" id="result-text">Game Over</h1>
+            <h1 id="result-text">Game Over</h1>
             <h2>Your final score: <span id="final-score">0</span> codes</h2>
             
             <!-- Result GIF container -->
@@ -503,10 +512,10 @@
                 gifSrc = 'img/low.gif';
             }
             
-            // Обновляем текст результатов
+            // Обновляем текст результатов - удалена графическая обработка
             const resultTextElement = document.getElementById('result-text');
             resultTextElement.textContent = resultText;
-            resultTextElement.setAttribute('data-text', resultText);
+            // Удален код: resultTextElement.setAttribute('data-text', resultText);
             
             // Устанавливаем соответствующий GIF
             const resultGif = document.getElementById('result-gif');
