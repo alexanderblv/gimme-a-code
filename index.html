@@ -42,6 +42,27 @@
             animation: gif-glitch-anim 2s infinite;
         }
         
+        .gif-scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 255, 209, 0.7);
+            box-shadow: 0 0 10px rgba(0, 255, 209, 0.8);
+            top: 0;
+            left: 0;
+            animation: scan-line 3s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes scan-line {
+            0% {
+                top: 0%;
+            }
+            100% {
+                top: 100%;
+            }
+        }
+        
         @keyframes gif-glitch-anim {
             0%, 100% {
                 transform: translateX(0);
@@ -75,221 +96,6 @@
             flex-direction: column;
             align-items: center;
             max-width: 600px;
-        }
-        
-        /* Updated styles for multi-line glitch effect */
-        .glitch-text {
-            position: relative;
-            display: inline-block;
-            text-align: center;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(0, 255, 209, 0.8);
-            animation: glitch 1s linear infinite;
-            width: 100%;
-            padding: 5px;
-            line-height: 1.4;
-            margin-bottom: 15px;
-            /* These two properties are crucial for making the glitch effect work with multi-line text */
-            overflow: hidden;
-            word-wrap: break-word;
-        }
-        
-        .glitch-text::before,
-        .glitch-text::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.1); /* Adding slight background to help with text visibility */
-        }
-        
-        .glitch-text::before {
-            left: 2px;
-            text-shadow: -2px 0 #ff00c1;
-            animation: glitch-anim 5s infinite linear alternate-reverse;
-        }
-        
-        .glitch-text::after {
-            left: -2px;
-            text-shadow: -2px 0 #00fff9, 2px 2px #ff00c1;
-            animation: glitch-anim2 1s infinite linear alternate-reverse;
-        }
-        
-        /* Modified animations to better handle multi-line text */
-        @keyframes glitch-anim {
-            0% {
-                clip-path: inset(2px 0 6px 0);
-                transform: skew(0.2deg);
-            }
-            5% {
-                clip-path: inset(82px 0 78px 0);
-                transform: skew(0.58deg);
-            }
-            10% {
-                clip-path: inset(21px 0 75px 0);
-                transform: skew(0.65deg);
-            }
-            15% {
-                clip-path: inset(31px 0 26px 0);
-                transform: skew(0.3deg);
-            }
-            20% {
-                clip-path: inset(57px 0 8px 0);
-                transform: skew(0.57deg);
-            }
-            25% {
-                clip-path: inset(38px 0 33px 0);
-                transform: skew(0.52deg);
-            }
-            30% {
-                clip-path: inset(60px 0 73px 0);
-                transform: skew(0.15deg);
-            }
-            35% {
-                clip-path: inset(65px 0 22px 0);
-                transform: skew(0.07deg);
-            }
-            40% {
-                clip-path: inset(15px 0 32px 0);
-                transform: skew(0.6deg);
-            }
-            45% {
-                clip-path: inset(31px 0 73px 0);
-                transform: skew(0.79deg);
-            }
-            50% {
-                clip-path: inset(78px 0 2px 0);
-                transform: skew(0.19deg);
-            }
-            55% {
-                clip-path: inset(90px 0 18px 0);
-                transform: skew(0.32deg);
-            }
-            60% {
-                clip-path: inset(57px 0 75px 0);
-                transform: skew(0.67deg);
-            }
-            65% {
-                clip-path: inset(100px 0 25px 0);
-                transform: skew(0.45deg);
-            }
-            70% {
-                clip-path: inset(70px 0 50px 0);
-                transform: skew(0.92deg);
-            }
-            75% {
-                clip-path: inset(12px 0 23px 0);
-                transform: skew(0.26deg);
-            }
-            80% {
-                clip-path: inset(37px 0 23px 0);
-                transform: skew(0.02deg);
-            }
-            85% {
-                clip-path: inset(86px 0 35px 0);
-                transform: skew(0.08deg);
-            }
-            90% {
-                clip-path: inset(25px 0 95px 0);
-                transform: skew(0.47deg);
-            }
-            95% {
-                clip-path: inset(12px 0 33px 0);
-                transform: skew(0.02deg);
-            }
-            100% {
-                clip-path: inset(66px 0 95px 0);
-                transform: skew(0.63deg);
-            }
-        }
-        
-        @keyframes glitch-anim2 {
-            0% {
-                clip-path: inset(16px 0 60px 0);
-                transform: skew(0.65deg);
-            }
-            5% {
-                clip-path: inset(33px 0 5px 0);
-                transform: skew(0.55deg);
-            }
-            10% {
-                clip-path: inset(89px 0 64px 0);
-                transform: skew(0.94deg);
-            }
-            15% {
-                clip-path: inset(71px 0 90px 0);
-                transform: skew(0.24deg);
-            }
-            20% {
-                clip-path: inset(26px 0 6px 0);
-                transform: skew(0.41deg);
-            }
-            25% {
-                clip-path: inset(38px 0 53px 0);
-                transform: skew(0.48deg);
-            }
-            30% {
-                clip-path: inset(26px 0 92px 0);
-                transform: skew(0.2deg);
-            }
-            35% {
-                clip-path: inset(23px 0 56px 0);
-                transform: skew(0.8deg);
-            }
-            40% {
-                clip-path: inset(47px 0 15px 0);
-                transform: skew(0.75deg);
-            }
-            45% {
-                clip-path: inset(3px 0 78px 0);
-                transform: skew(0.1deg);
-            }
-            50% {
-                clip-path: inset(9px 0 14px 0);
-                transform: skew(0.83deg);
-            }
-            55% {
-                clip-path: inset(5px 0 63px 0);
-                transform: skew(0.92deg);
-            }
-            60% {
-                clip-path: inset(24px 0 59px 0);
-                transform: skew(0.03deg);
-            }
-            65% {
-                clip-path: inset(78px 0 82px 0);
-                transform: skew(0.48deg);
-            }
-            70% {
-                clip-path: inset(7px 0 11px 0);
-                transform: skew(0.29deg);
-            }
-            75% {
-                clip-path: inset(2px 0 46px 0);
-                transform: skew(0.5deg);
-            }
-            80% {
-                clip-path: inset(48px 0 2px 0);
-                transform: skew(0.21deg);
-            }
-            85% {
-                clip-path: inset(49px 0 91px 0);
-                transform: skew(0.48deg);
-            }
-            90% {
-                clip-path: inset(82px 0 76px 0);
-                transform: skew(0.11deg);
-            }
-            95% {
-                clip-path: inset(20px 0 69px 0);
-                transform: skew(0.21deg);
-            }
-            100% {
-                clip-path: inset(19px 0 99px 0);
-                transform: skew(0.02deg);
-            }
         }
     </style>
 </head>
@@ -434,6 +240,7 @@
             <div class="result-gif-container">
                 <img id="result-gif" src="" alt="Result" class="result-gif">
                 <div class="gif-overlay"></div>
+                <div class="gif-scan-line"></div>
             </div>
             
             <h3 id="result-subtext">Can you do better?</h3>
@@ -713,31 +520,15 @@
                 subText = `You gave out ${score} codes. Try working like a Yinger next time!`;
                 gifSrc = 'img/middle.gif';
             } else {
-                resultText = 'ARE YOU GOING TO PROVE???';
+                resultText = 'ARE YOU GOING TO PROVE SOMETHING???';
                 subText = `Given only ${score} codes. You either didn't figure out how to do it, or you fell asleep...`;
                 gifSrc = 'img/low.gif';
             }
             
-            // Обновляем текст результатов и применяем glitch эффект
+            // Обновляем текст результатов
             const resultTextElement = document.getElementById('result-text');
             resultTextElement.textContent = resultText;
             resultTextElement.setAttribute('data-text', resultText);
-            
-            // Проверяем размер контейнера и уменьшаем шрифт, если текст слишком длинный
-            setTimeout(() => {
-                const container = resultTextElement.parentElement;
-                const containerWidth = container.offsetWidth;
-                
-                // Задаем максимальную ширину для элемента с текстом
-                resultTextElement.style.maxWidth = `${containerWidth * 0.9}px`;
-                
-                // Если текст длинный, уменьшаем шрифт
-                if (resultText.length > 30) {
-                    resultTextElement.style.fontSize = '24px';
-                } else {
-                    resultTextElement.style.fontSize = '32px';
-                }
-            }, 100);
             
             // Устанавливаем соответствующий GIF
             const resultGif = document.getElementById('result-gif');
@@ -746,11 +537,24 @@
             // Добавляем класс анимации glitch для GIF
             resultGif.classList.add('gif-glitch');
             
-            // Создаем эффект "загрузки" для GIF (без scan-line и data_analyzed)
+            // Создаем эффект "загрузки" для GIF
             setTimeout(() => {
                 const container = document.querySelector('.result-gif-container');
                 container.style.transition = 'box-shadow 0.5s ease';
                 container.style.boxShadow = '0 0 20px rgba(0, 255, 209, 0.8)';
+                
+                // Добавляем текстовый эффект поверх GIF
+                const dataEffect = document.createElement('div');
+                dataEffect.style.position = 'absolute';
+                dataEffect.style.bottom = '10px';
+                dataEffect.style.left = '10px';
+                dataEffect.style.color = '#00FFD1';
+                dataEffect.style.fontSize = '12px';
+                dataEffect.style.fontFamily = 'monospace';
+                dataEffect.style.textShadow = '0 0 5px rgba(0, 255, 209, 0.8)';
+                dataEffect.style.pointerEvents = 'none';
+                dataEffect.textContent = 'Data_Analyzed_' + Math.floor(Math.random() * 1000);
+                container.appendChild(dataEffect);
             }, 500);
             
             // Анимируем подтекст
