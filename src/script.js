@@ -1,341 +1,367 @@
-// Game logic
-let score = 0;
-let timeLeft = 20;
-let gameInterval;
-let activeMembers = [];
-let gameEnd = true;
+var memberArray = ['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8', 'm9'];
+var score = 0;
+var startTime;
+var gameEnd = true;
 
-// Initialize the game when DOM content is loaded
+// Statistics variables
+var bestScore = 0;
+var responseTimes = [];
+var totalClicks = 0;
+var successfulClicks = 0;
+
 window.addEventListener('DOMContentLoaded', initialisation);
 
 function initialisation() {
-    // Set up event listeners
     document.getElementById('game-field').addEventListener('click', function(data){
-        if (data.target.classList.contains('member-img')) {
-            clickMember(data.target);
+        if (memberArray.indexOf(data.target.id) !== -1) {
+            // Record response time
+            const clickTime = Date.now();
+            const responseTime = (clickTime - data.target.getAttribute('data-appeared')) / 1000;
+            responseTimes.push(responseTime);
+            
+            // Update successful clicks
+            successfulClicks++;
+            totalClicks++;
+            
+            removeMember(data.target.id);
+            changeScore(++score);
+            playHitSound();
+            triggerHitAnimation(data.target);
+            setTimeout(addMember, 300, getRandomMember());
+            
+            // Update statistics in real-time
+            updateStatistics();
+        } else {
+            // Track missed clicks (clicks on the game field but not on a member)
+            totalClicks++;
+            updateStatistics();
         }
     });
     
-    document.getElementById('start-button').addEventListener('click', startGame);
-    document.getElementById('restart-button').addEventListener('click', startGame);
+    // Use the button IDs from your HTML
+    document.getElementById('start-button').addEventListener('mouseup', startGame);
+    document.getElementById('restart-button').addEventListener('mouseup', startGame);
     
-    // Create background elements
-    createBackgroundElements();
+    // Load best score from localStorage if available
+    if (localStorage.getItem('bestScore')) {
+        bestScore = parseInt(localStorage.getItem('bestScore'));
+        document.getElementById('best-score').textContent = bestScore;
+    }
+    
+    // Create the falling background elements
+    createFallingElements();
 }
 
-// Background animations
-function createBackgroundElements() {
-    const fallingContainer = document.querySelector('.falling-elements');
-    const blinkingContainer = document.querySelector('.blinking-elements');
+function createFallingElements() {
+    const container = document.createElement('div');
+    container.className = 'falling-elements';
+    document.body.appendChild(container);
     
-    // Clear existing elements
-    if (fallingContainer) fallingContainer.innerHTML = '';
-    if (blinkingContainer) blinkingContainer.innerHTML = '';
+    const images = ['meme.png', 'dvd.png', 'hat.png', 'crab.png'];
+    const numberOfElements = 15; // More elements for a richer background
     
-    // Create falling elements
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < numberOfElements; i++) {
+        const element = document.createElement('img');
+        const randomImage = images[Math.floor(Math.random() * images.length)];
+        element.src = `img/${randomImage}`;
+        element.className = 'falling-item';
+        
+        // Random positioning and properties
+        const gameField = document.getElementById('game-field');
+        const gameFieldRect = gameField.getBoundingClientRect();
+        
+        // Get window dimensions
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        
+        // Define game field boundaries
+        const gameFieldLeft = gameFieldRect.left;
+        const gameFieldRight = gameFieldRect.right;
+        const gameFieldTop = gameFieldRect.top;
+        const gameFieldBottom = gameFieldRect.bottom;
+        
+        // Random position (ensuring it's outside the game field)
+        let startX, startY;
+        let isPositionValid = false;
+        
+        // Keep generating random positions until we find one outside the game field
+        while (!isPositionValid) {
+            startX = Math.random() * 100; // Position in vh units
+            startY = Math.random() * 100; // Position in vw units
+            
+            // Convert percentage to actual pixels for comparison
+            const pixelX = (startX / 100) * windowWidth;
+            const pixelY = (startY / 100) * windowHeight;
+            
+            // Check if the position is outside the game field with some margin
+            if (!(pixelX > gameFieldLeft - 50 && pixelX < gameFieldRight + 50 &&
+                  pixelY > gameFieldTop - 50 && pixelY < gameFieldBottom + 50)) {
+                isPositionValid = true;
+            }
+        }
+        
+        const size = Math.random() * 50 + 30; // Size between 30px and 80px
+        const opacity = Math.random() * 0.3 + 0.2; // Opacity between 0.2 and 0.5
+        const rotationSpeed = Math.random() * 20 + 10; // Rotation speed
+        
+        // Choose a random animation pattern
+        const animationPattern = Math.floor(Math.random() * 4);
+        let animationStyle;
+        
+        switch(animationPattern) {
+            case 0: // Diagonal drift
+                animationStyle = `
+                    diagonal-drift ${Math.random() * 60 + 40}s linear infinite,
+                    gentle-rotate ${rotationSpeed}s ease-in-out infinite
+                `;
+                break;
+            case 1: // Bouncing
+                animationStyle = `
+                    bounce ${Math.random() * 20 + 10}s ease-in-out infinite,
+                    gentle-rotate ${rotationSpeed}s ease-in-out infinite
+                `;
+                break;
+            case 2: // Circular path
+                animationStyle = `
+                    circular-path ${Math.random() * 40 + 30}s linear infinite,
+                    gentle-rotate ${rotationSpeed}s ease-in-out infinite
+                `;
+                break;
+            case 3: // Zigzag
+                animationStyle = `
+                    zigzag ${Math.random() * 30 + 20}s ease-in-out infinite,
+                    gentle-rotate ${rotationSpeed * 0.8}s ease-in-out infinite
+                `;
+                break;
+        }
+        
+        // Set CSS properties
+        element.style.cssText = `
+            top: ${startY}vh;
+            left: ${startX}vw;
+            width: ${size}px;
+            height: auto;
+            opacity: ${opacity};
+            z-index: -1; /* Ensure it's behind the game field */
+            animation: ${animationStyle};
+            animation-delay: -${Math.random() * 30}s;
+        `;
+        
+        container.appendChild(element);
+    }
+    
+    // Add unique blinking elements
+    const blinkingContainer = document.createElement('div');
+    blinkingContainer.className = 'blinking-elements';
+    document.body.appendChild(blinkingContainer);
+    
+    for (let i = 0; i < 5; i++) {
         const element = document.createElement('div');
-        element.classList.add('falling-item');
-        element.style.left = `${Math.random() * 100}vw`;
-        element.style.top = `${Math.random() * 100}vh`;
-        element.style.opacity = Math.random() * 0.5 + 0.1;
-        element.style.fontSize = `${Math.random() * 20 + 10}px`;
-        element.innerHTML = ['✨', '🔒', '💻', '⚡', '🔑'][Math.floor(Math.random() * 5)];
+        element.className = 'succinct-pixel';
         
-        // Random animation type
-        const animations = ['diagonal-drift', 'bounce', 'circular-path', 'zigzag'];
-        const randomAnim = animations[Math.floor(Math.random() * animations.length)];
-        element.style.animation = `${randomAnim} ${Math.random() * 15 + 10}s infinite alternate`;
+        const size = Math.random() * 6 + 4; // Size between 4px and 10px
+        const startX = Math.random() * 100;
+        const startY = Math.random() * 100;
+        const blinkSpeed = Math.random() * 3 + 1; // Blink speed
+        const hue = Math.random() * 60 + 300; // Purple to pink hue range
         
-        fallingContainer.appendChild(element);
-    }
-    
-    // Create blinking pixel elements
-    for (let i = 0; i < 30; i++) {
-        const pixel = document.createElement('div');
-        pixel.classList.add('succinct-pixel');
-        pixel.style.left = `${Math.random() * 100}vw`;
-        pixel.style.top = `${Math.random() * 100}vh`;
-        pixel.style.width = `${Math.random() * 4 + 2}px`;
-        pixel.style.height = pixel.style.width;
-        pixel.style.backgroundColor = `hsl(${Math.random() * 60 + 270}, 100%, 70%)`;
-        pixel.style.animation = `blink ${Math.random() * 3 + 2}s infinite`;
+        element.style.cssText = `
+            width: ${size}px;
+            height: ${size}px;
+            top: ${startY}vh;
+            left: ${startX}vw;
+            background-color: hsl(${hue}, 100%, 70%);
+            animation: blink ${blinkSpeed}s ease-in-out infinite;
+            animation-delay: -${Math.random() * 3}s;
+        `;
         
-        blinkingContainer.appendChild(pixel);
+        blinkingContainer.appendChild(element);
     }
 }
 
-// Initialize the game
+function updateStatistics() {
+    // Update best score
+    if (score > bestScore) {
+        bestScore = score;
+        document.getElementById('best-score').textContent = bestScore;
+        localStorage.setItem('bestScore', bestScore);
+    }
+    
+    // Calculate and update average response time
+    if (responseTimes.length > 0) {
+        const avgResponseTime = responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length;
+        document.getElementById('avg-response').textContent = avgResponseTime.toFixed(1) + 's';
+    }
+    
+    // Calculate and update success rate
+    if (totalClicks > 0) {
+        const successRate = (successfulClicks / totalClicks) * 100;
+        document.getElementById('success-rate').textContent = Math.round(successRate) + '%';
+    }
+}
+
+function triggerHitAnimation(target) {
+    target.style.transform = 'scale(1.2) rotate(10deg)';
+    setTimeout(() => {
+        target.style.transform = 'scale(1) rotate(0deg)';
+    }, 200);
+}
+
+function playHitSound() {
+    const hitSounds = [
+        new Audio('sound/hit1.mp3'),
+        new Audio('sound/hit2.mp3'),
+        new Audio('sound/hit3.mp3')
+    ];
+    const randomSound = hitSounds[Math.floor(Math.random() * hitSounds.length)];
+    randomSound.volume = 0.5;
+    randomSound.play();
+}
+
+function getRandomMember() {
+    return memberArray[Math.floor(Math.random() * memberArray.length)];
+}
+
+function addMember(id) {
+    const memberElement = document.getElementById(id);
+    memberElement.style.display = 'block';
+    memberElement.style.animation = 'pulse 0.5s ease-in-out';
+    
+    // Store the timestamp when the member appeared
+    memberElement.setAttribute('data-appeared', Date.now());
+    
+    if (!gameEnd) {
+        setTimeout(function(){
+            if (memberElement.style.display != 'none') {
+                removeMember(id);
+                setTimeout(addMember, Math.random() * Math.floor(300) + 100, getRandomMember());
+            } 
+        }, Math.round(Math.random() * Math.floor(800)) + 300);
+    }
+}
+
+function removeMember(id) {
+    document.getElementById(id).style.display = 'none';
+}
+
+function changeScore() {
+    const scoreElement = document.getElementById('score').getElementsByTagName('span')[0];
+    scoreElement.innerHTML = 'Codes: ' + score;
+    
+    // Update final score display
+    document.getElementById('final-score').textContent = score;
+    
+    // Animation effect
+    scoreElement.style.transform = 'scale(1.1) rotateX(20deg)';
+    setTimeout(() => {
+        scoreElement.style.transform = 'scale(1) rotateX(0deg)';
+    }, 200);
+}
+
+function startTimer() {
+    startTime = Date.now();
+    changeTimer();
+}
+
+function changeTimer() {
+    if ((Date.now() - startTime) >= 20000) {
+        endGame();
+    } else {
+        setTimeout(changeTimer, 50);
+        const remainingTime = Math.round(20 - (Date.now() - startTime) / 1000);
+        const progressPercentage = 100 - (Date.now() - startTime) * 0.005;
+        
+        document.getElementById('progress').style.width = progressPercentage + '%';
+        document.getElementById('timer').getElementsByTagName('span')[0].innerHTML = 'Time left: ' + remainingTime + ' seconds';
+        
+        // Add visual intensity as time runs low
+        if (remainingTime <= 5) {
+            document.getElementById('timer').style.animation = 'shake 0.5s infinite';
+        } else {
+            document.getElementById('timer').style.animation = '';
+        }
+    }
+}
+
+function clearField() {
+    let members = document.getElementsByClassName('member-img');
+    for (let i = 0; i < members.length; i++) {
+        members[i].style.display = 'none';
+    }
+}
+
 function startGame() {
-    console.log("startGame function called");
+    // Reset game values
+    score = 0;
+    changeScore();
+    responseTimes = [];
+    totalClicks = 0;
+    successfulClicks = 0;
     
     // Hide overlays
     document.getElementById('start-overlay').classList.add('hidden');
     document.getElementById('game-over-overlay').classList.add('hidden');
     
-    // Reset game state
-    score = 0;
-    timeLeft = 20;
-    updateScore();
-    updateTimer();
-    gameEnd = false;
-    
-    // Clear all active members
     clearField();
+    gameEnd = false;
+    startTimer();
+    setTimeout(addMember, 300, getRandomMember());
     
-    // Start the game loop
-    gameInterval = setInterval(gameLoop, 1000);
-    
-    // Show the first member
-    showRandomMember();
+    // Update the statistics display
+    updateStatistics();
 }
 
-// Clear all active members
-function clearField() {
-    let members = document.getElementsByClassName('member-img');
-    for (let i = 0; i < members.length; i++) {
-        members[i].style.animation = '';
-        members[i].style.filter = 'hue-rotate(-40deg) brightness(0.9)';
-        members[i].style.opacity = '0.7';
-        members[i].onclick = null;
+function typeWriter(element, text, speed = 50) {
+    element.innerHTML = '';
+    let i = 0;
+    function type() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+        }
     }
-    activeMembers = [];
+    type();
 }
 
-// Game loop function
-function gameLoop() {
-    timeLeft--;
-    updateTimer();
-    
-    // Show a new member randomly
-    if (Math.random() > 0.3) {
-        showRandomMember();
-    }
-    
-    // Game over when time runs out
-    if (timeLeft <= 0) {
-        gameOver();
-    }
-}
-
-// Show a random member
-function showRandomMember() {
-    const members = document.querySelectorAll('.member-img');
-    const availableMembers = Array.from(members).filter(member => !activeMembers.includes(member.id));
-    
-    if (availableMembers.length > 0) {
-        const randomIndex = Math.floor(Math.random() * availableMembers.length);
-        const member = availableMembers[randomIndex];
-        
-        // Add to active members
-        activeMembers.push(member.id);
-        
-        // Animate member
-        member.style.animation = 'pulse 1.5s infinite';
-        member.style.filter = 'hue-rotate(0deg) brightness(1.2)';
-        member.style.opacity = '1';
-        
-        // Make member clickable
-        member.onclick = function() {
-            clickMember(member);
-        };
-        
-        // Auto-hide after random time if not clicked
-        setTimeout(() => {
-            if (activeMembers.includes(member.id)) {
-                hideMember(member);
-            }
-        }, Math.random() * 2000 + 1000);
-    }
-}
-
-// Handle member click
-function clickMember(member) {
-    // Increase score
-    score++;
-    updateScore();
-    
-    // Add time bonus
-    timeLeft += 1;
-    updateTimer();
-    
-    // Hide the member
-    hideMember(member);
-    
-    // Show effect
-    showClickEffect(member);
-}
-
-// Hide a member
-function hideMember(member) {
-    member.style.animation = '';
-    member.style.filter = 'hue-rotate(-40deg) brightness(0.9)';
-    member.style.opacity = '0.7';
-    member.onclick = null;
-    
-    // Remove from active members
-    const index = activeMembers.indexOf(member.id);
-    if (index > -1) {
-        activeMembers.splice(index, 1);
-    }
-}
-
-// Show click effect
-function showClickEffect(member) {
-    const effect = document.createElement('div');
-    effect.textContent = '+1';
-    effect.style.position = 'absolute';
-    effect.style.color = '#00FFD1';
-    effect.style.fontSize = '24px';
-    effect.style.fontWeight = 'bold';
-    effect.style.textShadow = '0 0 10px rgba(0, 255, 209, 0.8)';
-    effect.style.zIndex = '100';
-    
-    // Get position
-    const rect = member.getBoundingClientRect();
-    effect.style.left = `${rect.left + rect.width / 2}px`;
-    effect.style.top = `${rect.top + rect.height / 2}px`;
-    
-    // Add animation
-    effect.style.transition = 'all 0.8s ease-out';
-    effect.style.pointerEvents = 'none';
-    
-    document.body.appendChild(effect);
-    
-    // Animate and remove
-    setTimeout(() => {
-        effect.style.transform = 'translateY(-50px)';
-        effect.style.opacity = '0';
-    }, 50);
-    
-    setTimeout(() => {
-        effect.remove();
-    }, 800);
-}
-
-// Update score display
-function updateScore() {
-    document.querySelector('#score span').textContent = `Codes: ${score}`;
-    document.getElementById('final-score').textContent = score;
-    
-    // Update best score in stats
-    const statsValues = document.querySelectorAll('.stats-value');
-    if (statsValues.length > 0) {
-        statsValues[0].textContent = score > parseInt(statsValues[0].textContent || '0') ? score : statsValues[0].textContent;
-    }
-}
-
-// Update timer display
-function updateTimer() {
-    document.querySelector('#timer span').textContent = `Time left: ${timeLeft} seconds`;
-    
-    // Update progress bar
-    const progressPercent = (timeLeft / 20) * 100;
-    document.getElementById('progress').style.width = `${progressPercent}%`;
-    
-    // Add visual intensity as time runs low
-    if (timeLeft <= 5) {
-        document.getElementById('timer').classList.add('timer-warning');
-    } else {
-        document.getElementById('timer').classList.remove('timer-warning');
-    }
-}
-
-// Game over function
-function gameOver() {
-    clearInterval(gameInterval);
+function endGame() {
     gameEnd = true;
     
-    // Hide all active members
-    activeMembers.forEach(id => {
-        const member = document.getElementById(id);
-        if (member) {
-            hideMember(member);
-        }
-    });
-    activeMembers = [];
+    // Clear timer animation
+    document.getElementById('timer').style.animation = '';
     
     // Show game over overlay
     document.getElementById('game-over-overlay').classList.remove('hidden');
     
-    // Update final score
-    document.getElementById('final-score').textContent = score;
+    // Update statistics one final time
+    updateStatistics();
     
-    // Add custom message based on score
-    let resultTitle = document.querySelector('#game-over-overlay h1');
-    let resultMessage;
-    
+    // Determine text based on score
+    let resultText, subText;
     if (score >= 20) {
-        resultTitle.textContent = "AMAZING RESULT!";
-        resultMessage = "You're a quantum coder now!";
-    } else if (score >= 10) {
-        resultTitle.textContent = "GOOD JOB!";
-        resultMessage = "You've earned Succinct's trust!";
+        resultText = 'At this rate, Yinger will hire you as an assistant, DM him bro';
+        subText = `Given ${score} codes. Great result Prover, you are just a SP1 dream!`;
+    } else if (score < 20 && score > 8) {
+        resultText = 'Cool, but ETH requires more!';
+        subText = `You gave out ${score} codes. Try working like a Yinger next time!`;
     } else {
-        resultTitle.textContent = "GAME OVER";
-        resultMessage = "Try again, crypto needs you!";
+        resultText = 'ARE YOU GOING TO PROVE SOMETHING???';
+        subText = `Given only ${score} codes. You either didn't figure out how to do it, or you fell asleep...`;
     }
     
-    // Add or update the message
-    let messageElement = document.querySelector('#game-over-overlay h3');
-    if (messageElement) {
-        messageElement.textContent = resultMessage;
+    // Add glitch effect to the result text
+    const h1 = document.querySelector('#game-over-overlay h1');
+    const h2 = document.querySelector('#game-over-overlay h2');
+    
+    h1.innerHTML = resultText;
+    if (!h1.classList.contains('glitch-text')) {
+        h1.classList.add('glitch-text');
+    }
+    h1.setAttribute('data-text', resultText);
+    
+    // Update the sub-text with typing effect
+    if (h2.nextElementSibling.tagName === 'H3') {
+        const h3 = h2.nextElementSibling;
+        typeWriter(h3, subText);
     }
 }
-
-// Добавление стилей для анимации конца таймера
-function addStylesIfNotExist() {
-    if (!document.getElementById('dynamic-styles')) {
-        const style = document.createElement('style');
-        style.id = 'dynamic-styles';
-        style.textContent = `
-            @keyframes pulse {
-                0% { transform: scale(1); }
-                50% { transform: scale(1.05); }
-                100% { transform: scale(1); }
-            }
-            
-            @keyframes blink {
-                0% { opacity: 0.2; }
-                50% { opacity: 1; }
-                100% { opacity: 0.2; }
-            }
-            
-            @keyframes diagonal-drift {
-                0% { transform: translate(0, 0); }
-                100% { transform: translate(100px, 100px); }
-            }
-            
-            @keyframes bounce {
-                0%, 100% { transform: translateY(0); }
-                50% { transform: translateY(50px); }
-            }
-            
-            @keyframes circular-path {
-                0% { transform: rotate(0deg) translateX(50px) rotate(0deg); }
-                100% { transform: rotate(360deg) translateX(50px) rotate(-360deg); }
-            }
-            
-            @keyframes zigzag {
-                0%, 100% { transform: translate(0, 0); }
-                25% { transform: translate(50px, -25px); }
-                50% { transform: translate(0, -50px); }
-                75% { transform: translate(-50px, -25px); }
-            }
-            
-            .timer-warning {
-                animation: shake 0.5s infinite;
-            }
-            
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                25% { transform: translateX(-5px); }
-                75% { transform: translateX(5px); }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-}
-
-// Запустить добавление стилей при загрузке страницы
-document.addEventListener('DOMContentLoaded', addStylesIfNotExist);
