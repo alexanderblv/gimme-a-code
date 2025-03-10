@@ -176,7 +176,7 @@ function handleMemberClick(e) {
     }
 }
 
-// New function to handle clicks on the game field (misses)
+// Function to handle clicks on the game field (misses)
 function handleGameFieldClick(e) {
     if (!isGameRunning) return;
     
