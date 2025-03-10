@@ -377,6 +377,21 @@ body {
     height: 100%;
 }
 
+/* Адаптивные сетки для разных размеров экрана */
+@media (min-width: 992px) {
+    #game-field {
+        grid-template-columns: repeat(4, minmax(150px, 1fr));
+        grid-template-rows: repeat(2, minmax(150px, 1fr));
+    }
+}
+
+@media (max-width: 991px) {
+    #game-field {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+    }
+}
+
 #game-field::before {
     content: "";
     position: absolute;
@@ -409,12 +424,23 @@ body {
     pointer-events: none;
 }
 
-/* Стиль для изображений участников */
+/* Исправление для контейнеров изображений в игровом поле */
+#game-field > div {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 0 8px rgba(138, 43, 226, 0.3);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Улучшенный стиль для изображений участников */
 .member-img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    transition: all 0.3s ease;
+    object-fit: contain; /* Изменено с cover на contain */
+    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1); /* Плавная кривая Безье */
     filter: hue-rotate(-40deg) brightness(0.9);
     opacity: 0.7;
     cursor: pointer;
@@ -423,8 +449,14 @@ body {
 
 .member-img:hover {
     filter: hue-rotate(0) brightness(1.2);
-    transform: scale(1.1);
+    transform: scale(1.05); /* Уменьшено с 1.1 до 1.05 */
     opacity: 1;
+}
+
+/* Добавление активного состояния для плавного перехода при клике */
+.member-img:active {
+    transform: scale(0.98);
+    transition: all 0.1s ease;
 }
 
 /* Удаляем все grid-area назначения, чтобы grid-template работал корректно */
