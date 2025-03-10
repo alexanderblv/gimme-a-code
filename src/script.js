@@ -192,14 +192,18 @@ function triggerHitAnimation(target) {
 }
 
 function playHitSound() {
-    const hitSounds = [
-        new Audio('sound/hit1.mp3'),
-        new Audio('sound/hit2.mp3'),
-        new Audio('sound/hit3.mp3')
-    ];
-    const randomSound = hitSounds[Math.floor(Math.random() * hitSounds.length)];
-    randomSound.volume = 0.5;
-    randomSound.play().catch(e => console.log("Sound play failed:", e));
+    try {
+        const hitSounds = [
+            new Audio('sound/hit1.mp3'),
+            new Audio('sound/hit2.mp3'),
+            new Audio('sound/hit3.mp3')
+        ];
+        const randomSound = hitSounds[Math.floor(Math.random() * hitSounds.length)];
+        randomSound.volume = 0.5;
+        randomSound.play().catch(e => console.log("Sound play failed:", e));
+    } catch (e) {
+        console.log("Sound play error:", e);
+    }
 }
 
 // Показать случайного участника
@@ -301,6 +305,8 @@ function clearField() {
 }
 
 function startGame() {
+    console.log("startGame function called");
+    
     // Скрываем оверлеи
     document.getElementById('start-overlay').classList.add('hidden');
     document.getElementById('game-over-overlay').classList.add('hidden');
