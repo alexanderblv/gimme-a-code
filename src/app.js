@@ -15,6 +15,7 @@ const finalScoreDisplay = document.getElementById('final-score');
 const timerDisplay = document.querySelector('#timer span');
 const progressBar = document.getElementById('progress');
 const members = document.querySelectorAll('.member-img');
+const gameField = document.getElementById('game-field'); // Added for miss detection
 
 // Add event listeners
 document.addEventListener('DOMContentLoaded', () => {
@@ -30,6 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
         member.style.opacity = '0';
         member.addEventListener('click', handleMemberClick);
     });
+    
+    // Add event listener for game field to detect misses
+    if (gameField) {
+        gameField.addEventListener('click', handleGameFieldClick);
+    }
 });
 
 // Background effects
@@ -160,14 +166,42 @@ function handleMemberClick(e) {
         // Add visual feedback
         const x = e.clientX;
         const y = e.clientY;
-        createClickEffect(x, y);
+        createClickEffect(x, y, true);
         
         // Set new active member
         setRandomActiveMember();
+        
+        // Prevent event bubbling to avoid triggering the miss handler
+        e.stopPropagation();
     }
 }
 
-function createClickEffect(x, y) {
+// New function to handle clicks on the game field (misses)
+function handleGameFieldClick(e) {
+    if (!isGameRunning) return;
+    
+    // Check if the click was directly on the game field (not on a member)
+    if (e.target === gameField) {
+        // Miss - subtract one second
+        timeLeft = Math.max(0, timeLeft - 1); // Prevent negative time
+        
+        // Update display
+        timerDisplay.textContent = `Time left: ${timeLeft} seconds`;
+        progressBar.style.width = `${(timeLeft / 20) * 100}%`;
+        
+        // Add visual feedback for miss
+        const x = e.clientX;
+        const y = e.clientY;
+        createClickEffect(x, y, false);
+        
+        // End game if time runs out
+        if (timeLeft <= 0) {
+            endGame();
+        }
+    }
+}
+
+function createClickEffect(x, y, isSuccess) {
     const effect = document.createElement('div');
     effect.className = 'click-effect';
     effect.style.position = 'absolute';
@@ -176,7 +210,14 @@ function createClickEffect(x, y) {
     effect.style.width = '50px';
     effect.style.height = '50px';
     effect.style.borderRadius = '50%';
-    effect.style.backgroundColor = 'rgba(218, 112, 214, 0.5)';
+    
+    // Different color for hit vs miss
+    if (isSuccess) {
+        effect.style.backgroundColor = 'rgba(218, 112, 214, 0.5)'; // Purple for success
+    } else {
+        effect.style.backgroundColor = 'rgba(255, 0, 0, 0.5)'; // Red for miss
+    }
+    
     effect.style.transform = 'translate(-50%, -50%) scale(0)';
     effect.style.zIndex = '100';
     effect.style.animation = 'clickEffect 0.5s forwards';
