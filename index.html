@@ -42,27 +42,6 @@
             animation: gif-glitch-anim 2s infinite;
         }
         
-        .gif-scan-line {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: rgba(0, 255, 209, 0.7);
-            box-shadow: 0 0 10px rgba(0, 255, 209, 0.8);
-            top: 0;
-            left: 0;
-            animation: scan-line 3s linear infinite;
-            pointer-events: none;
-        }
-        
-        @keyframes scan-line {
-            0% {
-                top: 0%;
-            }
-            100% {
-                top: 100%;
-            }
-        }
-        
         @keyframes gif-glitch-anim {
             0%, 100% {
                 transform: translateX(0);
@@ -96,6 +75,217 @@
             flex-direction: column;
             align-items: center;
             max-width: 600px;
+        }
+        
+        /* Added styles for multi-line glitch effect */
+        .glitch-text {
+            position: relative;
+            text-align: center;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 255, 209, 0.8);
+            animation: glitch 1s linear infinite;
+            width: 100%;
+            white-space: normal;
+            margin-bottom: 15px;
+        }
+        
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            white-space: normal;
+        }
+        
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -2px 0 #00fff9, 2px 2px #ff00c1;
+            animation: glitch-anim2 1s infinite linear alternate-reverse;
+            clip: rect(44px, 450px, 56px, 0);
+        }
+        
+        @keyframes glitch-anim {
+            0% {
+                clip: rect(2px, 9999px, 6px, 0);
+                transform: skew(0.2deg);
+            }
+            5% {
+                clip: rect(82px, 9999px, 78px, 0);
+                transform: skew(0.58deg);
+            }
+            10% {
+                clip: rect(21px, 9999px, 75px, 0);
+                transform: skew(0.65deg);
+            }
+            15% {
+                clip: rect(31px, 9999px, 26px, 0);
+                transform: skew(0.3deg);
+            }
+            20% {
+                clip: rect(57px, 9999px, 8px, 0);
+                transform: skew(0.57deg);
+            }
+            25% {
+                clip: rect(38px, 9999px, 33px, 0);
+                transform: skew(0.52deg);
+            }
+            30% {
+                clip: rect(60px, 9999px, 73px, 0);
+                transform: skew(0.15deg);
+            }
+            35% {
+                clip: rect(65px, 9999px, 22px, 0);
+                transform: skew(0.07deg);
+            }
+            40% {
+                clip: rect(15px, 9999px, 32px, 0);
+                transform: skew(0.6deg);
+            }
+            45% {
+                clip: rect(31px, 9999px, 73px, 0);
+                transform: skew(0.79deg);
+            }
+            50% {
+                clip: rect(78px, 9999px, 2px, 0);
+                transform: skew(0.19deg);
+            }
+            55% {
+                clip: rect(90px, 9999px, 18px, 0);
+                transform: skew(0.32deg);
+            }
+            60% {
+                clip: rect(57px, 9999px, 75px, 0);
+                transform: skew(0.67deg);
+            }
+            65% {
+                clip: rect(100px, 9999px, 25px, 0);
+                transform: skew(0.45deg);
+            }
+            70% {
+                clip: rect(70px, 9999px, 50px, 0);
+                transform: skew(0.92deg);
+            }
+            75% {
+                clip: rect(12px, 9999px, 23px, 0);
+                transform: skew(0.26deg);
+            }
+            80% {
+                clip: rect(37px, 9999px, 23px, 0);
+                transform: skew(0.02deg);
+            }
+            85% {
+                clip: rect(86px, 9999px, 35px, 0);
+                transform: skew(0.08deg);
+            }
+            90% {
+                clip: rect(25px, 9999px, 95px, 0);
+                transform: skew(0.47deg);
+            }
+            95% {
+                clip: rect(12px, 9999px, 33px, 0);
+                transform: skew(0.02deg);
+            }
+            100% {
+                clip: rect(66px, 9999px, 95px, 0);
+                transform: skew(0.63deg);
+            }
+        }
+        
+        @keyframes glitch-anim2 {
+            0% {
+                clip: rect(16px, 9999px, 60px, 0);
+                transform: skew(0.65deg);
+            }
+            5% {
+                clip: rect(33px, 9999px, 5px, 0);
+                transform: skew(0.55deg);
+            }
+            10% {
+                clip: rect(89px, 9999px, 64px, 0);
+                transform: skew(0.94deg);
+            }
+            15% {
+                clip: rect(71px, 9999px, 90px, 0);
+                transform: skew(0.24deg);
+            }
+            20% {
+                clip: rect(26px, 9999px, 6px, 0);
+                transform: skew(0.41deg);
+            }
+            25% {
+                clip: rect(38px, 9999px, 53px, 0);
+                transform: skew(0.48deg);
+            }
+            30% {
+                clip: rect(26px, 9999px, 92px, 0);
+                transform: skew(0.2deg);
+            }
+            35% {
+                clip: rect(23px, 9999px, 56px, 0);
+                transform: skew(0.8deg);
+            }
+            40% {
+                clip: rect(47px, 9999px, 15px, 0);
+                transform: skew(0.75deg);
+            }
+            45% {
+                clip: rect(3px, 9999px, 78px, 0);
+                transform: skew(0.1deg);
+            }
+            50% {
+                clip: rect(9px, 9999px, 14px, 0);
+                transform: skew(0.83deg);
+            }
+            55% {
+                clip: rect(5px, 9999px, 63px, 0);
+                transform: skew(0.92deg);
+            }
+            60% {
+                clip: rect(24px, 9999px, 59px, 0);
+                transform: skew(0.03deg);
+            }
+            65% {
+                clip: rect(78px, 9999px, 82px, 0);
+                transform: skew(0.48deg);
+            }
+            70% {
+                clip: rect(7px, 9999px, 11px, 0);
+                transform: skew(0.29deg);
+            }
+            75% {
+                clip: rect(2px, 9999px, 46px, 0);
+                transform: skew(0.5deg);
+            }
+            80% {
+                clip: rect(48px, 9999px, 2px, 0);
+                transform: skew(0.21deg);
+            }
+            85% {
+                clip: rect(49px, 9999px, 91px, 0);
+                transform: skew(0.48deg);
+            }
+            90% {
+                clip: rect(82px, 9999px, 76px, 0);
+                transform: skew(0.11deg);
+            }
+            95% {
+                clip: rect(20px, 9999px, 69px, 0);
+                transform: skew(0.21deg);
+            }
+            100% {
+                clip: rect(19px, 9999px, 99px, 0);
+                transform: skew(0.02deg);
+            }
         }
     </style>
 </head>
@@ -240,7 +430,6 @@
             <div class="result-gif-container">
                 <img id="result-gif" src="" alt="Result" class="result-gif">
                 <div class="gif-overlay"></div>
-                <div class="gif-scan-line"></div>
             </div>
             
             <h3 id="result-subtext">Can you do better?</h3>
@@ -525,10 +714,23 @@
                 gifSrc = 'img/low.gif';
             }
             
-            // Обновляем текст результатов
+            // Обновляем текст результатов и применяем glitch эффект
             const resultTextElement = document.getElementById('result-text');
             resultTextElement.textContent = resultText;
             resultTextElement.setAttribute('data-text', resultText);
+            
+            // Проверяем, что текст полностью помещается без переноса строк
+            // Если нет, уменьшаем размер шрифта для обеспечения правильной анимации
+            setTimeout(() => {
+                const container = resultTextElement.parentElement;
+                const containerWidth = container.offsetWidth;
+                const textWidth = resultTextElement.offsetWidth;
+                
+                if (textWidth > containerWidth * 0.9) {
+                    const fontSize = parseInt(window.getComputedStyle(resultTextElement).fontSize);
+                    resultTextElement.style.fontSize = `${fontSize * 0.8}px`;
+                }
+            }, 100);
             
             // Устанавливаем соответствующий GIF
             const resultGif = document.getElementById('result-gif');
@@ -537,24 +739,11 @@
             // Добавляем класс анимации glitch для GIF
             resultGif.classList.add('gif-glitch');
             
-            // Создаем эффект "загрузки" для GIF
+            // Создаем эффект "загрузки" для GIF (без scan-line и data_analyzed)
             setTimeout(() => {
                 const container = document.querySelector('.result-gif-container');
                 container.style.transition = 'box-shadow 0.5s ease';
                 container.style.boxShadow = '0 0 20px rgba(0, 255, 209, 0.8)';
-                
-                // Добавляем текстовый эффект поверх GIF
-                const dataEffect = document.createElement('div');
-                dataEffect.style.position = 'absolute';
-                dataEffect.style.bottom = '10px';
-                dataEffect.style.left = '10px';
-                dataEffect.style.color = '#00FFD1';
-                dataEffect.style.fontSize = '12px';
-                dataEffect.style.fontFamily = 'monospace';
-                dataEffect.style.textShadow = '0 0 5px rgba(0, 255, 209, 0.8)';
-                dataEffect.style.pointerEvents = 'none';
-                dataEffect.textContent = 'Data_Analyzed_' + Math.floor(Math.random() * 1000);
-                container.appendChild(dataEffect);
             }, 500);
             
             // Анимируем подтекст
