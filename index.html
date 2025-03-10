@@ -143,9 +143,9 @@
     <!-- Game Over Overlay -->
     <div class="overlay hidden" id="game-over-overlay">
         <div class="overlay-content">
-            <h1>Game Over</h1>
+            <h1 class="glitch-text" id="result-text">Game Over</h1>
             <h2>Your final score: <span id="final-score">0</span> codes</h2>
-            <h3>Can you do better?</h3>
+            <h3 id="result-subtext">Can you do better?</h3>
             <button class="glitch-button" id="restart-button">Play Again</button>
         </div>
     </div>
@@ -385,6 +385,20 @@
             document.getElementById('success-rate-value').textContent = `${successRate}%`;
         }
         
+        // Функция для анимации текста по буквам
+        function typeWriter(element, text, speed = 50) {
+            element.innerHTML = '';
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+        
         // Game over function
         function gameOver() {
             clearInterval(gameInterval);
@@ -395,6 +409,28 @@
                 hideMember(member);
             });
             activeMembers = [];
+            
+            // Определяем текст в зависимости от счета
+            let resultText, subText;
+            if (score >= 20) {
+                resultText = 'At this rate, Yinger will hire you as an assistant, DM him bro';
+                subText = `Given ${score} codes. Great result Prover, you are just a SP1 dream!`;
+            } else if (score < 20 && score > 8) {
+                resultText = 'Cool, but ETH requires more!';
+                subText = `You gave out ${score} codes. Try working like a Yinger next time!`;
+            } else {
+                resultText = 'ARE YOU GOING TO PROVE SOMETHING???';
+                subText = `Given only ${score} codes. You either didn't figure out how to do it, or you fell asleep...`;
+            }
+            
+            // Обновляем текст результатов
+            const resultTextElement = document.getElementById('result-text');
+            resultTextElement.textContent = resultText;
+            resultTextElement.setAttribute('data-text', resultText);
+            
+            // Анимируем подтекст
+            const subtextElement = document.getElementById('result-subtext');
+            typeWriter(subtextElement, subText);
             
             // Show game over overlay
             document.getElementById('game-over-overlay').classList.remove('hidden');
