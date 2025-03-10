@@ -14,7 +14,7 @@
             cursor: url('img/star.png'), auto;
         }
         
-        /* Additional styles for the result GIFs */
+        /* Modified styles for the result GIFs - now positioned on top */
         .result-gif-container {
             position: absolute;
             width: 100%;
@@ -22,30 +22,24 @@
             top: 0;
             left: 0;
             overflow: hidden;
-            z-index: -1; /* Place it behind other content */
+            z-index: 10; /* Place it above the content */
             display: flex;
             justify-content: center;
             align-items: center;
+            pointer-events: none; /* Allow clicking through */
         }
         
         .result-gif {
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
+            width: 100%; /* Set a fixed width percentage */
+            height: auto; /* Maintain aspect ratio */
+            max-height: 100%; /* Don't exceed container height */
             object-fit: contain;
-            filter: contrast(1.1) brightness(0.7) opacity(0.3); /* 30% opacity */
+            filter: contrast(1.1) brightness(0.9) opacity(0.5); /* 50% opacity */
             transition: all 0.5s ease;
         }
         
         .gif-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5));
-            pointer-events: none;
+            display: none; /* Remove the gradient overlay */
         }
         
         .gif-glitch {
@@ -55,31 +49,31 @@
         @keyframes gif-glitch-anim {
             0%, 100% {
                 transform: translateX(0);
-                filter: opacity(0.3) contrast(1.1) brightness(0.7);
+                filter: opacity(0.5) contrast(1.1) brightness(0.9);
             }
             92% {
                 transform: translateX(0);
-                filter: opacity(0.3) contrast(1.1) brightness(0.7);
+                filter: opacity(0.5) contrast(1.1) brightness(0.9);
             }
             93% {
                 transform: translateX(-2px);
-                filter: opacity(0.3) hue-rotate(90deg) saturate(1.5);
+                filter: opacity(0.5) hue-rotate(90deg) saturate(1.5);
             }
             94% {
                 transform: translateX(3px);
-                filter: opacity(0.3) invert(0.1);
+                filter: opacity(0.5) invert(0.1);
             }
             96% {
                 transform: translateX(-2px);
-                filter: opacity(0.3) contrast(1.1) brightness(0.7);
+                filter: opacity(0.5) contrast(1.1) brightness(0.9);
             }
             98% {
                 transform: translateX(0);
-                filter: opacity(0.3) brightness(0.8) contrast(1.2);
+                filter: opacity(0.5) brightness(0.8) contrast(1.2);
             }
         }
         
-        /* Improved overlay content layout */
+        /* Modified overlay content layout to work with GIF on top */
         .overlay-content {
             display: flex;
             flex-direction: column;
@@ -88,12 +82,13 @@
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
-            position: relative; /* To position properly over the background gif */
-            background: rgba(0, 0, 0, 0.7); /* Semi-transparent background for content */
+            position: relative; /* To position properly under the background gif */
+            background: rgba(0, 0, 0, 0.85); /* More opaque background for better contrast */
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 255, 209, 0.5);
             border: 1px solid rgba(0, 255, 209, 0.3);
+            z-index: 5; /* Below the GIF but above other content */
         }
         
         /* Removed glitch effect from result text */
@@ -103,6 +98,8 @@
             font-family: 'Orbitron', sans-serif;
             margin-bottom: 15px;
             text-align: center;
+            position: relative; /* Make text appear above GIF */
+            z-index: 15;
         }
         
         /* Game description text styling */
@@ -150,16 +147,18 @@
             box-shadow: 0 0 15px rgba(153, 0, 255, 0.5);
         }
         
-        /* Game stats for final screen */
+        /* Game stats for final screen - updated z-index */
         .final-game-stats {
             margin-top: 20px;
             margin-bottom: 20px;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.8); /* More opaque for better contrast */
             border: 1px solid #00FFD1;
             border-radius: 5px;
             padding: 15px;
             width: 80%;
             max-width: 400px;
+            position: relative;
+            z-index: 15; /* Make stats appear above GIF */
         }
         
         .final-stats-title {
@@ -219,7 +218,15 @@
         #game-over-overlay .overlay-content {
             padding: 20px;
             box-sizing: border-box;
-            z-index: 10; /* Ensure content is above the gif */
+        }
+        
+        /* Ensure text elements are visible above GIF */
+        #game-over-overlay h1, 
+        #game-over-overlay h2, 
+        #game-over-overlay h3,
+        #game-over-overlay button {
+            position: relative;
+            z-index: 15;
         }
         
         @media (max-height: 700px) {
@@ -384,14 +391,8 @@
         </div>
     </div>
     
-    <!-- Game Over Overlay -->
+    <!-- Game Over Overlay - модифицировано для отображения GIF поверх контента -->
     <div class="overlay hidden" id="game-over-overlay">
-        <!-- Result GIF as background -->
-        <div class="result-gif-container">
-            <img id="result-gif" src="" alt="Result" class="result-gif">
-            <div class="gif-overlay"></div>
-        </div>
-        
         <div class="overlay-content">
             <h1 id="result-text">Game Over</h1>
             <h2>Your final score: <span id="final-score">0</span> codes</h2>
@@ -416,6 +417,12 @@
             </div>
             
             <button class="glitch-button" id="restart-button">Play Again</button>
+            
+            <!-- Result GIF container - теперь размещено ВНУТРИ overlay-content -->
+            <div class="result-gif-container">
+                <img id="result-gif" src="" alt="Result" class="result-gif">
+                <div class="gif-overlay"></div>
+            </div>
         </div>
     </div>
     
@@ -732,13 +739,23 @@
             resultGif.style.opacity = 0;
             resultGif.src = gifSrc;
             
+            // Ensure the GIF is displayed at the right size by setting specific dimensions for high.gif
+            if (score >= 20) {
+                resultGif.style.width = '100%'; // Full width
+                resultGif.style.height = 'auto'; // Maintain aspect ratio
+                // Force the container to be same size for all gifs
+                resultGif.parentElement.style.display = 'flex';
+                resultGif.parentElement.style.justifyContent = 'center';
+                resultGif.parentElement.style.alignItems = 'center';
+            }
+            
             // Добавляем класс анимации glitch для GIF
             resultGif.classList.add('gif-glitch');
             
             // Плавно показываем GIF
             setTimeout(() => {
                 resultGif.style.transition = 'opacity 1s ease';
-                resultGif.style.opacity = 0.3;  // 30% opacity
+                resultGif.style.opacity = 0.5;  // 50% opacity согласно требованию
             }, 300);
             
             // Анимируем подтекст
