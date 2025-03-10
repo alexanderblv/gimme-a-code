@@ -13,6 +13,8 @@ window.addEventListener('DOMContentLoaded', initialisation);
 
 function initialisation() {
     document.getElementById('game-field').addEventListener('click', function(data){
+        totalClicks++; // Track all clicks
+        
         if (memberArray.indexOf(data.target.id) !== -1) {
             // Record response time
             const clickTime = Date.now();
@@ -21,7 +23,6 @@ function initialisation() {
             
             // Update successful clicks
             successfulClicks++;
-            totalClicks++;
             
             removeMember(data.target.id);
             changeScore(++score);
@@ -32,20 +33,21 @@ function initialisation() {
             // Update statistics in real-time
             updateStatistics();
         } else {
-            // Track missed clicks (clicks on the game field but not on a member)
-            totalClicks++;
+            // Just update stats for missed clicks
             updateStatistics();
         }
     });
     
-    // Use the button IDs from your HTML
-    document.getElementById('start-button').addEventListener('mouseup', startGame);
-    document.getElementById('restart-button').addEventListener('mouseup', startGame);
+    // Using the class selectors from the original working code
+    document.getElementsByClassName('start-button')[0].addEventListener('mouseup', startGame);
+    document.getElementsByClassName('start-button')[1].addEventListener('mouseup', startGame);
     
     // Load best score from localStorage if available
     if (localStorage.getItem('bestScore')) {
         bestScore = parseInt(localStorage.getItem('bestScore'));
-        document.getElementById('best-score').textContent = bestScore;
+        if (document.getElementById('best-score')) {
+            document.getElementById('best-score').textContent = bestScore;
+        }
     }
     
     // Create the falling background elements
@@ -183,20 +185,27 @@ function updateStatistics() {
     // Update best score
     if (score > bestScore) {
         bestScore = score;
-        document.getElementById('best-score').textContent = bestScore;
+        if (document.getElementById('best-score')) {
+            document.getElementById('best-score').textContent = bestScore;
+        }
         localStorage.setItem('bestScore', bestScore);
     }
     
     // Calculate and update average response time
-    if (responseTimes.length > 0) {
+    if (responseTimes.length > 0 && document.getElementById('avg-response')) {
         const avgResponseTime = responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length;
         document.getElementById('avg-response').textContent = avgResponseTime.toFixed(1) + 's';
     }
     
     // Calculate and update success rate
-    if (totalClicks > 0) {
+    if (totalClicks > 0 && document.getElementById('success-rate')) {
         const successRate = (successfulClicks / totalClicks) * 100;
         document.getElementById('success-rate').textContent = Math.round(successRate) + '%';
+    }
+    
+    // Update final score if element exists
+    if (document.getElementById('final-score')) {
+        document.getElementById('final-score').textContent = score;
     }
 }
 
@@ -248,9 +257,6 @@ function changeScore() {
     const scoreElement = document.getElementById('score').getElementsByTagName('span')[0];
     scoreElement.innerHTML = 'Codes: ' + score;
     
-    // Update final score display
-    document.getElementById('final-score').textContent = score;
-    
     // Animation effect
     scoreElement.style.transform = 'scale(1.1) rotateX(20deg)';
     setTimeout(() => {
@@ -298,9 +304,9 @@ function startGame() {
     totalClicks = 0;
     successfulClicks = 0;
     
-    // Hide overlays
-    document.getElementById('start-overlay').classList.add('hidden');
-    document.getElementById('game-over-overlay').classList.add('hidden');
+    // Using the same overlay IDs as in the original working code
+    document.getElementById('game-info').style.display = 'none';
+    document.getElementById('game-end').classList.add('hidden');
     
     clearField();
     gameEnd = false;
@@ -330,13 +336,15 @@ function endGame() {
     // Clear timer animation
     document.getElementById('timer').style.animation = '';
     
-    // Show game over overlay
-    document.getElementById('game-over-overlay').classList.remove('hidden');
-    
     // Update statistics one final time
     updateStatistics();
     
-    // Determine text based on score
+    const h1 = document.getElementById('game-end').getElementsByTagName('h1')[0];
+    const h2 = document.getElementById('game-end').getElementsByTagName('h2')[0];
+    
+    h1.classList.add('glitch-text');
+    h2.classList.add('typing-text');
+    
     let resultText, subText;
     if (score >= 20) {
         resultText = 'At this rate, Yinger will hire you as an assistant, DM him bro';
@@ -349,19 +357,9 @@ function endGame() {
         subText = `Given only ${score} codes. You either didn't figure out how to do it, or you fell asleep...`;
     }
     
-    // Add glitch effect to the result text
-    const h1 = document.querySelector('#game-over-overlay h1');
-    const h2 = document.querySelector('#game-over-overlay h2');
-    
-    h1.innerHTML = resultText;
-    if (!h1.classList.contains('glitch-text')) {
-        h1.classList.add('glitch-text');
-    }
     h1.setAttribute('data-text', resultText);
+    h1.innerHTML = resultText;
+    typeWriter(h2, subText);
     
-    // Update the sub-text with typing effect
-    if (h2.nextElementSibling.tagName === 'H3') {
-        const h3 = h2.nextElementSibling;
-        typeWriter(h3, subText);
-    }
+    document.getElementById('game-end').classList.remove('hidden');
 }
