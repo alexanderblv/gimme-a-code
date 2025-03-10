@@ -33,8 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Add event listener for game field to detect misses
+    // Важно: убедимся, что это действительно элемент игрового поля
     if (gameField) {
-        gameField.addEventListener('click', handleGameFieldClick);
+        console.log("Game field found, adding miss detection");
+        gameField.addEventListener('click', handleMissClick);
+    } else {
+        console.log("Game field not found, miss detection will not work");
     }
 });
 
@@ -116,12 +120,17 @@ function restartGame() {
 
 function updateGame() {
     timeLeft--;
-    timerDisplay.textContent = `Time left: ${timeLeft} seconds`;
-    progressBar.style.width = `${(timeLeft / 20) * 100}%`;
+    updateTimerDisplay();
     
     if (timeLeft <= 0) {
         endGame();
     }
+}
+
+// Отдельная функция для обновления отображения таймера
+function updateTimerDisplay() {
+    timerDisplay.textContent = `Time left: ${timeLeft} seconds`;
+    progressBar.style.width = `${(timeLeft / 20) * 100}%`;
 }
 
 function endGame() {
@@ -176,25 +185,27 @@ function handleMemberClick(e) {
     }
 }
 
-// Function to handle clicks on the game field (misses)
-function handleGameFieldClick(e) {
+// Новая функция для обработки промахов - изменено имя и логика
+function handleMissClick(e) {
+    // Проверяем, что игра запущена
     if (!isGameRunning) return;
     
-    // Check if the click was directly on the game field (not on a member)
+    // Проверка, что клик был на игровом поле, а не на элементе member
+    // e.target - элемент, по которому произошел клик
+    // e.currentTarget - элемент, к которому прикреплен обработчик события (gameField)
     if (e.target === gameField) {
-        // Miss - subtract one second
-        timeLeft = Math.max(0, timeLeft - 1); // Prevent negative time
+        console.log("Miss detected! Subtracting 1 second");
         
-        // Update display
-        timerDisplay.textContent = `Time left: ${timeLeft} seconds`;
-        progressBar.style.width = `${(timeLeft / 20) * 100}%`;
+        // Вычитаем секунду
+        timeLeft = Math.max(0, timeLeft - 1); // Предотвращаем отрицательное время
         
-        // Add visual feedback for miss
-        const x = e.clientX;
-        const y = e.clientY;
-        createClickEffect(x, y, false);
+        // Обновляем отображение таймера
+        updateTimerDisplay();
         
-        // End game if time runs out
+        // Визуальный эффект промаха
+        createClickEffect(e.clientX, e.clientY, false);
+        
+        // Если время закончилось, завершаем игру
         if (timeLeft <= 0) {
             endGame();
         }
