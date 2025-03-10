@@ -7,25 +7,35 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="src/style.css">
-    <title>Crisis of Trust</title>
+    <title>Gimme a code</title>
     <style>
+        /* Custom cursor style for the entire document */
+        body {
+            cursor: url('img/star.png'), auto;
+        }
+        
         /* Additional styles for the result GIFs */
         .result-gif-container {
-            position: relative;
-            width: 250px;
-            height: 250px;
-            margin: 20px auto;
-            border: 2px solid #00FFD1;
-            border-radius: 5px;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
             overflow: hidden;
-            box-shadow: 0 0 15px rgba(0, 255, 209, 0.5);
+            z-index: -1; /* Place it behind other content */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
         .result-gif {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: contrast(1.1) brightness(1.1);
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            filter: contrast(1.1) brightness(0.7) opacity(0.3); /* 30% opacity */
+            transition: all 0.5s ease;
         }
         
         .gif-overlay {
@@ -34,7 +44,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(0, 255, 209, 0.2), transparent);
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5));
             pointer-events: none;
         }
         
@@ -45,27 +55,27 @@
         @keyframes gif-glitch-anim {
             0%, 100% {
                 transform: translateX(0);
-                filter: none;
+                filter: opacity(0.3) contrast(1.1) brightness(0.7);
             }
             92% {
                 transform: translateX(0);
-                filter: none;
+                filter: opacity(0.3) contrast(1.1) brightness(0.7);
             }
             93% {
                 transform: translateX(-2px);
-                filter: hue-rotate(90deg) saturate(1.5);
+                filter: opacity(0.3) hue-rotate(90deg) saturate(1.5);
             }
             94% {
                 transform: translateX(3px);
-                filter: invert(0.1);
+                filter: opacity(0.3) invert(0.1);
             }
             96% {
                 transform: translateX(-2px);
-                filter: none;
+                filter: opacity(0.3) contrast(1.1) brightness(0.7);
             }
             98% {
                 transform: translateX(0);
-                filter: brightness(1.2) contrast(1.2);
+                filter: opacity(0.3) brightness(0.8) contrast(1.2);
             }
         }
         
@@ -75,6 +85,15 @@
             flex-direction: column;
             align-items: center;
             max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative; /* To position properly over the background gif */
+            background: rgba(0, 0, 0, 0.7); /* Semi-transparent background for content */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 209, 0.5);
+            border: 1px solid rgba(0, 255, 209, 0.3);
         }
         
         /* Removed glitch effect from result text */
@@ -84,6 +103,150 @@
             font-family: 'Orbitron', sans-serif;
             margin-bottom: 15px;
             text-align: center;
+        }
+        
+        /* Game description text styling */
+        .game-description {
+            color: #a0ffed;
+            text-shadow: 0 0 8px rgba(0, 255, 209, 0.4);
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+        
+        /* Styles for falling images in terminal background */
+        .falling-image {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall 15s infinite linear;
+        }
+        
+        @keyframes fall {
+            0% {
+                transform: translateY(-100%) rotate(0deg);
+                opacity: 0.2;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(1000%) rotate(360deg);
+                opacity: 0.2;
+            }
+        }
+        
+        /* Modified taskbar style with purple color */
+        .taskbar {
+            background: linear-gradient(to right, #330066, #6600cc);
+            border-top: 1px solid #9900ff;
+            box-shadow: 0 0 15px rgba(153, 0, 255, 0.5);
+        }
+        
+        /* Game stats for final screen */
+        .final-game-stats {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #00FFD1;
+            border-radius: 5px;
+            padding: 15px;
+            width: 80%;
+            max-width: 400px;
+        }
+        
+        .final-stats-title {
+            color: #00FFD1;
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .final-stats-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        
+        .final-stats-item span {
+            color: #fff;
+        }
+        
+        .final-stats-value {
+            color: #00FFD1;
+            font-weight: bold;
+        }
+        
+        /* Make terminal container relative for falling images */
+        .terminal-container {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        /* Terminal console to take all available space */
+        .terminal-console {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 0;
+        }
+        
+        /* Terminal credit line styling - position at bottom */
+        .terminal-credit {
+            color: #ff5edc;
+            font-style: italic;
+            text-shadow: 0 0 5px rgba(255, 94, 220, 0.7);
+            border-top: 1px dashed rgba(255, 94, 220, 0.3);
+            padding-top: 8px;
+            margin-top: auto; /* Push to bottom */
+            font-weight: 600;
+            text-align: center;
+            padding-bottom: 8px;
+        }
+        
+        /* Make game over overlay responsive */
+        #game-over-overlay .overlay-content {
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 10; /* Ensure content is above the gif */
+        }
+        
+        @media (max-height: 700px) {
+            .final-game-stats {
+                margin: 10px auto;
+                padding: 10px;
+            }
+            
+            #result-text, h2, h3 {
+                margin: 10px 0;
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .overlay-content {
+                width: 95%;
+            }
+        }
+        
+        /* Custom hover style for buttons with star cursor */
+        button:hover {
+            cursor: url('img/star.png'), auto;
+        }
+        
+        /* Apply star cursor to all clickable elements */
+        .member-img, .desktop-icon, .window-button, .taskbar-icon {
+            cursor: url('img/star.png'), auto;
         }
     </style>
 </head>
@@ -144,7 +307,10 @@
                             <div class="terminal-line">$ Starting new game session</div>
                             <div class="terminal-line">$ Quantum encryption active</div>
                             <div class="terminal-line">$ Target: Collect trust codes</div>
+                            <div class="terminal-credit">from alexanderblv to Succinct fam with ❤️</div>
                         </div>
+                        <!-- Falling images container will be populated by JS -->
+                        <div class="terminal-falling-images"></div>
                     </div>
                     
                     <div class="game-stats">
@@ -198,11 +364,11 @@
     
     <!-- Desktop Icons -->
     <div class="desktop-icons">
-        <div class="desktop-icon">
+        <div class="desktop-icon" id="readme-icon">
             <img src="img/readme.png" class="desktop-icon-img" alt="PDF">
             <div class="desktop-icon-text">README.pdf</div>
         </div>
-        <div class="desktop-icon">
+        <div class="desktop-icon" id="project-icon">
             <img src="img/audio-icon.svg" class="desktop-icon-img" alt="Audio">
             <div class="desktop-icon-text">Project.mp4</div>
         </div>
@@ -213,24 +379,42 @@
         <div class="overlay-content">
             <h1>CRISIS OF TRUST</h1>
             <h2>Welcome to the Succinct Challenge</h2>
-            <p>Click on the members as fast as you can when they appear. Collect as many trust codes as possible within the time limit!</p>
+            <p class="game-description">Yinger POV: Click on the members as fast as you can when they appear. Give out as many codes as possible within the time limit!</p>
             <button class="glitch-button" id="start-button">Start Game</button>
         </div>
     </div>
     
     <!-- Game Over Overlay -->
     <div class="overlay hidden" id="game-over-overlay">
+        <!-- Result GIF as background -->
+        <div class="result-gif-container">
+            <img id="result-gif" src="" alt="Result" class="result-gif">
+            <div class="gif-overlay"></div>
+        </div>
+        
         <div class="overlay-content">
             <h1 id="result-text">Game Over</h1>
             <h2>Your final score: <span id="final-score">0</span> codes</h2>
             
-            <!-- Result GIF container -->
-            <div class="result-gif-container">
-                <img id="result-gif" src="" alt="Result" class="result-gif">
-                <div class="gif-overlay"></div>
+            <h3 id="result-subtext">Can you do better?</h3>
+            
+            <!-- Added game stats to final screen -->
+            <div class="final-game-stats">
+                <div class="final-stats-title">Game Statistics</div>
+                <div class="final-stats-item">
+                    <span>Best Score:</span>
+                    <span class="final-stats-value" id="final-best-score-value">0</span>
+                </div>
+                <div class="final-stats-item">
+                    <span>Avg. Response:</span>
+                    <span class="final-stats-value" id="final-avg-response-value">0.0s</span>
+                </div>
+                <div class="final-stats-item">
+                    <span>Success Rate:</span>
+                    <span class="final-stats-value" id="final-success-rate-value">0%</span>
+                </div>
             </div>
             
-            <h3 id="result-subtext">Can you do better?</h3>
             <button class="glitch-button" id="restart-button">Play Again</button>
         </div>
     </div>
@@ -271,6 +455,28 @@
                 pixel.style.animation = `blink ${Math.random() * 3 + 2}s infinite`;
                 
                 blinkingContainer.appendChild(pixel);
+            }
+            
+            // Create falling images in terminal
+            createFallingTerminalImages();
+        }
+        
+        // Function to create falling images in terminal
+        function createFallingTerminalImages() {
+            const terminalContainer = document.querySelector('.terminal-container');
+            const imageNames = ['crab.png', 'dvd.png', 'hat.png', 'meme.png'];
+            
+            // Create falling images
+            for (let i = 0; i < 8; i++) {
+                const img = document.createElement('img');
+                const randomImg = imageNames[Math.floor(Math.random() * imageNames.length)];
+                img.src = `img/${randomImg}`;
+                img.classList.add('falling-image');
+                img.style.left = `${Math.random() * 100}%`;
+                img.style.top = `-${Math.random() * 50}px`;
+                img.style.animationDuration = `${Math.random() * 10 + 8}s`;
+                img.style.animationDelay = `${Math.random() * 5}s`;
+                terminalContainer.appendChild(img);
             }
         }
         
@@ -468,6 +674,11 @@
             // Update success rate
             const successRate = totalClicks > 0 ? Math.round((successfulClicks / totalClicks) * 100) : 0;
             document.getElementById('success-rate-value').textContent = `${successRate}%`;
+            
+            // Update the final screen stats as well
+            document.getElementById('final-best-score-value').textContent = bestScore;
+            document.getElementById('final-avg-response-value').textContent = `${avgResponse}s`;
+            document.getElementById('final-success-rate-value').textContent = `${successRate}%`;
         }
         
         // Функция для анимации текста по буквам
@@ -512,32 +723,43 @@
                 gifSrc = 'img/low.gif';
             }
             
-            // Обновляем текст результатов - удалена графическая обработка
+            // Обновляем текст результатов
             const resultTextElement = document.getElementById('result-text');
             resultTextElement.textContent = resultText;
-            // Удален код: resultTextElement.setAttribute('data-text', resultText);
             
-            // Устанавливаем соответствующий GIF
+            // Устанавливаем соответствующий GIF с задержкой для плавного появления
             const resultGif = document.getElementById('result-gif');
+            resultGif.style.opacity = 0;
             resultGif.src = gifSrc;
             
             // Добавляем класс анимации glitch для GIF
             resultGif.classList.add('gif-glitch');
             
-            // Создаем эффект "загрузки" для GIF, но без scan line и data_analyzed текста
+            // Плавно показываем GIF
             setTimeout(() => {
-                const container = document.querySelector('.result-gif-container');
-                container.style.transition = 'box-shadow 0.5s ease';
-                container.style.boxShadow = '0 0 20px rgba(0, 255, 209, 0.8)';
-            }, 500);
+                resultGif.style.transition = 'opacity 1s ease';
+                resultGif.style.opacity = 0.3;  // 30% opacity
+            }, 300);
             
             // Анимируем подтекст
             const subtextElement = document.getElementById('result-subtext');
             typeWriter(subtextElement, subText);
             
+            // Update final stats
+            updateStats();
+            
             // Show game over overlay
             document.getElementById('game-over-overlay').classList.remove('hidden');
         }
+        
+        // Make desktop icons clickable with links
+        document.getElementById('readme-icon').addEventListener('click', function() {
+            window.open('https://github.com/alexanderblv/gimme-a-code', '_blank');
+        });
+        
+        document.getElementById('project-icon').addEventListener('click', function() {
+            window.open('https://x.com/alexander_blv', '_blank');
+        });
         
         // Event listeners
         document.getElementById('start-button').addEventListener('click', initGame);
