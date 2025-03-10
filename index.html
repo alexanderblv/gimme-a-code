@@ -75,6 +75,9 @@
             flex-direction: column;
             align-items: center;
             max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         
         /* Removed glitch effect from result text */
@@ -84,6 +87,16 @@
             font-family: 'Orbitron', sans-serif;
             margin-bottom: 15px;
             text-align: center;
+        }
+        
+        /* Game description text styling */
+        .game-description {
+            color: #a0ffed;
+            text-shadow: 0 0 8px rgba(0, 255, 209, 0.4);
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            line-height: 1.5;
         }
         
         /* Styles for falling images in terminal background */
@@ -161,6 +174,47 @@
             position: relative;
             overflow: hidden;
         }
+        
+        /* Terminal credit line styling */
+        .terminal-credit {
+            color: #ff5edc;
+            font-style: italic;
+            text-shadow: 0 0 5px rgba(255, 94, 220, 0.7);
+            border-top: 1px dashed rgba(255, 94, 220, 0.3);
+            padding-top: 8px;
+            margin-top: 10px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        /* Make game over overlay responsive */
+        #game-over-overlay .overlay-content {
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        @media (max-height: 700px) {
+            .result-gif-container {
+                width: 180px;
+                height: 180px;
+                margin: 10px auto;
+            }
+            
+            .final-game-stats {
+                margin: 10px auto;
+                padding: 10px;
+            }
+            
+            #result-text, h2, h3 {
+                margin: 10px 0;
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .overlay-content {
+                width: 95%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -220,6 +274,7 @@
                             <div class="terminal-line">$ Starting new game session</div>
                             <div class="terminal-line">$ Quantum encryption active</div>
                             <div class="terminal-line">$ Target: Collect trust codes</div>
+                            <div class="terminal-credit">from alexanderblv to Succinct fam with ❤️</div>
                         </div>
                         <!-- Falling images container will be populated by JS -->
                         <div class="terminal-falling-images"></div>
@@ -291,7 +346,7 @@
         <div class="overlay-content">
             <h1>CRISIS OF TRUST</h1>
             <h2>Welcome to the Succinct Challenge</h2>
-            <p>Click on the members as fast as you can when they appear. Collect as many trust codes as possible within the time limit!</p>
+            <p class="game-description">Click on the members as fast as you can when they appear. Give out as many codes as possible within the time limit!</p>
             <button class="glitch-button" id="start-button">Start Game</button>
         </div>
     </div>
