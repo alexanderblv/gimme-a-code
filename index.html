@@ -1,3 +1,5 @@
+Updated HTML with CSS Fixes
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,21 +13,21 @@
     <style>
         /* Additional styles for the result GIFs */
         .result-gif-container {
-            position: relative;
-            width: 250px;
-            height: 250px;
-            margin: 20px auto;
-            border: 2px solid #00FFD1;
-            border-radius: 5px;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
             overflow: hidden;
-            box-shadow: 0 0 15px rgba(0, 255, 209, 0.5);
+            z-index: -1; /* Place it behind other content */
         }
         
         .result-gif {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: contrast(1.1) brightness(1.1);
+            filter: contrast(1.1) brightness(0.7) opacity(0.3); /* Make it semi-transparent */
+            transition: all 0.5s ease;
         }
         
         .gif-overlay {
@@ -34,7 +36,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(0, 255, 209, 0.2), transparent);
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5));
             pointer-events: none;
         }
         
@@ -45,27 +47,27 @@
         @keyframes gif-glitch-anim {
             0%, 100% {
                 transform: translateX(0);
-                filter: none;
+                filter: opacity(0.3) contrast(1.1) brightness(0.7);
             }
             92% {
                 transform: translateX(0);
-                filter: none;
+                filter: opacity(0.3) contrast(1.1) brightness(0.7);
             }
             93% {
                 transform: translateX(-2px);
-                filter: hue-rotate(90deg) saturate(1.5);
+                filter: opacity(0.3) hue-rotate(90deg) saturate(1.5);
             }
             94% {
                 transform: translateX(3px);
-                filter: invert(0.1);
+                filter: opacity(0.3) invert(0.1);
             }
             96% {
                 transform: translateX(-2px);
-                filter: none;
+                filter: opacity(0.3) contrast(1.1) brightness(0.7);
             }
             98% {
                 transform: translateX(0);
-                filter: brightness(1.2) contrast(1.2);
+                filter: opacity(0.3) brightness(0.8) contrast(1.2);
             }
         }
         
@@ -78,6 +80,12 @@
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
+            position: relative; /* To position properly over the background gif */
+            background: rgba(0, 0, 0, 0.7); /* Semi-transparent background for content */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 209, 0.5);
+            border: 1px solid rgba(0, 255, 209, 0.3);
         }
         
         /* Removed glitch effect from result text */
@@ -173,18 +181,30 @@
         .terminal-container {
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
         
-        /* Terminal credit line styling */
+        /* Terminal console to take all available space */
+        .terminal-console {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 0;
+        }
+        
+        /* Terminal credit line styling - position at bottom */
         .terminal-credit {
             color: #ff5edc;
             font-style: italic;
             text-shadow: 0 0 5px rgba(255, 94, 220, 0.7);
             border-top: 1px dashed rgba(255, 94, 220, 0.3);
             padding-top: 8px;
-            margin-top: 10px;
+            margin-top: auto; /* Push to bottom */
             font-weight: 600;
             text-align: center;
+            padding-bottom: 8px;
         }
         
         /* Make game over overlay responsive */
@@ -194,12 +214,6 @@
         }
         
         @media (max-height: 700px) {
-            .result-gif-container {
-                width: 180px;
-                height: 180px;
-                margin: 10px auto;
-            }
-            
             .final-game-stats {
                 margin: 10px auto;
                 padding: 10px;
@@ -353,15 +367,15 @@
     
     <!-- Game Over Overlay -->
     <div class="overlay hidden" id="game-over-overlay">
+        <!-- Result GIF as background -->
+        <div class="result-gif-container">
+            <img id="result-gif" src="" alt="Result" class="result-gif">
+            <div class="gif-overlay"></div>
+        </div>
+        
         <div class="overlay-content">
             <h1 id="result-text">Game Over</h1>
             <h2>Your final score: <span id="final-score">0</span> codes</h2>
-            
-            <!-- Result GIF container -->
-            <div class="result-gif-container">
-                <img id="result-gif" src="" alt="Result" class="result-gif">
-                <div class="gif-overlay"></div>
-            </div>
             
             <h3 id="result-subtext">Can you do better?</h3>
             
@@ -690,23 +704,23 @@
                 gifSrc = 'img/low.gif';
             }
             
-            // Обновляем текст результатов - удалена графическая обработка
+            // Обновляем текст результатов
             const resultTextElement = document.getElementById('result-text');
             resultTextElement.textContent = resultText;
             
-            // Устанавливаем соответствующий GIF
+            // Устанавливаем соответствующий GIF с задержкой для плавного появления
             const resultGif = document.getElementById('result-gif');
+            resultGif.style.opacity = 0;
             resultGif.src = gifSrc;
             
             // Добавляем класс анимации glitch для GIF
             resultGif.classList.add('gif-glitch');
             
-            // Создаем эффект "загрузки" для GIF, но без scan line и data_analyzed текста
+            // Плавно показываем GIF
             setTimeout(() => {
-                const container = document.querySelector('.result-gif-container');
-                container.style.transition = 'box-shadow 0.5s ease';
-                container.style.boxShadow = '0 0 20px rgba(0, 255, 209, 0.8)';
-            }, 500);
+                resultGif.style.transition = 'opacity 1s ease';
+                resultGif.style.opacity = 0.3;
+            }, 300);
             
             // Анимируем подтекст
             const subtextElement = document.getElementById('result-subtext');
