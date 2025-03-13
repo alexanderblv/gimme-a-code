@@ -22,24 +22,24 @@
             top: 0;
             left: 0;
             overflow: hidden;
-            z-index: 10; /* Place it above the content */
+            z-index: 10;
             display: flex;
             justify-content: center;
             align-items: center;
-            pointer-events: none; /* Allow clicking through */
+            pointer-events: none;
         }
         
         .result-gif {
-            width: 100%; /* Set a fixed width percentage */
-            height: auto; /* Maintain aspect ratio */
-            max-height: 100%; /* Don't exceed container height */
+            width: 100%;
+            height: auto;
+            max-height: 100%;
             object-fit: contain;
-            filter: contrast(1.1) brightness(0.9) opacity(0.5); /* 50% opacity */
+            filter: contrast(1.1) brightness(0.9) opacity(0.5);
             transition: all 0.5s ease;
         }
         
         .gif-overlay {
-            display: none; /* Remove the gradient overlay */
+            display: none;
         }
         
         .gif-glitch {
@@ -73,7 +73,7 @@
             }
         }
         
-        /* Modified overlay content layout to work with GIF on top */
+        /* Modified overlay content layout */
         .overlay-content {
             display: flex;
             flex-direction: column;
@@ -82,13 +82,13 @@
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
-            position: relative; /* To position properly under the background gif */
-            background: rgba(0, 0, 0, 0.85); /* More opaque background for better contrast */
+            position: relative;
+            background: rgba(0, 0, 0, 0.85);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 255, 209, 0.5);
             border: 1px solid rgba(0, 255, 209, 0.3);
-            z-index: 5; /* Below the GIF but above other content */
+            z-index: 5;
         }
         
         /* Removed glitch effect from result text */
@@ -98,7 +98,7 @@
             font-family: 'Orbitron', sans-serif;
             margin-bottom: 15px;
             text-align: center;
-            position: relative; /* Make text appear above GIF */
+            position: relative;
             z-index: 15;
         }
         
@@ -147,18 +147,18 @@
             box-shadow: 0 0 15px rgba(153, 0, 255, 0.5);
         }
         
-        /* Game stats for final screen - updated z-index */
+        /* Game stats for final screen */
         .final-game-stats {
             margin-top: 20px;
             margin-bottom: 20px;
-            background: rgba(0, 0, 0, 0.8); /* More opaque for better contrast */
+            background: rgba(0, 0, 0, 0.8);
             border: 1px solid #00FFD1;
             border-radius: 5px;
             padding: 15px;
             width: 80%;
             max-width: 400px;
             position: relative;
-            z-index: 15; /* Make stats appear above GIF */
+            z-index: 15;
         }
         
         .final-stats-title {
@@ -201,14 +201,14 @@
             padding-bottom: 0;
         }
         
-        /* Terminal credit line styling - position at bottom */
+        /* Terminal credit line styling */
         .terminal-credit {
             color: #ff5edc;
             font-style: italic;
             text-shadow: 0 0 5px rgba(255, 94, 220, 0.7);
             border-top: 1px dashed rgba(255, 94, 220, 0.3);
             padding-top: 8px;
-            margin-top: auto; /* Push to bottom */
+            margin-top: auto;
             font-weight: 600;
             text-align: center;
             padding-bottom: 8px;
@@ -282,29 +282,25 @@
         </div>
         
         <div class="window-content">
-            <!-- Новая структура заголовка - одна строка с логотипом, таймером и счетчиком -->
+            <!-- Header area with logo, timer and score -->
             <div class="header-area">
-                <!-- Логотип слева -->
                 <div class="logo-section">
                     <div class="logo-icon">✨</div>
                     <div class="logo-text">Succinct</div>
                 </div>
                 
-                <!-- Таймер посередине (растягивается) -->
                 <div id="timer">
                     <div id="progress"></div>
                     <span>Time left: 20 seconds</span>
                 </div>
                 
-                <!-- Счетчик справа -->
                 <div id="score">
                     <span>Codes: 0</span>
                 </div>
             </div>
             
-            <!-- Новый макет с использованием flex для лучшего распределения пространства -->
+            <!-- Game layout with terminal and game field -->
             <div class="game-layout">
-                <!-- Левая боковая панель с терминалом и статистикой -->
                 <div class="terminal-sidebar">
                     <div class="terminal-container">
                         <div class="terminal-console">
@@ -316,7 +312,6 @@
                             <div class="terminal-line">$ Target: Give max codes</div>
                             <div class="terminal-credit">from alexanderblv to Succinct fam with ❤️</div>
                         </div>
-                        <!-- Falling images container will be populated by JS -->
                         <div class="terminal-falling-images"></div>
                     </div>
                     
@@ -337,7 +332,7 @@
                     </div>
                 </div>
                 
-                <!-- Игровое поле занимает оставшееся пространство - исправлено на 2x4 сетку (8 элементов) -->
+                <!-- Game field with 2x4 grid -->
                 <div id="game-field">
                     <img src="img/member.png" draggable="false" id="m1" class="member-img" style="grid-area: m1;">
                     <img src="img/member.png" draggable="false" id="m2" class="member-img" style="grid-area: m2;">
@@ -391,7 +386,7 @@
         </div>
     </div>
     
-    <!-- Game Over Overlay - модифицировано для отображения GIF поверх контента -->
+    <!-- Game Over Overlay -->
     <div class="overlay hidden" id="game-over-overlay">
         <div class="overlay-content">
             <h1 id="result-text">Game Over</h1>
@@ -399,7 +394,7 @@
             
             <h3 id="result-subtext">Can you do better?</h3>
             
-            <!-- Added game stats to final screen -->
+            <!-- Game stats on final screen -->
             <div class="final-game-stats">
                 <div class="final-stats-title">Game Statistics</div>
                 <div class="final-stats-item">
@@ -418,7 +413,7 @@
             
             <button class="glitch-button" id="restart-button">Play Again</button>
             
-            <!-- Result GIF container - теперь размещено ВНУТРИ overlay-content -->
+            <!-- Result GIF container -->
             <div class="result-gif-container">
                 <img id="result-gif" src="" alt="Result" class="result-gif">
                 <div class="gif-overlay"></div>
@@ -426,366 +421,10 @@
         </div>
     </div>
     
-    <script>
-        // Background animations
-        function createBackgroundElements() {
-            const fallingContainer = document.querySelector('.falling-elements');
-            const blinkingContainer = document.querySelector('.blinking-elements');
-            
-            // Create falling elements
-            for (let i = 0; i < 15; i++) {
-                const element = document.createElement('div');
-                element.classList.add('falling-item');
-                element.style.left = `${Math.random() * 100}vw`;
-                element.style.top = `${Math.random() * 100}vh`;
-                element.style.opacity = Math.random() * 0.5 + 0.1;
-                element.style.fontSize = `${Math.random() * 20 + 10}px`;
-                element.innerHTML = ['✨', '🔒', '💻', '⚡', '🔑'][Math.floor(Math.random() * 5)];
-                
-                // Random animation type
-                const animations = ['diagonal-drift', 'bounce', 'circular-path', 'zigzag'];
-                const randomAnim = animations[Math.floor(Math.random() * animations.length)];
-                element.style.animation = `${randomAnim} ${Math.random() * 15 + 10}s infinite alternate`;
-                
-                fallingContainer.appendChild(element);
-            }
-            
-            // Create blinking pixel elements
-            for (let i = 0; i < 30; i++) {
-                const pixel = document.createElement('div');
-                pixel.classList.add('succinct-pixel');
-                pixel.style.left = `${Math.random() * 100}vw`;
-                pixel.style.top = `${Math.random() * 100}vh`;
-                pixel.style.width = `${Math.random() * 4 + 2}px`;
-                pixel.style.height = pixel.style.width;
-                pixel.style.color = `hsl(${Math.random() * 60 + 270}, 100%, 70%)`;
-                pixel.style.animation = `blink ${Math.random() * 3 + 2}s infinite`;
-                
-                blinkingContainer.appendChild(pixel);
-            }
-            
-            // Create falling images in terminal
-            createFallingTerminalImages();
-        }
-        
-        // Function to create falling images in terminal
-        function createFallingTerminalImages() {
-            const terminalContainer = document.querySelector('.terminal-container');
-            const imageNames = ['crab.png', 'dvd.png', 'hat.png', 'meme.png'];
-            
-            // Create falling images
-            for (let i = 0; i < 8; i++) {
-                const img = document.createElement('img');
-                const randomImg = imageNames[Math.floor(Math.random() * imageNames.length)];
-                img.src = `img/${randomImg}`;
-                img.classList.add('falling-image');
-                img.style.left = `${Math.random() * 100}%`;
-                img.style.top = `-${Math.random() * 50}px`;
-                img.style.animationDuration = `${Math.random() * 10 + 8}s`;
-                img.style.animationDelay = `${Math.random() * 5}s`;
-                terminalContainer.appendChild(img);
-            }
-        }
-        
-        // Game logic
-        let score = 0;
-        let timeLeft = 20;
-        let gameInterval;
-        let activeMembers = [];
-        let bestScore = 0; // Track best score
-        let totalClicks = 0; // Track total clicks
-        let successfulClicks = 0; // Track successful clicks
-        let totalResponseTime = 0; // Track total response time
-        
-        // Initialize the game
-        function initGame() {
-            // Hide overlays
-            document.getElementById('start-overlay').classList.add('hidden');
-            document.getElementById('game-over-overlay').classList.add('hidden');
-            
-            // Reset game state
-            score = 0;
-            timeLeft = 20;
-            totalClicks = 0;
-            successfulClicks = 0;
-            totalResponseTime = 0;
-            
-            updateScore();
-            updateTimer();
-            updateStats();
-            
-            // Start the game loop
-            gameInterval = setInterval(gameLoop, 1000);
-            
-            // Show the first member
-            showRandomMember();
-        }
-        
-        // Game loop function
-        function gameLoop() {
-            timeLeft--;
-            updateTimer();
-            
-            // Show a new member randomly
-            if (Math.random() > 0.3) {
-                showRandomMember();
-            }
-            
-            // Game over when time runs out
-            if (timeLeft <= 0) {
-                gameOver();
-            }
-        }
-        
-        // Show a random member
-        function showRandomMember() {
-            const members = document.querySelectorAll('.member-img');
-            const availableMembers = Array.from(members).filter(member => !activeMembers.includes(member.id));
-            
-            if (availableMembers.length > 0) {
-                const randomIndex = Math.floor(Math.random() * availableMembers.length);
-                const member = availableMembers[randomIndex];
-                
-                // Add to active members
-                activeMembers.push(member.id);
-                
-                // Animate member
-                member.style.animation = 'pulse 1.5s infinite';
-                member.style.filter = 'hue-rotate(0deg) brightness(1.2)';
-                member.style.opacity = '1';
-                
-                // Record appearance time for response time calculation
-                member.dataset.appearTime = Date.now();
-                
-                // Make member clickable
-                member.onclick = function() {
-                    clickMember(member);
-                };
-                
-                // Auto-hide after random time if not clicked
-                setTimeout(() => {
-                    if (activeMembers.includes(member.id)) {
-                        hideMember(member);
-                        // Count as missed click for success rate
-                        totalClicks++;
-                        updateStats();
-                    }
-                }, Math.random() * 2000 + 1000);
-            }
-        }
-        
-        // Handle member click
-        function clickMember(member) {
-            // Calculate response time
-            const responseTime = (Date.now() - member.dataset.appearTime) / 1000;
-            totalResponseTime += responseTime;
-            
-            // Count successful click
-            successfulClicks++;
-            totalClicks++;
-            
-            // Increase score
-            score++;
-            updateScore();
-            
-            // Add time bonus
-            timeLeft += 1;
-            updateTimer();
-            
-            // Hide the member
-            hideMember(member);
-            
-            // Show effect
-            showClickEffect(member);
-            
-            // Update stats
-            updateStats();
-        }
-        
-        // Hide a member
-        function hideMember(member) {
-            member.style.animation = '';
-            member.style.filter = 'hue-rotate(-40deg) brightness(0.9)';
-            member.style.opacity = '0.7';
-            member.onclick = null;
-            
-            // Remove from active members
-            const index = activeMembers.indexOf(member.id);
-            if (index > -1) {
-                activeMembers.splice(index, 1);
-            }
-        }
-        
-        // Show click effect
-        function showClickEffect(member) {
-            const effect = document.createElement('div');
-            effect.textContent = '+1';
-            effect.style.position = 'absolute';
-            effect.style.color = '#00FFD1';
-            effect.style.fontSize = '24px';
-            effect.style.fontWeight = 'bold';
-            effect.style.textShadow = '0 0 10px rgba(0, 255, 209, 0.8)';
-            effect.style.zIndex = '100';
-            
-            // Get position
-            const rect = member.getBoundingClientRect();
-            effect.style.left = `${rect.left + rect.width / 2}px`;
-            effect.style.top = `${rect.top + rect.height / 2}px`;
-            
-            // Add animation
-            effect.style.transition = 'all 0.8s ease-out';
-            effect.style.pointerEvents = 'none';
-            
-            document.body.appendChild(effect);
-            
-            // Animate and remove
-            setTimeout(() => {
-                effect.style.transform = 'translateY(-50px)';
-                effect.style.opacity = '0';
-            }, 50);
-            
-            setTimeout(() => {
-                effect.remove();
-            }, 800);
-        }
-        
-        // Update score display
-        function updateScore() {
-            document.querySelector('#score span').textContent = `Codes: ${score}`;
-            document.getElementById('final-score').textContent = score;
-            
-            // Update best score if current score is higher
-            if (score > bestScore) {
-                bestScore = score;
-            }
-        }
-        
-        // Update timer display
-        function updateTimer() {
-            document.querySelector('#timer span').textContent = `Time left: ${timeLeft} seconds`;
-            
-            // Update progress bar
-            const progressPercent = (timeLeft / 20) * 100;
-            document.getElementById('progress').style.width = `${progressPercent}%`;
-        }
-        
-        // Update game stats
-        function updateStats() {
-            // Update best score
-            document.getElementById('best-score-value').textContent = bestScore;
-            
-            // Update average response time
-            const avgResponse = successfulClicks > 0 ? (totalResponseTime / successfulClicks).toFixed(1) : '0.0';
-            document.getElementById('avg-response-value').textContent = `${avgResponse}s`;
-            
-            // Update success rate
-            const successRate = totalClicks > 0 ? Math.round((successfulClicks / totalClicks) * 100) : 0;
-            document.getElementById('success-rate-value').textContent = `${successRate}%`;
-            
-            // Update the final screen stats as well
-            document.getElementById('final-best-score-value').textContent = bestScore;
-            document.getElementById('final-avg-response-value').textContent = `${avgResponse}s`;
-            document.getElementById('final-success-rate-value').textContent = `${successRate}%`;
-        }
-        
-        // Функция для анимации текста по буквам
-        function typeWriter(element, text, speed = 50) {
-            element.innerHTML = '';
-            let i = 0;
-            function type() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(type, speed);
-                }
-            }
-            type();
-        }
-        
-        // Game over function
-        function gameOver() {
-            clearInterval(gameInterval);
-            
-            // Hide all active members
-            activeMembers.forEach(id => {
-                const member = document.getElementById(id);
-                hideMember(member);
-            });
-            activeMembers = [];
-            
-            // Определяем текст и GIF в зависимости от счета
-            let resultText, subText, gifSrc;
-            
-            if (score >= 20) {
-                resultText = 'At this rate, Yinger will hire you as an assistant, DM him bro';
-                subText = `Given ${score} codes. Great result Prover, you are just a SP1 dream!`;
-                gifSrc = 'img/high.gif';
-            } else if (score < 20 && score > 8) {
-                resultText = 'Cool, but ETH requires more!';
-                subText = `You gave out ${score} codes. Try working like a Yinger next time!`;
-                gifSrc = 'img/middle.gif';
-            } else {
-                resultText = 'ARE YOU GOING TO PROVE SOMETHING???';
-                subText = `Given only ${score} codes. You either didn't figure out how to do it, or you fell asleep...`;
-                gifSrc = 'img/low.gif';
-            }
-            
-            // Обновляем текст результатов
-            const resultTextElement = document.getElementById('result-text');
-            resultTextElement.textContent = resultText;
-            
-            // Устанавливаем соответствующий GIF с задержкой для плавного появления
-            const resultGif = document.getElementById('result-gif');
-            resultGif.style.opacity = 0;
-            resultGif.src = gifSrc;
-            
-            // Ensure the GIF is displayed at the right size by setting specific dimensions for high.gif
-            if (score >= 20) {
-                resultGif.style.width = '100%'; // Full width
-                resultGif.style.height = 'auto'; // Maintain aspect ratio
-                // Force the container to be same size for all gifs
-                resultGif.parentElement.style.display = 'flex';
-                resultGif.parentElement.style.justifyContent = 'center';
-                resultGif.parentElement.style.alignItems = 'center';
-            }
-            
-            // Добавляем класс анимации glitch для GIF
-            resultGif.classList.add('gif-glitch');
-            
-            // Плавно показываем GIF
-            setTimeout(() => {
-                resultGif.style.transition = 'opacity 1s ease';
-                resultGif.style.opacity = 0.5;  // 50% opacity согласно требованию
-            }, 300);
-            
-            // Анимируем подтекст
-            const subtextElement = document.getElementById('result-subtext');
-            typeWriter(subtextElement, subText);
-            
-            // Update final stats
-            updateStats();
-            
-            // Show game over overlay
-            document.getElementById('game-over-overlay').classList.remove('hidden');
-        }
-        
-        // Make desktop icons clickable with links
-        document.getElementById('readme-icon').addEventListener('click', function() {
-            window.open('https://github.com/alexanderblv/gimme-a-code', '_blank');
-        });
-        
-        document.getElementById('project-icon').addEventListener('click', function() {
-            window.open('https://x.com/alexander_blv', '_blank');
-        });
-        
-        // Event listeners
-        document.getElementById('start-button').addEventListener('click', initGame);
-        document.getElementById('restart-button').addEventListener('click', initGame);
-        
-        // Initialize background on load
-        window.addEventListener('load', function() {
-            createBackgroundElements();
-        });
-    </script>
+    <!-- Scripts -->
+    <script src="src/js/animations.js"></script>
+    <script src="src/js/ui.js"></script>
+    <script src="src/js/game.js"></script>
+    <script src="src/js/main.js"></script>
 </body>
 </html>
