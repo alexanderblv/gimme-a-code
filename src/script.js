@@ -9,7 +9,20 @@ var responseTimes = [];
 var totalClicks = 0;
 var successfulClicks = 0;
 
-window.addEventListener('DOMContentLoaded', initialisation);
+// Import SP1 integration
+import { initializeSP1Game, processGameResult } from './sp1/gameIntegration.js';
+
+window.addEventListener('DOMContentLoaded', async () => {
+    initialisation();
+    
+    // Initialize SP1 integration
+    try {
+        await initializeSP1Game();
+        console.log('SP1 integration ready');
+    } catch (error) {
+        console.error('Failed to initialize SP1:', error);
+    }
+});
 
 function initialisation() {
     document.getElementById('game-field').addEventListener('click', function(data){
@@ -381,6 +394,7 @@ function typeWriter(element, text, speed = 50) {
 }
 
 function endGame() {
+    clearInterval(gameTimer);
     gameEnd = true;
     
     // Убираем анимацию таймера
@@ -390,6 +404,26 @@ function endGame() {
     
     // Обновляем статистику в последний раз
     updateStatistics();
+    
+    // Собираем данные для SP1 верификации
+    const gameData = {
+        score: score,
+        time: Date.now() - startTime,
+        responseTimes: responseTimes,
+        totalClicks: totalClicks,
+        successfulClicks: successfulClicks,
+        accuracy: successfulClicks > 0 ? (successfulClicks / totalClicks * 100).toFixed(1) : 0,
+        avgResponseTime: responseTimes.length > 0 ? (responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length).toFixed(2) : 0
+    };
+    
+    // Верифицируем результат с SP1 в фоне
+    if (typeof processGameResult === 'function') {
+        processGameResult(gameData).then(verifiedResult => {
+            console.log('SP1 verification completed:', verifiedResult);
+        }).catch(err => {
+            console.error('SP1 verification failed:', err);
+        });
+    }
     
     // Определяем текст в зависимости от счета
     let resultText, subText;
