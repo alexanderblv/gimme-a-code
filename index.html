@@ -426,6 +426,13 @@
         </div>
     </div>
     
+    <!-- SP1 info tag -->
+    <div class="sp1-info" style="display: none;">
+        <p>This game uses SP1 zero-knowledge proof technology to verify game results securely and transparently.</p>
+        <a href="https://docs.succinct.xyz/docs/sp1/" target="_blank">Learn more about SP1</a>
+    </div>
+    
+    <!-- Scripts -->
     <script>
         // Background animations
         function createBackgroundElements() {
@@ -765,13 +772,26 @@
             // Update final stats
             updateStats();
             
+            // SP1 верификация - добавляем только эту часть
+            if (window.SP1 && typeof window.SP1.verify === 'function') {
+                const gameData = {
+                    score: score,
+                    responseTime: totalResponseTime / successfulClicks,
+                    successRate: successfulClicks / totalClicks
+                };
+                
+                window.SP1.verify(gameData).then(verifiedResult => {
+                    console.log('SP1 verification result:', verifiedResult);
+                });
+            }
+            
             // Show game over overlay
             document.getElementById('game-over-overlay').classList.remove('hidden');
         }
         
         // Make desktop icons clickable with links
         document.getElementById('readme-icon').addEventListener('click', function() {
-            window.open('https://github.com/alexanderblv/gimme-a-code', '_blank');
+            window.open('https://github.com/plonukob/gimme-a-code', '_blank');
         });
         
         document.getElementById('project-icon').addEventListener('click', function() {
@@ -787,5 +807,39 @@
             createBackgroundElements();
         });
     </script>
+    
+    <!-- SP1 Integration -->
+    <script type="module" src="src/script.js"></script>
+    <script type="module" src="src/sp1/sp1Integration.js"></script>
+    <script type="module" src="src/sp1/SP1Badge.js"></script>
+    <script type="module" src="src/sp1/gameIntegration.js"></script>
+    <script type="module">
+        // Initialize SP1 for global access
+        import { initSP1, verifyResult } from './src/sp1/sp1Integration.js';
+        import { initSP1Badge } from './src/sp1/SP1Badge.js';
+        
+        // Create a global SP1 object for access from inline scripts
+        window.SP1 = {
+            initSP1,
+            verifyResult,
+            badge: null
+        };
+        
+        // Initialize SP1 when the page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const initialized = await initSP1();
+                if (initialized) {
+                    console.log('SP1 integration initialized');
+                    window.SP1.badge = initSP1Badge();
+                }
+            } catch (error) {
+                console.error('Failed to initialize SP1:', error);
+            }
+        });
+    </script>
+    
+    <!-- Добавляем SP1 скрипт в самом конце body -->
+    <script src="sp1.js"></script>
 </body>
 </html>
