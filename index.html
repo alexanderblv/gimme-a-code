@@ -772,17 +772,16 @@
             // Update final stats
             updateStats();
             
-            // Запускаем SP1 верификацию результата игры
-            if (window.SP1 && typeof window.SP1.verifyResult === 'function') {
+            // SP1 верификация - добавляем только эту часть
+            if (window.SP1 && typeof window.SP1.verify === 'function') {
                 const gameData = {
                     score: score,
                     responseTime: totalResponseTime / successfulClicks,
                     successRate: successfulClicks / totalClicks
                 };
                 
-                window.SP1.verifyResult(gameData).then(verified => {
-                    console.log('SP1 verification:', verified);
-                    // Можно добавить визуальную индикацию проверки SP1
+                window.SP1.verify(gameData).then(verifiedResult => {
+                    console.log('SP1 verification result:', verifiedResult);
                 });
             }
             
