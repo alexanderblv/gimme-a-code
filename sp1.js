@@ -14,47 +14,300 @@
     
     // Функция для добавления образовательной информации о SP1
     function addSP1InfoPanel() {
-        // Проверяем, есть ли уже панель на странице
-        if (document.querySelector('.sp1-info-panel')) {
-            return;
-        }
+        const infoButton = document.createElement('div');
+        infoButton.className = 'sp1-info-button';
+        infoButton.innerHTML = `
+            <div class="sp1-info-icon">?</div>
+            <span>About SP1</span>
+        `;
+        document.body.appendChild(infoButton);
         
         const infoPanel = document.createElement('div');
         infoPanel.className = 'sp1-info-panel';
-        
         infoPanel.innerHTML = `
-            <h2>SP1 Cryptographic Verification</h2>
-            <p>Your game scores are verified using SP1, a high-performance zero-knowledge virtual machine.</p>
+            <div class="sp1-info-close">×</div>
+            <h2>What is SP1?</h2>
+            <p>SP1 is a zero-knowledge proving system that allows verification of computation without revealing sensitive data.</p>
             
-            <h3>What is SP1?</h3>
-            <p>SP1 is a high-performance zero-knowledge virtual machine that allows us to:</p>
-            <ul>
-                <li>Cryptographically verify game scores</li>
-                <li>Ensure fair and tamper-proof gameplay</li>
-                <li>Generate mathematical proofs of results</li>
+            <h3>How SP1 Works</h3>
+            <div class="sp1-info-diagram">
+                <div class="sp1-info-step">
+                    <div class="sp1-info-step-icon">1</div>
+                    <div class="sp1-info-step-text">Game data is hashed and encrypted</div>
+                </div>
+                <div class="sp1-info-arrow">→</div>
+                <div class="sp1-info-step">
+                    <div class="sp1-info-step-icon">2</div>
+                    <div class="sp1-info-step-text">Zero-knowledge proof is generated</div>
+                </div>
+                <div class="sp1-info-arrow">→</div>
+                <div class="sp1-info-step">
+                    <div class="sp1-info-step-icon">3</div>
+                    <div class="sp1-info-step-text">Proof is verified on-chain</div>
+                </div>
+            </div>
+            
+            <h3>Benefits of SP1 Verification</h3>
+            <ul class="sp1-info-list">
+                <li>Trustless verification of game results</li>
+                <li>Protection against tampering and cheating</li>
+                <li>Privacy-preserving validation</li>
+                <li>On-chain provable achievements</li>
             </ul>
             
-            <h3>Why is this important?</h3>
-            <p>SP1 verification ensures:</p>
-            <ul>
-                <li>Your achievements can be publicly verified without revealing private data</li>
-                <li>Game scores cannot be manipulated or falsified</li>
-                <li>Competitive play remains fair and transparent</li>
-            </ul>
+            <h3>Technical Details</h3>
+            <div class="sp1-info-tech">
+                <div class="sp1-info-tech-item">
+                    <span class="sp1-info-tech-label">Proving System:</span>
+                    <span class="sp1-info-tech-value">STARK-based zk-proof</span>
+                </div>
+                <div class="sp1-info-tech-item">
+                    <span class="sp1-info-tech-label">Verification Time:</span>
+                    <span class="sp1-info-tech-value">~3 seconds</span>
+                </div>
+                <div class="sp1-info-tech-item">
+                    <span class="sp1-info-tech-label">Security Level:</span>
+                    <span class="sp1-info-tech-value">128-bit</span>
+                </div>
+            </div>
             
-            <p class="sp1-learn-more">
-                <a href="https://docs.succinct.xyz/sp1" target="_blank">Learn more about SP1</a>
-            </p>
-            
-            <button class="sp1-close-panel">Close</button>
+            <div class="sp1-info-links">
+                <a href="https://docs.succinct.xyz/docs/sp1/introduction" target="_blank" class="sp1-info-link">Learn More About SP1</a>
+            </div>
         `;
-        
         document.body.appendChild(infoPanel);
         
-        // Добавляем обработчик для закрытия панели
-        infoPanel.querySelector('.sp1-close-panel').addEventListener('click', () => {
-            infoPanel.style.display = 'none';
+        // Показываем/скрываем панель при клике на кнопку информации
+        infoButton.addEventListener('click', function() {
+            infoPanel.classList.toggle('active');
         });
+        
+        // Закрываем панель при клике на крестик
+        infoPanel.querySelector('.sp1-info-close').addEventListener('click', function() {
+            infoPanel.classList.remove('active');
+        });
+        
+        // Добавляем стили для панели информации
+        const style = document.createElement('style');
+        style.textContent += `
+            .sp1-info-button {
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                background: linear-gradient(135deg, #2a0060, #6600cc);
+                color: white;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-family: 'Orbitron', sans-serif;
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                cursor: pointer;
+                z-index: 9999;
+                box-shadow: 0 0 15px rgba(102, 0, 204, 0.4);
+                transition: all 0.3s ease;
+            }
+            
+            .sp1-info-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 0 20px rgba(102, 0, 204, 0.6);
+            }
+            
+            .sp1-info-icon {
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                background: #00FFD1;
+                color: #2a0060;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+            }
+            
+            .sp1-info-panel {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 90%;
+                max-width: 600px;
+                max-height: 80vh;
+                overflow-y: auto;
+                background: rgba(0, 0, 0, 0.95);
+                border: 1px solid #6600cc;
+                border-radius: 10px;
+                padding: 25px;
+                color: white;
+                font-family: 'Inter', sans-serif;
+                z-index: 10002;
+                box-shadow: 0 0 30px rgba(102, 0, 204, 0.6);
+                display: none;
+            }
+            
+            .sp1-info-panel.active {
+                display: block;
+                animation: sp1-fade-in 0.3s forwards;
+            }
+            
+            @keyframes sp1-fade-in {
+                from {
+                    opacity: 0;
+                    transform: translate(-50%, -50%) scale(0.9);
+                }
+                to {
+                    opacity: 1;
+                    transform: translate(-50%, -50%) scale(1);
+                }
+            }
+            
+            .sp1-info-close {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+                background: #6600cc;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                font-size: 20px;
+                line-height: 1;
+            }
+            
+            .sp1-info-panel h2 {
+                color: #00FFD1;
+                font-family: 'Orbitron', sans-serif;
+                font-size: 24px;
+                margin-top: 0;
+                margin-bottom: 15px;
+                text-align: center;
+            }
+            
+            .sp1-info-panel h3 {
+                color: #00FFD1;
+                font-family: 'Orbitron', sans-serif;
+                font-size: 18px;
+                margin-top: 25px;
+                margin-bottom: 10px;
+            }
+            
+            .sp1-info-panel p {
+                line-height: 1.5;
+                margin-bottom: 15px;
+                color: #eee;
+            }
+            
+            .sp1-info-diagram {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin: 20px 0;
+                flex-wrap: wrap;
+            }
+            
+            .sp1-info-step {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+                padding: 10px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .sp1-info-step-icon {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #2a0060, #6600cc);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 10px;
+                font-family: 'Orbitron', sans-serif;
+                font-weight: bold;
+                border: 2px solid #00FFD1;
+            }
+            
+            .sp1-info-step-text {
+                font-size: 14px;
+                color: #ddd;
+            }
+            
+            .sp1-info-arrow {
+                color: #00FFD1;
+                font-size: 24px;
+                font-weight: bold;
+                margin: 0 5px;
+            }
+            
+            .sp1-info-list {
+                margin: 15px 0;
+                padding-left: 20px;
+            }
+            
+            .sp1-info-list li {
+                margin-bottom: 8px;
+                color: #ddd;
+            }
+            
+            .sp1-info-tech {
+                background: rgba(102, 0, 204, 0.2);
+                padding: 15px;
+                border-radius: 8px;
+                margin: 15px 0;
+                border: 1px solid rgba(102, 0, 204, 0.5);
+            }
+            
+            .sp1-info-tech-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 8px 0;
+                border-bottom: 1px dashed rgba(102, 0, 204, 0.5);
+            }
+            
+            .sp1-info-tech-item:last-child {
+                border-bottom: none;
+            }
+            
+            .sp1-info-tech-label {
+                color: #aaa;
+            }
+            
+            .sp1-info-tech-value {
+                color: #00FFD1;
+                font-family: 'Orbitron', sans-serif;
+            }
+            
+            .sp1-info-links {
+                margin-top: 25px;
+                text-align: center;
+            }
+            
+            .sp1-info-link {
+                display: inline-block;
+                background: linear-gradient(135deg, #2a0060, #6600cc);
+                color: white;
+                padding: 10px 20px;
+                border-radius: 6px;
+                text-decoration: none;
+                font-family: 'Orbitron', sans-serif;
+                transition: all 0.3s ease;
+                box-shadow: 0 0 15px rgba(102, 0, 204, 0.4);
+            }
+            
+            .sp1-info-link:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 0 20px rgba(102, 0, 204, 0.6);
+            }
+        `;
+        document.head.appendChild(style);
     }
     
     // Функция для добавления кнопки "VERIFY WITH SP1" на экран результатов
@@ -176,12 +429,10 @@
                 background: rgba(0, 0, 0, 0.9);
                 border: 1px solid #6600cc;
                 border-radius: 8px;
-                padding: 20px;
+                padding: 15px;
                 color: white;
                 font-family: 'Inter', sans-serif;
-                width: 460px;
-                max-height: 80vh;
-                overflow-y: auto;
+                width: 320px;
                 z-index: 10000;
                 box-shadow: 0 0 20px rgba(102, 0, 204, 0.5);
                 display: none;
@@ -202,8 +453,8 @@
             .sp1-badge-details-row {
                 display: flex;
                 justify-content: space-between;
-                font-size: 14px;
-                margin-bottom: 8px;
+                font-size: 13px;
+                margin-bottom: 6px;
             }
             
             .sp1-badge-details-label {
@@ -250,15 +501,15 @@
             }
             
             .sp1-step-text {
-                font-size: 13px;
+                font-size: 12px;
             }
             
             .sp1-technical-details {
                 margin-top: 15px;
                 background: rgba(102, 0, 204, 0.2);
-                padding: 12px;
+                padding: 10px;
                 border-radius: 5px;
-                font-size: 12px;
+                font-size: 11px;
                 border: 1px solid rgba(102, 0, 204, 0.4);
             }
             
@@ -419,7 +670,10 @@
         const verificationTime = document.getElementById('sp1-verification-time');
         
         // Открываем панель деталей
-        document.querySelector('.sp1-badge-details').classList.add('active');
+        const detailsPanel = document.querySelector('.sp1-badge-details');
+        if (detailsPanel) {
+            detailsPanel.classList.add('active');
+        }
         
         if (badge) {
             badge.querySelector('span').textContent = 'SP1 Verifying...';
@@ -514,8 +768,10 @@
                             // Показываем победный эффект
                             showVerificationEffect();
                             
-                            // Оставляем окно с деталями верификации открытым
-                            document.querySelector('.sp1-badge-details').classList.add('active');
+                            // Убедимся, что панель SP1 деталей открыта
+                            if (detailsPanel && !detailsPanel.classList.contains('active')) {
+                                detailsPanel.classList.add('active');
+                            }
                         }, 600);
                     }, 800);
                 }, 1200);
