@@ -9,7 +9,20 @@ var responseTimes = [];
 var totalClicks = 0;
 var successfulClicks = 0;
 
-window.addEventListener('DOMContentLoaded', initialisation);
+// Import SP1 integration
+import { initializeSP1Game, processGameResult } from './sp1/gameIntegration.js';
+
+window.addEventListener('DOMContentLoaded', async () => {
+    initialisation();
+    
+    // Initialize SP1 integration
+    try {
+        await initializeSP1Game();
+        console.log('SP1 integration ready');
+    } catch (error) {
+        console.error('Failed to initialize SP1:', error);
+    }
+});
 
 function initialisation() {
     document.getElementById('game-field').addEventListener('click', function(data){
@@ -381,68 +394,122 @@ function typeWriter(element, text, speed = 50) {
 }
 
 function endGame() {
+    clearInterval(gameTimer);
     gameEnd = true;
     
-    // Убираем анимацию таймера
-    if (document.getElementById('timer')) {
-        document.getElementById('timer').style.animation = '';
-    }
+    // Process game result with SP1
+    const gameData = {
+        score: score,
+        time: Date.now() - startTime,
+        responseTimes: responseTimes,
+        totalClicks: totalClicks,
+        successfulClicks: successfulClicks,
+        accuracy: successfulClicks > 0 ? (successfulClicks / totalClicks * 100).toFixed(1) : 0,
+        avgResponseTime: responseTimes.length > 0 ? (responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length).toFixed(2) : 0
+    };
     
-    // Обновляем статистику в последний раз
-    updateStatistics();
-    
-    // Определяем текст в зависимости от счета
-    let resultText, subText;
-    if (score >= 20) {
-        resultText = 'At this rate, Yinger will hire you as an assistant, DM him bro';
-        subText = `Given ${score} codes. Great result Prover, you are just a SP1 dream!`;
-    } else if (score < 20 && score > 8) {
-        resultText = 'Cool, but ETH requires more!';
-        subText = `You gave out ${score} codes. Try working like a Yinger next time!`;
-    } else {
-        resultText = 'ARE YOU GOING TO PROVE SOMETHING???';
-        subText = `Given only ${score} codes. You either didn't figure out how to do it, or you fell asleep...`;
-    }
-    
-    // Проверяем обе структуры оверлея для обработки любой версии
-    // Оригинальная структура
-    if (document.getElementById('game-end')) {
-        const h1 = document.getElementById('game-end').getElementsByTagName('h1')[0];
-        const h2 = document.getElementById('game-end').getElementsByTagName('h2')[0];
+    processGameResult(gameData).then(verifiedResult => {
+        // Show game results
+        const gameField = document.getElementById('game-field');
+        gameField.innerHTML = '';
         
-        if (h1 && h2) {
-            h1.classList.add('glitch-text');
-            h2.classList.add('typing-text');
+        // Create result overlay
+        const overlay = document.createElement('div');
+        overlay.classList.add('result-overlay');
+        
+        // Create the result GIF container
+        const resultGifContainer = document.createElement('div');
+        resultGifContainer.classList.add('result-gif-container');
+        
+        // Add the GIF
+        const resultGif = document.createElement('img');
+        resultGif.src = 'img/matrix-code-rain.gif'; 
+        resultGif.classList.add('result-gif', 'gif-glitch');
+        resultGifContainer.appendChild(resultGif);
+        
+        // Create overlay content
+        const overlayContent = document.createElement('div');
+        overlayContent.classList.add('overlay-content');
+        
+        // Create result text
+        const resultText = document.createElement('h2');
+        resultText.id = 'result-text';
+        overlayContent.appendChild(resultText);
+        
+        // Add game description
+        const gameDescription = document.createElement('p');
+        gameDescription.classList.add('game-description');
+        gameDescription.textContent = 'You have entered the matrix. Your code-catching skills have been measured.';
+        overlayContent.appendChild(gameDescription);
+        
+        // Create final stats
+        const finalStats = document.createElement('div');
+        finalStats.classList.add('final-game-stats');
+        
+        // Add stats title
+        const statsTitle = document.createElement('div');
+        statsTitle.classList.add('final-stats-title');
+        statsTitle.textContent = 'Your Performance:';
+        finalStats.appendChild(statsTitle);
+        
+        // Create stats items
+        const statsItems = [
+            { label: 'Score', value: score },
+            { label: 'Accuracy', value: `${gameData.accuracy}%` },
+            { label: 'Avg Response', value: `${gameData.avgResponseTime}s` },
+            { label: 'SP1 Verified', value: verifiedResult.sp1Verified ? 'Yes' : 'No' },
+            { label: 'Proof ID', value: verifiedResult.sp1Proof || 'N/A' }
+        ];
+        
+        statsItems.forEach(item => {
+            const statsItem = document.createElement('div');
+            statsItem.classList.add('final-stats-item');
             
-            h1.setAttribute('data-text', resultText);
-            h1.innerHTML = resultText;
-            typeWriter(h2, subText);
-        }
+            const label = document.createElement('span');
+            label.textContent = item.label + ':';
+            
+            const value = document.createElement('span');
+            value.classList.add('final-stats-value');
+            value.textContent = item.value;
+            
+            statsItem.appendChild(label);
+            statsItem.appendChild(value);
+            finalStats.appendChild(statsItem);
+        });
         
-        document.getElementById('game-end').classList.remove('hidden');
-    }
-    
-    // Новая структура
-    if (document.getElementById('game-over-overlay')) {
-        document.getElementById('game-over-overlay').classList.remove('hidden');
+        overlayContent.appendChild(finalStats);
         
-        const h1 = document.querySelector('#game-over-overlay h1');
-        const h2 = document.querySelector('#game-over-overlay h2');
+        // Create restart button
+        const restartButton = document.createElement('button');
+        restartButton.id = 'restart-button';
+        restartButton.classList.add('neon-button');
+        restartButton.textContent = 'Play Again';
+        restartButton.addEventListener('mouseup', startGame);
+        overlayContent.appendChild(restartButton);
         
-        if (h1) {
-            h1.innerHTML = resultText;
-            if (!h1.classList.contains('glitch-text')) {
-                h1.classList.add('glitch-text');
+        // Append elements to the overlay
+        overlay.appendChild(resultGifContainer);
+        overlay.appendChild(overlayContent);
+        gameField.appendChild(overlay);
+        
+        // Set result message based on score
+        let resultMessage = '';
+        if (score > bestScore) {
+            resultMessage = 'NEW HIGH SCORE!';
+            bestScore = score;
+            localStorage.setItem('bestScore', bestScore);
+            if (document.getElementById('best-score')) {
+                document.getElementById('best-score').textContent = bestScore;
             }
-            h1.setAttribute('data-text', resultText);
+        } else if (score > 20) {
+            resultMessage = 'EXCELLENT!';
+        } else if (score > 10) {
+            resultMessage = 'GOOD JOB!';
+        } else {
+            resultMessage = 'GAME OVER';
         }
         
-        // Обновляем подтекст с эффектом печати
-        if (h2 && h2.nextElementSibling && h2.nextElementSibling.tagName === 'H3') {
-            const h3 = h2.nextElementSibling;
-            typeWriter(h3, subText);
-        } else if (h2) {
-            typeWriter(h2, subText);
-        }
-    }
+        // Type the result message character by character for an effect
+        typeWriter(resultText, resultMessage);
+    });
 }

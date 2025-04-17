@@ -4,5 +4,25 @@
       "main": false,
       "SP1": true
     }
-  }
+  },
+  "buildCommand": "echo 'Building with SP1 integration'",
+  "outputDirectory": ".",
+  "framework": "vanilla",
+  "rewrites": [
+    {
+      "source": "/sp1-api/:path*",
+      "destination": "https://api.succinct.xyz/api/:path*"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-SP1-Enabled",
+          "value": "true"
+        }
+      ]
+    }
+  ]
 }
