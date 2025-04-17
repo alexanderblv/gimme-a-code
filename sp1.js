@@ -72,7 +72,7 @@
             </div>
             
             <div class="sp1-info-links">
-                <a href="https://docs.succinct.xyz/docs/sp1/introduction" target="_blank" class="sp1-info-link">Learn More About SP1</a>
+                <a href="https://docs.succinct.xyz/docs/sp1/" target="_blank" class="sp1-info-link">Learn More About SP1</a>
             </div>
         `;
         document.body.appendChild(infoPanel);
@@ -670,10 +670,7 @@
         const verificationTime = document.getElementById('sp1-verification-time');
         
         // Открываем панель деталей
-        const detailsPanel = document.querySelector('.sp1-badge-details');
-        if (detailsPanel) {
-            detailsPanel.classList.add('active');
-        }
+        document.querySelector('.sp1-badge-details').classList.add('active');
         
         if (badge) {
             badge.querySelector('span').textContent = 'SP1 Verifying...';
@@ -767,11 +764,6 @@
                             
                             // Показываем победный эффект
                             showVerificationEffect();
-                            
-                            // Убедимся, что панель SP1 деталей открыта
-                            if (detailsPanel && !detailsPanel.classList.contains('active')) {
-                                detailsPanel.classList.add('active');
-                            }
                         }, 600);
                     }, 800);
                 }, 1200);
