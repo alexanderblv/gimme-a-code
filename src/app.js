@@ -5,6 +5,9 @@ let gameInterval;
 let activeMember = null;
 let isGameRunning = false;
 
+// Import SP1 Bridge
+import sp1Bridge from './sp1-bridge.js';
+
 // DOM Elements
 const gameInfo = document.getElementById('game-info');
 const gameOver = document.getElementById('game-over');
@@ -16,10 +19,25 @@ const timerDisplay = document.querySelector('#timer span');
 const progressBar = document.getElementById('progress');
 const members = document.querySelectorAll('.member-img');
 
+// Add new elements for SP1 features
+const proofStatusElement = document.createElement('div');
+proofStatusElement.id = 'proof-status';
+proofStatusElement.className = 'proof-status';
+proofStatusElement.style.display = 'none';
+document.body.appendChild(proofStatusElement);
+
+// Add "Verify with SP1" button to the game over screen
+const verifyButton = document.createElement('button');
+verifyButton.id = 'verify-score';
+verifyButton.className = 'game-button';
+verifyButton.textContent = 'Verify with SP1';
+gameOver.appendChild(verifyButton);
+
 // Add event listeners
 document.addEventListener('DOMContentLoaded', () => {
     startButton.addEventListener('click', startGame);
     restartButton.addEventListener('click', restartGame);
+    verifyButton.addEventListener('click', verifyGameWithSP1);
     
     // Initialize background effects
     createFallingElements();
@@ -82,6 +100,9 @@ function startGame() {
     resetGame();
     isGameRunning = true;
     
+    // Reset SP1 bridge
+    sp1Bridge.reset();
+    
     // Start timer
     gameInterval = setInterval(updateGame, 1000);
     
@@ -95,6 +116,9 @@ function resetGame() {
     scoreDisplay.textContent = `Codes: ${score}`;
     timerDisplay.textContent = `Time left: ${timeLeft} seconds`;
     progressBar.style.width = '100%';
+    
+    // Hide proof status
+    proofStatusElement.style.display = 'none';
     
     members.forEach(member => {
         member.style.opacity = '0';
@@ -118,7 +142,7 @@ function updateGame() {
     }
 }
 
-function endGame() {
+async function endGame() {
     clearInterval(gameInterval);
     isGameRunning = false;
     
@@ -157,10 +181,16 @@ function handleMemberClick(e) {
         score++;
         scoreDisplay.textContent = `Codes: ${score}`;
         
+        // Record click action with SP1 bridge
+        const rect = e.target.getBoundingClientRect();
+        const x = Math.floor(rect.left + rect.width / 2);
+        const y = Math.floor(rect.top + rect.height / 2);
+        sp1Bridge.recordClick(x, y);
+        
         // Add visual feedback
-        const x = e.clientX;
-        const y = e.clientY;
-        createClickEffect(x, y);
+        const clickX = e.clientX;
+        const clickY = e.clientY;
+        createClickEffect(clickX, clickY);
         
         // Set new active member
         setRandomActiveMember();
@@ -188,12 +218,111 @@ function createClickEffect(x, y) {
     }, 500);
 }
 
-// Add this to your CSS
+// SP1 verification function
+async function verifyGameWithSP1() {
+    // Show proof status
+    proofStatusElement.style.display = 'block';
+    proofStatusElement.innerHTML = `
+        <div class="proof-status-content">
+            <h3>Generating SP1 Proof...</h3>
+            <div class="loading-spinner"></div>
+        </div>
+    `;
+    
+    try {
+        // Generate proof
+        const proofResult = await sp1Bridge.generateProof();
+        
+        // Verify the proof
+        const verificationResult = await sp1Bridge.verifyProof(proofResult);
+        
+        if (verificationResult.verified) {
+            // Display verification success
+            proofStatusElement.innerHTML = `
+                <div class="proof-status-content success">
+                    <h3>SP1 Verification Successful!</h3>
+                    <p>Your score of ${verificationResult.publicValues.score} has been cryptographically verified.</p>
+                    <p>Game ID: ${verificationResult.publicValues.game_id}</p>
+                    <button class="game-button" onclick="document.getElementById('proof-status').style.display = 'none'">Close</button>
+                </div>
+            `;
+        } else {
+            // Display verification failure
+            proofStatusElement.innerHTML = `
+                <div class="proof-status-content error">
+                    <h3>SP1 Verification Failed</h3>
+                    <p>The proof could not be verified.</p>
+                    <button class="game-button" onclick="document.getElementById('proof-status').style.display = 'none'">Close</button>
+                </div>
+            `;
+        }
+    } catch (error) {
+        // Display error
+        proofStatusElement.innerHTML = `
+            <div class="proof-status-content error">
+                <h3>SP1 Verification Error</h3>
+                <p>${error.message || 'An error occurred during verification.'}</p>
+                <button class="game-button" onclick="document.getElementById('proof-status').style.display = 'none'">Close</button>
+            </div>
+        `;
+    }
+}
+
+// Add CSS for proof status and loading spinner
 document.head.insertAdjacentHTML('beforeend', `
 <style>
 @keyframes clickEffect {
     0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
     100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+}
+
+.proof-status {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.proof-status-content {
+    background-color: rgba(30, 30, 50, 0.95);
+    border: 2px solid #00FFD1;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 500px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 0 20px rgba(0, 255, 209, 0.5);
+}
+
+.proof-status-content.success {
+    border-color: #00FF00;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+}
+
+.proof-status-content.error {
+    border-color: #FF0000;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(0, 255, 209, 0.3);
+    border-radius: 50%;
+    border-top-color: #00FFD1;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 </style>
 `);
