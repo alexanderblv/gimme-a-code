@@ -21,7 +21,7 @@ The SP1 integration allows players to verify their scores without revealing thei
 
 ## How to Run
 
-1. Clone this repository
+1. Clone this repository from [GitHub](https://github.com/alexanderblv/gimme-a-code)
 2. Open `index.html` in your browser to play the game
 3. For the full SP1 integration, you'll need to set up the Rust backend:
 
