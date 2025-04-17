@@ -5,23 +5,69 @@
         // Добавляем SP1 бейдж
         addSP1Badge();
         
-        // Перехватываем окончание игры
+        // Добавляем кнопку верификации на экран результата
+        addVerifyButton();
+    });
+    
+    // Функция для добавления кнопки "VERIFY WITH SP1" на экран результатов
+    function addVerifyButton() {
+        // Отслеживаем появление экрана результатов
         const gameInterval = setInterval(function() {
             const gameOverlay = document.getElementById('game-over-overlay');
             if (gameOverlay && !gameOverlay.classList.contains('hidden')) {
-                // Игра закончилась, получаем результаты
-                const score = document.getElementById('final-score')?.textContent || '0';
+                // Проверяем, нет ли уже кнопки верификации
+                if (document.getElementById('sp1-verify-button')) {
+                    return;
+                }
                 
-                // Запускаем SP1 верификацию
-                verifySP1Result({
-                    score: parseInt(score),
-                    timestamp: Date.now()
-                });
+                // Получаем блок, где располагается кнопка рестарта
+                const restartButton = document.getElementById('restart-button');
+                if (restartButton) {
+                    // Создаем кнопку SP1 верификации
+                    const verifyButton = document.createElement('button');
+                    verifyButton.id = 'sp1-verify-button';
+                    verifyButton.className = 'glitch-button';
+                    verifyButton.style.marginTop = '10px';
+                    verifyButton.style.background = 'linear-gradient(135deg, #2a0060, #6600cc)';
+                    verifyButton.style.border = '1px solid #00FFD1';
+                    verifyButton.textContent = 'VERIFY WITH SP1';
+                    
+                    // Добавляем кнопку после кнопки рестарта
+                    restartButton.parentNode.insertBefore(verifyButton, restartButton.nextSibling);
+                    
+                    // Добавляем обработчик клика
+                    verifyButton.addEventListener('click', function() {
+                        // Получаем данные игры
+                        const score = document.getElementById('final-score')?.textContent || '0';
+                        
+                        // Запускаем SP1 верификацию
+                        verifySP1Result({
+                            score: parseInt(score),
+                            timestamp: Date.now()
+                        });
+                        
+                        // Деактивируем кнопку после нажатия
+                        verifyButton.disabled = true;
+                        verifyButton.textContent = 'VERIFYING...';
+                        
+                        // Сбрасываем кнопку через несколько секунд (для повторной верификации)
+                        setTimeout(function() {
+                            verifyButton.disabled = false;
+                            verifyButton.textContent = 'VERIFY WITH SP1';
+                        }, 5000);
+                    });
+                }
                 
+                // Сбрасываем интервал, чтобы не продолжать проверку
                 clearInterval(gameInterval);
+                
+                // Запускаем новый интервал для отслеживания нового конца игры
+                setTimeout(function() {
+                    addVerifyButton();
+                }, 1000);
             }
-        }, 1000);
-    });
+        }, 500);
+    }
     
     // Функция для добавления SP1 бейджа
     function addSP1Badge() {
@@ -117,6 +163,31 @@
                 color: #00FFD1;
                 font-family: 'Orbitron', sans-serif;
             }
+            
+            /* Стили для кнопки SP1 верификации */
+            #sp1-verify-button {
+                background: linear-gradient(135deg, #2a0060, #6600cc);
+                color: white;
+                font-family: 'Orbitron', sans-serif;
+                padding: 10px 20px;
+                border: 1px solid #00FFD1;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-top: 10px;
+                font-size: 14px;
+                box-shadow: 0 0 15px rgba(102, 0, 204, 0.4);
+                transition: all 0.3s ease;
+            }
+            
+            #sp1-verify-button:hover:not(:disabled) {
+                transform: translateY(-2px);
+                box-shadow: 0 0 20px rgba(102, 0, 204, 0.6);
+            }
+            
+            #sp1-verify-button:disabled {
+                opacity: 0.7;
+                cursor: wait;
+            }
         `;
         document.head.appendChild(style);
         
@@ -139,11 +210,15 @@
                 <span class="sp1-badge-details-value" id="sp1-status">Ready</span>
             </div>
             <div class="sp1-badge-details-row">
+                <span class="sp1-badge-details-label">Score:</span>
+                <span class="sp1-badge-details-value" id="sp1-score">-</span>
+            </div>
+            <div class="sp1-badge-details-row">
                 <span class="sp1-badge-details-label">Proof ID:</span>
                 <span class="sp1-badge-details-value" id="sp1-proof-id">-</span>
             </div>
             <div class="sp1-badge-details-row">
-                <span class="sp1-badge-details-label">Verified:</span>
+                <span class="sp1-badge-details-label">Verified at:</span>
                 <span class="sp1-badge-details-value" id="sp1-timestamp">-</span>
             </div>
         `;
@@ -171,6 +246,7 @@
         // Обновляем статус бейджа
         const badge = document.querySelector('.sp1-badge');
         const status = document.getElementById('sp1-status');
+        const score = document.getElementById('sp1-score');
         const proofId = document.getElementById('sp1-proof-id');
         const timestamp = document.getElementById('sp1-timestamp');
         
@@ -197,6 +273,10 @@
                 status.textContent = 'Verified';
             }
             
+            if (score) {
+                score.textContent = gameData.score;
+            }
+            
             if (proofId) {
                 proofId.textContent = proofIdValue;
             }
@@ -215,10 +295,68 @@
             // Показываем детали верификации
             document.querySelector('.sp1-badge-details')?.classList.add('active');
             
-            // Скрываем детали через 5 секунд
-            setTimeout(function() {
-                document.querySelector('.sp1-badge-details')?.classList.remove('active');
-            }, 5000);
+            // Добавляем метку в результат, что он верифицирован
+            const verifyButton = document.getElementById('sp1-verify-button');
+            if (verifyButton) {
+                verifyButton.innerHTML = '✓ VERIFIED WITH SP1';
+                verifyButton.style.backgroundColor = '#006633';
+            }
+            
+            // Показываем победный эффект
+            showVerificationEffect();
         }, 1500);
+    }
+    
+    // Функция для отображения эффекта успешной верификации
+    function showVerificationEffect() {
+        // Создаем контейнер для эффекта
+        const effectContainer = document.createElement('div');
+        effectContainer.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10001;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        `;
+        
+        // Создаем текст эффекта
+        const effectText = document.createElement('div');
+        effectText.textContent = 'VERIFIED WITH SP1';
+        effectText.style.cssText = `
+            color: #00FFD1;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 36px;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(0, 255, 209, 0.8);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.5s ease;
+        `;
+        
+        // Добавляем элементы в DOM
+        effectContainer.appendChild(effectText);
+        document.body.appendChild(effectContainer);
+        
+        // Анимируем появление
+        setTimeout(() => {
+            effectText.style.opacity = '1';
+            effectText.style.transform = 'scale(1.2)';
+        }, 100);
+        
+        // Анимируем исчезновение
+        setTimeout(() => {
+            effectText.style.opacity = '0';
+            effectText.style.transform = 'scale(2)';
+        }, 1500);
+        
+        // Удаляем контейнер после анимации
+        setTimeout(() => {
+            document.body.removeChild(effectContainer);
+        }, 2500);
     }
 })(); 
