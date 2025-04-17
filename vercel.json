@@ -1,8 +1,7 @@
 {
-  "git": {
-    "deploymentEnabled": {
-      "main": false,
-      "SP1": true
-    }
-  }
-}
+  "version": 2,
+  "buildCommand": null,
+  "devCommand": null,
+  "installCommand": null,
+  "outputDirectory": null
+} 
